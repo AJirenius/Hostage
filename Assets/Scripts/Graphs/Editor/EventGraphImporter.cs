@@ -1,13 +1,9 @@
-#region Imports
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.GraphToolkit.Editor;
 using UnityEditor.AssetImporters;
 using UnityEngine;
-
-
-#endregion
 
 namespace Hostage.Graphs.Editor {
     [ScriptedImporter(1, EditorEventGraph.AssetExtension)]
@@ -27,6 +23,9 @@ namespace Hostage.Graphs.Editor {
             }
             
             var runtimeAsset = ScriptableObject.CreateInstance<Graphs.EventGraph>();
+            // Set the name so Unity can properly identify it in the inspector
+            runtimeAsset.name = System.IO.Path.GetFileNameWithoutExtension(ctx.assetPath);
+            
             var nodeMap = new Dictionary<INode, int>();
             
             // First pass: Create all runtime nodes (without connections)
@@ -35,7 +34,7 @@ namespace Hostage.Graphs.Editor {
             // Second pass: Set up connections using the indices
             SetupConnections(startNodeModel, runtimeAsset, nodeMap);
             
-            ctx.AddObjectToAsset("RuntimeAsset", runtimeAsset);
+            ctx.AddObjectToAsset("MainAsset", runtimeAsset);
             ctx.SetMainObject(runtimeAsset);
         }
 
@@ -86,18 +85,45 @@ namespace Hostage.Graphs.Editor {
             var returnedNodes = new List<RuntimeNode>();
 
             switch (nodeModel) {
-                case Graphs.Editor.EditorStartNode:
+                case EditorStartNode:
                     returnedNodes.Add(new StartNode());
                     break;
-                case Graphs.Editor.EditorDialogueNode dialogueNode:
-                    var port = dialogueNode.GetInputPortByName("Dialogue");
-                    var dialogueText = GetInputPortValue<string>(port);                    
-                    //dialogueNode.GetNodeOptionByName("stateName")?.TryGetValue(out stateName);
+                case EditorEndNode:
+                    returnedNodes.Add(new EndNode());
+                    break;
+                case EditorDialogueNode dialogueNode:
+                    var dialoguePort = dialogueNode.GetInputPortByName("Dialogue");
+                    var dialogueText = GetInputPortValue<string>(dialoguePort);
                     returnedNodes.Add(
                         new DialogueNode()
                         {
+                            speaker = GetInputPortValue<Hostage.SO.Person>(dialogueNode.GetInputPortByName("Person")),
                             dialogueText = dialogueText
                         });
+                    break;
+                case EditorGiveIntelToPerson giveIntelNode:
+                    var intelPort = giveIntelNode.GetInputPortByName("Intel");
+                    var personPort = giveIntelNode.GetInputPortByName("Person");
+                    var intel = GetInputPortValue<Hostage.SO.Intel>(intelPort);
+                    var person = GetInputPortValue<Hostage.SO.Person>(personPort);
+                    returnedNodes.Add(new GiveIntelToPersonNode { intel = intel, person = person });
+                    break;
+                case EditorRemoveIntelFromPlayer removeIntelNode:
+                    var removeIntelPort = removeIntelNode.GetInputPortByName("Intel");
+                    var removeIntel = GetInputPortValue<Hostage.SO.Intel>(removeIntelPort);
+                    returnedNodes.Add(new RemoveIntelFromPlayerNode { intel = removeIntel });
+                    break;
+                case EditorGiveIntelToPlayer giveIntelToPlayerNode:
+                    var giveIntelToPlayerPort = giveIntelToPlayerNode.GetInputPortByName("Intel");
+                    var giveIntelToPlayer = GetInputPortValue<Hostage.SO.Intel>(giveIntelToPlayerPort);
+                    returnedNodes.Add(new GiveIntelToPlayerNode { intel = giveIntelToPlayer });
+                    break;
+                case EditorReplaceIntelForPlayer replaceIntelNode:
+                    var oldIntelPort = replaceIntelNode.GetInputPortByName("OldIntel");
+                    var newIntelPort = replaceIntelNode.GetInputPortByName("NewIntel");
+                    var oldIntel = GetInputPortValue<Hostage.SO.Intel>(oldIntelPort);
+                    var newIntel = GetInputPortValue<Hostage.SO.Intel>(newIntelPort);
+                    returnedNodes.Add(new ReplaceIntelForPlayerNode { oldIntel = oldIntel, newIntel = newIntel });
                     break;
                 default:
                     throw new ArgumentException($"Unsupported node type: {nodeModel.GetType()}");

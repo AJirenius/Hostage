@@ -16,6 +16,11 @@ namespace Hostage.Core
             Debug.Log($"Added Intel: {intel}");
             return true;
         }
+        
+        public bool HasIntel(Intel intel)
+        {
+            return _intelList.Contains(intel);
+        }
 
         public bool RemoveIntel(Intel intel)
         {

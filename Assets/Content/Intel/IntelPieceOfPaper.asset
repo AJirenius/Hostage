@@ -17,7 +17,7 @@ MonoBehaviour:
   category: 0
   investigate:
     isAvailable: 1
-    baseTime: 40
+    baseTime: 10
     modifiers: []
     requiredTags: 03000000
     occupyingIntel: 1
@@ -33,7 +33,7 @@ MonoBehaviour:
     linkedIntels: []
     result: {fileID: 0}
   surveillance:
-    isAvailable: 1
+    isAvailable: 0
     baseTime: 5
     modifiers: []
     requiredTags: 01000000
@@ -47,7 +47,7 @@ MonoBehaviour:
       graph: {fileID: 0}
   analyze:
     isAvailable: 1
-    baseTime: 0
+    baseTime: 40
     modifiers: []
     requiredTags: 03000000
     occupyingIntel: 1

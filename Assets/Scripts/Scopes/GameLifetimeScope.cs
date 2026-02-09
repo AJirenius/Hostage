@@ -1,5 +1,6 @@
 using UnityEngine;
 using Hostage.Core;
+using Hostage.Graphs;
 using VContainer;
 using VContainer.Unity;
 using Hostage.SO;
@@ -10,16 +11,18 @@ namespace Hostage.Scopes
     {
         [Header("Databases")]
         public ActionPersonList personList;
-        public IntelList intelList;
-
+        public IntelList allIntelList;
+        public EventGraph firstGraph;
         protected override void Configure(IContainerBuilder builder)
         { 
             builder.Register<ActionManager>(Lifetime.Singleton);
             builder.Register<GameInitializer>(Lifetime.Singleton);
             builder.Register<PlayerInventory>(Lifetime.Singleton);
+            builder.Register<EventGraphRunner>(Lifetime.Singleton);
             builder.RegisterEntryPoint<GameInitializer>();
             builder.RegisterInstance(personList);
-            builder.RegisterInstance(intelList);
+            builder.RegisterInstance(allIntelList);
+            builder.RegisterInstance(firstGraph);
             builder.Register<PersonProvider>(Lifetime.Singleton);
             builder.Register<IntelProvider>(Lifetime.Singleton);
         }

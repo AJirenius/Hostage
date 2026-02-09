@@ -281,6 +281,7 @@ MonoBehaviour:
   autoInjectGameObjects: []
   personList: {fileID: 11400000, guid: 5f79d84aa8de94894b39b609cdf3f106, type: 2}
   intelList: {fileID: 11400000, guid: b01cdc4d7822147fbafe621d76745e58, type: 2}
+  firstGraph: {fileID: -5475051401550479605, guid: fde24c3c7fc9347408cd5c5980e5a4c7, type: 3}
 --- !u!4 &616025351
 Transform:
   m_ObjectHideFlags: 0

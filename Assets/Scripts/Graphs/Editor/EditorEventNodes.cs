@@ -39,7 +39,7 @@ namespace Hostage.Graphs.Editor
     }
     
     [Serializable]
-    public class EditorGiveIntel:Node
+    public class EditorGiveIntelToPerson:Node
     {
         protected override void OnDefinePorts(IPortDefinitionContext context)
         {
@@ -49,6 +49,43 @@ namespace Hostage.Graphs.Editor
             context.AddInputPort<Intel>("Intel").Build();
             context.AddInputPort<Person>("Person").Build();
 
+        }
+    }
+    
+    [Serializable]
+    public class EditorRemoveIntelFromPlayer:Node
+    {
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            context.AddInputPort("in").Build();
+            context.AddOutputPort("out").Build();
+            
+            context.AddInputPort<Intel>("Intel").Build();
+        }
+    }
+    
+    [Serializable]
+    public class EditorGiveIntelToPlayer:Node
+    {
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            context.AddInputPort("in").Build();
+            context.AddOutputPort("out").Build();
+            
+            context.AddInputPort<Intel>("Intel").Build();
+        }
+    }
+    
+    [Serializable]
+    public class EditorReplaceIntelForPlayer:Node
+    {
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            context.AddInputPort("in").Build();
+            context.AddOutputPort("out").Build();
+            
+            context.AddInputPort<Intel>("OldIntel").Build();
+            context.AddInputPort<Intel>("NewIntel").Build();
         }
     }
 }
