@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 99eb3a8859a54922bebb772659b728e8, type: 3}
-  m_Name: IntelAlanBarker 1
+  m_Name: IntelAlanBarker1
   m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.Intel
   intelName: Alan Barker
   description: 'This is a matter of change. He is our suspect at this point. '

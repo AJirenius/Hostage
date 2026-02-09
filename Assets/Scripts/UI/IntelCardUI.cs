@@ -1,14 +1,14 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
+
 using Hostage.SO;
 
 namespace Hostage.UI
 {
     public class IntelCardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        public Text intelNameText;
-        public Text descriptionText;
+        public TMPro.TMP_Text intelNameText;
+        public TMPro.TMP_Text descriptionText;
         private Intel _intel;
         private UIManager _uiManager;
         private CanvasGroup _canvasGroup;

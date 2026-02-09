@@ -1,6 +1,7 @@
 using Hostage.Core;
 using Hostage.Graphs;
 using Hostage.SO;
+using Hostage.UI;
 using UnityEngine;
 using VContainer.Unity;
 
@@ -13,8 +14,10 @@ namespace Hostage
         readonly IntelProvider _intelProvider;
         readonly EventGraph _eventGraph;
         readonly EventGraphRunner _eventGraphRunner;
+        readonly UIManager _uiManager;
 
-        public GameInitializer(ActionManager actionManager, PlayerInventory playerInventory, IntelProvider intelProvider, EventGraph eventGraph, EventGraphRunner eventGraphRunner)
+        public GameInitializer(ActionManager actionManager, PlayerInventory playerInventory, IntelProvider intelProvider, EventGraph eventGraph, EventGraphRunner eventGraphRunner,
+            UIManager uiManager)
         {
             Debug.Log("Initializing player inventory");
             _actionManager = actionManager;
@@ -22,12 +25,16 @@ namespace Hostage
             _intelProvider = intelProvider;
             _eventGraph = eventGraph;
             _eventGraphRunner = eventGraphRunner;
+            
+            _uiManager = uiManager;
         }
         
         public void Start()
         {
             _playerInventory.AddIntel(_intelProvider.GetWithId("IntelAlanBarker 3"));
             _eventGraphRunner.RunGraph(_eventGraph);
+            _uiManager.Initialize(_playerInventory, null, _actionManager);
+            _uiManager.CreateInventory();
         }
 
         public void Tick()

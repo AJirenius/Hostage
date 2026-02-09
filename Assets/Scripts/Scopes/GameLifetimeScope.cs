@@ -4,6 +4,7 @@ using Hostage.Graphs;
 using VContainer;
 using VContainer.Unity;
 using Hostage.SO;
+using Hostage.UI;
 
 namespace Hostage.Scopes
 {
@@ -13,6 +14,8 @@ namespace Hostage.Scopes
         public ActionPersonList personList;
         public IntelList allIntelList;
         public EventGraph firstGraph;
+        [Header("UI")]
+        public UIManager uiManager;
         protected override void Configure(IContainerBuilder builder)
         { 
             builder.Register<ActionManager>(Lifetime.Singleton);
@@ -25,6 +28,7 @@ namespace Hostage.Scopes
             builder.RegisterInstance(firstGraph);
             builder.Register<PersonProvider>(Lifetime.Singleton);
             builder.Register<IntelProvider>(Lifetime.Singleton);
+            builder.RegisterInstance(uiManager);
         }
     }
 }

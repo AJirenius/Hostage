@@ -15,6 +15,8 @@ namespace Hostage.UI
         private PlayerInventory _playerInventory;
         private List<ActionPerson> _persons;
         private ActionManager _actionManager;
+        
+        private Dictionary<Intel, GameObject > _createdCards = new Dictionary<Intel, GameObject>();
 
         public void Initialize(PlayerInventory inventory, List<ActionPerson> persons, ActionManager actionManager)
         {
@@ -22,7 +24,7 @@ namespace Hostage.UI
             _persons = persons;
             _actionManager = actionManager;
             PopulateIntelCards();
-            PopulatePersonCards();
+           // PopulatePersonCards();
         }
 
         private void PopulateIntelCards()
@@ -53,6 +55,21 @@ namespace Hostage.UI
             if (verb == null) return;
             var action = new Action(verb, person);
             _actionManager.AddAction(action);
+        }
+
+        public void CreateInventory()
+        {
+            foreach (var intel in _playerInventory.GetAllIntel())
+            {
+                // create a card for each intel and set the name to
+                var card = Instantiate(intelCardPrefab, intelParent);
+                var intelCard = card.GetComponent<IntelCardUI>();
+                intelCard.Setup(intel, this);
+                // add to dictionary of created cards
+                _createdCards[intel] = card;
+                // randomize position a little bit
+                card.transform.localPosition += new Vector3(Random.Range(-50, 50), Random.Range(-50, 50), 0);
+            }
         }
     }
 }

@@ -7,8 +7,8 @@ namespace Hostage.UI
 {
     public class PersonCardUI : MonoBehaviour, IDropHandler
     {
-        public Text personNameText;
-        public Text descriptionText;
+        public TMPro.TMP_Text personNameText;
+        public TMPro.TMP_Text descriptionText;
         private ActionPerson _person;
         private UIManager _uiManager;
 
