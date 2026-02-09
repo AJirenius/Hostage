@@ -1,27 +1,30 @@
 using System;
 using System.Collections.Generic;
-using Core;
-using Graphs;
+using Hostage.Core;
+using Hostage.Graphs;
 using UnityEngine;
 
-namespace SO
+namespace Hostage.SO
 {
     [CreateAssetMenu(fileName = "NewIntel", menuName = "SO/Intel", order = 0)]
     public class Intel : ScriptableObject
     {
         public string intelName;
         public string description; // this should change due to what intel one have.
+        public IntelCategory category = IntelCategory.Unknown;
+
         public Investigate investigate;
         public Interview interview;
         public Surveillance surveillance;
         public Analyze analyze;
-        public IntelCategory category = IntelCategory.Unknown;
     }
     
     [Serializable]
     public abstract class Verb
     {
-        public ActionType actionType;
+        public bool isAvailable;
+        public abstract ActionType actionType { get; }
+
         public float baseTime; // seconds
         public List<TimeModifier> modifiers;
         public List<SkillTag> requiredTags;
@@ -29,6 +32,7 @@ namespace SO
 
         public float GetModifier(ActionPerson person)
         {
+            
             float modifier = 1;
             foreach ( TimeModifier mod in modifiers )
             {
@@ -52,28 +56,40 @@ namespace SO
     [Serializable]
     public class Investigate: Verb
     {
+        public override ActionType actionType => ActionType.Investigate;
+
         public EventGraph result;
+       
     }
     
     [Serializable]
     public class Interview: Verb
     {
+        public override ActionType actionType => ActionType.Interview;
+
         public List<Intel> linkedIntels; // intel that can be run instead of this
         public EventGraph result;
+       
     }
     
     [Serializable]
     public class Surveillance: Verb
     {
+        public override ActionType actionType => ActionType.Surveillance;
+
         public List<Intel> linkedIntels; // intel that can be run instead of this
         public List<TimedEvent> timedEvents;
+        
     }
     
     [Serializable]
     public class Analyze: Verb
     {
+        public override ActionType actionType => ActionType.Analyze;
+
         public List<TimedEvent> timedEvents;
         public EventGraph result;
+        
     }
 
     [Serializable]
@@ -99,6 +115,7 @@ namespace SO
         Social, 
         Tech,
         NoDrivingLicense,
+        Forensics,
     }
     
     // Enum for Intel categories (expand as needed)

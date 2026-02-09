@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Graphs
+namespace Hostage.Graphs
 {
     public class EventGraph : ScriptableObject
     {

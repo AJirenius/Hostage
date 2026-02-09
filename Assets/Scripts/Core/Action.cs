@@ -1,10 +1,10 @@
-using DefaultNamespace;
-using SO;
+using Hostage.SO;
 
-namespace Core
+namespace Hostage.Core
 {
     public enum ActionType
     {
+        None,
         Investigate,
         Interview,
         Surveillance,

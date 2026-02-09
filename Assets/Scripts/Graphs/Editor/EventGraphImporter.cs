@@ -2,17 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Graphs;
-using Graphs.Editor;
 using Unity.GraphToolkit.Editor;
 using UnityEditor.AssetImporters;
 using UnityEngine;
-using DialogueNode = Graphs.DialogueNode;
-using StartNode = Graphs.StartNode;
+
 
 #endregion
 
-namespace Graphs.Editor {
+namespace Hostage.Graphs.Editor {
     [ScriptedImporter(1, EditorEventGraph.AssetExtension)]
     internal class EventGraphImporter : ScriptedImporter {
         public override void OnImportAsset(AssetImportContext ctx) {

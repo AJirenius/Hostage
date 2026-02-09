@@ -1,11 +1,10 @@
 
 using System;
-using DefaultNamespace;
-using SO;
+using Hostage.SO;
 using Unity.GraphToolkit.Editor;
-using UnityEngine;
 
-namespace Graphs.Editor
+
+namespace Hostage.Graphs.Editor
 {
     [Serializable]
     public class EditorStartNode:Node

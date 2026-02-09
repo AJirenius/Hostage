@@ -279,6 +279,8 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
+  personList: {fileID: 11400000, guid: 5f79d84aa8de94894b39b609cdf3f106, type: 2}
+  intelList: {fileID: 11400000, guid: b01cdc4d7822147fbafe621d76745e58, type: 2}
 --- !u!4 &616025351
 Transform:
   m_ObjectHideFlags: 0

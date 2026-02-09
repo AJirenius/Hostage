@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using DefaultNamespace;
 using UnityEngine;
 
-namespace Core
+namespace Hostage.Core
 {
     public class ActionManager
     {

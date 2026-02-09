@@ -1,10 +1,9 @@
 using System.Collections.Generic;
-using Core;
 using UnityEngine;
-using DefaultNamespace;
-using SO;
+using Hostage.Core;
+using Hostage.SO;
 
-namespace UI
+namespace Hostage.UI
 {
     public class UIManager : MonoBehaviour
     {

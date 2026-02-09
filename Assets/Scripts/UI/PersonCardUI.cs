@@ -1,10 +1,9 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using DefaultNamespace;
-using SO;
+using Hostage.SO;
 
-namespace UI
+namespace Hostage.UI
 {
     public class PersonCardUI : MonoBehaviour, IDropHandler
     {

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using DefaultNamespace;
-using SO;
+using Hostage.SO;
+using UnityEngine;
 
-namespace Core
+namespace Hostage.Core
 {
     public class PlayerInventory
     {
@@ -13,6 +13,7 @@ namespace Core
             if (intel == null || _intelList.Contains(intel))
                 return false;
             _intelList.Add(intel);
+            Debug.Log($"Added Intel: {intel}");
             return true;
         }
 

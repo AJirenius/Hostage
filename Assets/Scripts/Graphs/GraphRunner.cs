@@ -1,43 +1,46 @@
-using Graphs;
 using UnityEngine;
 
-public class GraphRunner : MonoBehaviour
+namespace Hostage.Graphs
 {
-    public EventGraph eventGraph;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class GraphRunner : MonoBehaviour
     {
-        int index = 0;
-        while (eventGraph.Nodes[index] != null)
-        {
-            LogNode(index);
-            if (eventGraph.Nodes[index].nextNodeIndices.Count > 0)
-            {
-                index = eventGraph.Nodes[index].nextNodeIndices[0];
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
+        public EventGraph eventGraph;
 
-    void LogNode(int index)
-    {
-        var node = eventGraph.Nodes[index];
-        if (node is DialogueNode dialogueNode)
+        // Start is called once before the first execution of Update after the MonoBehaviour is created
+        void Start()
         {
-            Debug.Log($"Dialogue Node: {dialogueNode.dialogueText}");
+            int index = 0;
+            while (eventGraph.Nodes[index] != null)
+            {
+                LogNode(index);
+                if (eventGraph.Nodes[index].nextNodeIndices.Count > 0)
+                {
+                    index = eventGraph.Nodes[index].nextNodeIndices[0];
+                }
+                else
+                {
+                    break;
+                }
+            }
         }
-        else if (node is StartNode)
-        {
-            Debug.Log("Start Node");
-        }
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        void LogNode(int index)
+        {
+            var node = eventGraph.Nodes[index];
+            if (node is DialogueNode dialogueNode)
+            {
+                Debug.Log($"Dialogue Node: {dialogueNode.dialogueText}");
+            }
+            else if (node is StartNode)
+            {
+                Debug.Log("Start Node");
+            }
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
     }
 }
