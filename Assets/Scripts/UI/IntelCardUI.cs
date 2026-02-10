@@ -21,8 +21,11 @@ namespace Hostage.UI
             _uiManager = uiManager;
             intelNameText.text = intel.intelName;
             descriptionText.text = intel.description;
-            _canvasGroup = GetComponent<CanvasGroup>();
+            _canvasGroup = GetComponentInChildren<CanvasGroup>();
             _rectTransform = GetComponent<RectTransform>();
+            _canvasGroup.alpha = 1f;
+            _canvasGroup.blocksRaycasts = true;
+
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -39,7 +42,7 @@ namespace Hostage.UI
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            _rectTransform.position = _startPosition;
+            //_rectTransform.position = _startPosition;
             _canvasGroup.alpha = 1f;
             _canvasGroup.blocksRaycasts = true;
         }

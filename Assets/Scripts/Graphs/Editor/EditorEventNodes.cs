@@ -7,7 +7,7 @@ using Unity.GraphToolkit.Editor;
 namespace Hostage.Graphs.Editor
 {
     [Serializable]
-    public class EditorStartNode:Node
+    public class StartNode:Node
     {
         protected override void OnDefinePorts(IPortDefinitionContext context)
         {
@@ -16,7 +16,7 @@ namespace Hostage.Graphs.Editor
     }
     
     [Serializable]
-    public class EditorEndNode:Node
+    public class EndNode:Node
     {
         protected override void OnDefinePorts(IPortDefinitionContext context)
         {
@@ -25,21 +25,21 @@ namespace Hostage.Graphs.Editor
     }
     
     [Serializable]
-    public class EditorDialogueNode:Node
+    public class DialogueNode:Node
     {
         protected override void OnDefinePorts(IPortDefinitionContext context)
         {
             context.AddInputPort("in").Build();
             context.AddOutputPort("out").Build();
             
-            context.AddInputPort<Person>("Person").Build();
+            context.AddInputPort<SOPerson>("Person").Build();
             context.AddInputPort<string>("Dialogue").Build();
 
         }
     }
     
     [Serializable]
-    public class EditorGiveIntelToPerson:Node
+    public class GiveIntelToPerson:Node
     {
         protected override void OnDefinePorts(IPortDefinitionContext context)
         {
@@ -47,13 +47,13 @@ namespace Hostage.Graphs.Editor
             context.AddOutputPort("out").Build();
             
             context.AddInputPort<Intel>("Intel").Build();
-            context.AddInputPort<Person>("Person").Build();
+            context.AddInputPort<SOPerson>("Person").Build();
 
         }
     }
     
     [Serializable]
-    public class EditorRemoveIntelFromPlayer:Node
+    public class RemoveIntelFromPlayer:Node
     {
         protected override void OnDefinePorts(IPortDefinitionContext context)
         {
@@ -65,7 +65,7 @@ namespace Hostage.Graphs.Editor
     }
     
     [Serializable]
-    public class EditorGiveIntelToPlayer:Node
+    public class GiveIntelToPlayer:Node
     {
         protected override void OnDefinePorts(IPortDefinitionContext context)
         {
@@ -77,7 +77,7 @@ namespace Hostage.Graphs.Editor
     }
     
     [Serializable]
-    public class EditorReplaceIntelForPlayer:Node
+    public class ReplaceIntelForPlayer:Node
     {
         protected override void OnDefinePorts(IPortDefinitionContext context)
         {
@@ -88,4 +88,6 @@ namespace Hostage.Graphs.Editor
             context.AddInputPort<Intel>("NewIntel").Build();
         }
     }
+    
+    
 }

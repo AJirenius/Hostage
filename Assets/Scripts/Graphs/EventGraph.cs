@@ -1,10 +1,21 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Hostage.Core;
 using Hostage.SO;
 
 namespace Hostage.Graphs
 {
+    public class GraphContext
+    {
+        public Person TriggeredBy { get; }
+
+        public GraphContext(Person triggeredBy = null)
+        {
+            TriggeredBy = triggeredBy;
+        }
+    }
+
     public class EventGraph : ScriptableObject
     {
         [SerializeReference]
@@ -19,7 +30,7 @@ namespace Hostage.Graphs
     }
     
     [Serializable]
-    public class StartNode: RuntimeNode
+    public class RTStartNode: RuntimeNode
     {
         public override void Execute(EventGraphRunner runner, Action<int> onComplete)
         {
@@ -29,7 +40,7 @@ namespace Hostage.Graphs
     }
     
     [Serializable]
-    public class EndNode : RuntimeNode
+    public class RTEndNode : RuntimeNode
     {
         public override void Execute(EventGraphRunner runner, Action<int> onComplete)
         {
@@ -39,35 +50,52 @@ namespace Hostage.Graphs
     }
     
     [Serializable]
-    public class DialogueNode: RuntimeNode
+    public class RTDialogueNode: RuntimeNode
     {
        public string dialogueText;
-       public Person speaker;
+       public SOPerson speaker;
        
        public override void Execute(EventGraphRunner runner, Action<int> onComplete)
        {
-           string name = speaker == null ? "You" : speaker.Name;
+           string name;
+           if (speaker != null)
+           {
+               if (speaker.Id == "ActionPerson")
+               {
+                   name = runner.Context.TriggeredBy != null ? runner.Context.TriggeredBy.SOReference.Name : "Someone";
+               }
+               else
+               {
+                   name = speaker.Name;
+               }
+               
+           }
+           else
+           {
+               name = "You";
+           }
+           
            Debug.Log(name + ": " + dialogueText);
            onComplete?.Invoke(0); // Replace with UI callback in real use
        }
     }
 
     [Serializable]
-    public class GiveIntelToPersonNode : RuntimeNode
+    public class RTGiveIntelToPersonNode : RuntimeNode
     {
         public Intel intel;
-        public Person person;
+        public SOPerson soPerson;
         public override void Execute(EventGraphRunner runner, Action<int> onComplete)
         {
             // take intel from inventory and give to person
             
-            Debug.Log("Taking " + intel.intelName + " from player and giving to " + person.Name);
+            Debug.Log("Taking " + intel.intelName + " from player and giving to " + soPerson.Name);
             onComplete?.Invoke(0);
         }
     }
 
     [Serializable]
-    public class RemoveIntelFromPlayerNode : RuntimeNode
+    public class RTRemoveIntelFromPlayerNode : RuntimeNode
     {
         public Intel intel;
         public override void Execute(EventGraphRunner runner, Action<int> onComplete)
@@ -85,7 +113,7 @@ namespace Hostage.Graphs
     }
 
     [Serializable]
-    public class GiveIntelToPlayerNode : RuntimeNode
+    public class RTGiveIntelToPlayerNode : RuntimeNode
     {
         public Intel intel;
         public override void Execute(EventGraphRunner runner, Action<int> onComplete)
@@ -97,7 +125,7 @@ namespace Hostage.Graphs
     }
 
     [Serializable]
-    public class ReplaceIntelForPlayerNode : RuntimeNode
+    public class RTReplaceIntelForPlayerNode : RuntimeNode
     {
         public Intel oldIntel;
         public Intel newIntel;

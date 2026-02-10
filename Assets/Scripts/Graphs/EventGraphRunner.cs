@@ -9,28 +9,36 @@ namespace Hostage.Graphs
     public class EventGraphRunner : IStartable
     {
         public EventGraph eventGraph;
+        public GraphContext Context { get; private set; }
 
         // Injected dependencies - accessible by nodes via runner reference
         [Inject] public PlayerInventory PlayerInventory { get; private set; }
         [Inject] public ActionManager ActionManager { get; private set; }
-        [Inject] public PersonProvider PersonProvider { get; private set; }
+        [Inject] public PersonManager PersonManager { get; private set; }
         [Inject] public IntelProvider IntelProvider { get; private set; }
 
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
+        [Inject]
+        private void Init()
+        {
+            ActionManager.OnGraphRequested += RunGraph;
+            Context = new GraphContext();
+        }
+
         public void Start()
         {
             RunNode(0);
         }
 
-        public void RunGraph(EventGraph graph)
+        public void RunGraph(EventGraph graph, GraphContext context = null)
         {
             // check if already got graph and if it hasn't finished yet
             if(eventGraph != null && eventGraph.Nodes.Count > 0)
             {
                 Debug.LogWarning("EventGraphRunner is already running a graph. Overwriting with new graph.");
             }
-            
+
             eventGraph = graph;
+            Context = context ?? new GraphContext();
             RunNode(0);
         }
         

@@ -11,11 +11,12 @@ namespace Hostage.Scopes
     public class GameLifetimeScope : LifetimeScope
     {
         [Header("Databases")]
-        public ActionPersonList personList;
+        public SOActionPersonList personList;
         public IntelList allIntelList;
         public EventGraph firstGraph;
         [Header("UI")]
         public UIManager uiManager;
+        
         protected override void Configure(IContainerBuilder builder)
         { 
             builder.Register<ActionManager>(Lifetime.Singleton);
@@ -26,7 +27,7 @@ namespace Hostage.Scopes
             builder.RegisterInstance(personList);
             builder.RegisterInstance(allIntelList);
             builder.RegisterInstance(firstGraph);
-            builder.Register<PersonProvider>(Lifetime.Singleton);
+            builder.Register<PersonManager>(Lifetime.Singleton);
             builder.Register<IntelProvider>(Lifetime.Singleton);
             builder.RegisterInstance(uiManager);
         }

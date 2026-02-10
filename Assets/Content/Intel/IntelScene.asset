@@ -10,31 +10,36 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 99eb3a8859a54922bebb772659b728e8, type: 3}
-  m_Name: IntelAlanBarker 2
+  m_Name: IntelScene
   m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.Intel
-  intelName: Alan Barker
-  description: 'This is a matter of change. He is our suspect at this point. '
+  intelName: Hotel Admaria
+  description: 'It''s a beautiful hotel with 4 floors. '
+  category: 3
   investigate:
-    baseTime: 40
+    isAvailable: 1
+    baseTime: 10
     modifiers:
-    - skillTag: 1
-      value: 0.8
-    - skillTag: 2
-      value: 1.2
+    - skillTag: 0
+      value: -0.5
     requiredTags: 
-    result: {fileID: 2841676755933307327, guid: f0cd4b3baa61a473abe663c3d4fdedc7, type: 3}
+    occupyingIntel: 0
+    result: {fileID: -5475051401550479605, guid: 26a538ce472944d2299b4d12876d815f, type: 3}
   interview:
+    isAvailable: 0
     baseTime: 30
     modifiers:
     - skillTag: 0
       value: 0.8
     requiredTags: 
+    occupyingIntel: 0
     linkedIntels: []
     result: {fileID: 0}
   surveillance:
-    baseTime: 5
+    isAvailable: 0
+    baseTime: 10
     modifiers: []
-    requiredTags: 01000000
+    requiredTags: 
+    occupyingIntel: 0
     linkedIntels:
     - {fileID: 0}
     timedEvents:
@@ -43,8 +48,10 @@ MonoBehaviour:
     - time: 0
       graph: {fileID: 0}
   analyze:
+    isAvailable: 0
     baseTime: 0
     modifiers: []
     requiredTags: 
+    occupyingIntel: 0
     timedEvents: []
     result: {fileID: 0}

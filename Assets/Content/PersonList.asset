@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: PersonList
   m_EditorClassIdentifier: Assembly-CSharp::Hostage.SO.PersonList
   _persons:
-  - {fileID: 11400000, guid: 0693ee19279da4c0693f2ca6fab7ad00, type: 2}
+  - {fileID: 11400000, guid: 65e2e4ac9a17645e9a47658487953c56, type: 2}
   - {fileID: 11400000, guid: 0453885974c484dfe9ac823fd876ae81, type: 2}
+  - {fileID: 11400000, guid: 2fa9f312d52304cd3af9e3f9f474018f, type: 2}
   - {fileID: 11400000, guid: 9452d1211419346d18b24052522f9a39, type: 2}
-  - {fileID: 11400000, guid: 52b168790671f43faa72a51a25f5e9c2, type: 2}
+  - {fileID: 11400000, guid: 0693ee19279da4c0693f2ca6fab7ad00, type: 2}

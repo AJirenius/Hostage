@@ -16,7 +16,7 @@ namespace Hostage.Graphs.Editor {
                 return;
             }
             
-            var startNodeModel = graph.GetNodes().OfType<Graphs.Editor.EditorStartNode>().FirstOrDefault();
+            var startNodeModel = graph.GetNodes().OfType<Graphs.Editor.StartNode>().FirstOrDefault();
             
             if (startNodeModel == null) {
                 return;
@@ -85,45 +85,45 @@ namespace Hostage.Graphs.Editor {
             var returnedNodes = new List<RuntimeNode>();
 
             switch (nodeModel) {
-                case EditorStartNode:
-                    returnedNodes.Add(new StartNode());
+                case StartNode:
+                    returnedNodes.Add(new RTStartNode());
                     break;
-                case EditorEndNode:
-                    returnedNodes.Add(new EndNode());
+                case EndNode:
+                    returnedNodes.Add(new RTEndNode());
                     break;
-                case EditorDialogueNode dialogueNode:
+                case DialogueNode dialogueNode:
                     var dialoguePort = dialogueNode.GetInputPortByName("Dialogue");
                     var dialogueText = GetInputPortValue<string>(dialoguePort);
                     returnedNodes.Add(
-                        new DialogueNode()
+                        new RTDialogueNode()
                         {
-                            speaker = GetInputPortValue<Hostage.SO.Person>(dialogueNode.GetInputPortByName("Person")),
+                            speaker = GetInputPortValue<Hostage.SO.SOPerson>(dialogueNode.GetInputPortByName("Person")),
                             dialogueText = dialogueText
                         });
                     break;
-                case EditorGiveIntelToPerson giveIntelNode:
+                case GiveIntelToPerson giveIntelNode:
                     var intelPort = giveIntelNode.GetInputPortByName("Intel");
                     var personPort = giveIntelNode.GetInputPortByName("Person");
                     var intel = GetInputPortValue<Hostage.SO.Intel>(intelPort);
-                    var person = GetInputPortValue<Hostage.SO.Person>(personPort);
-                    returnedNodes.Add(new GiveIntelToPersonNode { intel = intel, person = person });
+                    var person = GetInputPortValue<Hostage.SO.SOPerson>(personPort);
+                    returnedNodes.Add(new RTGiveIntelToPersonNode { intel = intel, soPerson = person });
                     break;
-                case EditorRemoveIntelFromPlayer removeIntelNode:
+                case RemoveIntelFromPlayer removeIntelNode:
                     var removeIntelPort = removeIntelNode.GetInputPortByName("Intel");
                     var removeIntel = GetInputPortValue<Hostage.SO.Intel>(removeIntelPort);
-                    returnedNodes.Add(new RemoveIntelFromPlayerNode { intel = removeIntel });
+                    returnedNodes.Add(new RTRemoveIntelFromPlayerNode { intel = removeIntel });
                     break;
-                case EditorGiveIntelToPlayer giveIntelToPlayerNode:
+                case GiveIntelToPlayer giveIntelToPlayerNode:
                     var giveIntelToPlayerPort = giveIntelToPlayerNode.GetInputPortByName("Intel");
                     var giveIntelToPlayer = GetInputPortValue<Hostage.SO.Intel>(giveIntelToPlayerPort);
-                    returnedNodes.Add(new GiveIntelToPlayerNode { intel = giveIntelToPlayer });
+                    returnedNodes.Add(new RTGiveIntelToPlayerNode { intel = giveIntelToPlayer });
                     break;
-                case EditorReplaceIntelForPlayer replaceIntelNode:
+                case ReplaceIntelForPlayer replaceIntelNode:
                     var oldIntelPort = replaceIntelNode.GetInputPortByName("OldIntel");
                     var newIntelPort = replaceIntelNode.GetInputPortByName("NewIntel");
                     var oldIntel = GetInputPortValue<Hostage.SO.Intel>(oldIntelPort);
                     var newIntel = GetInputPortValue<Hostage.SO.Intel>(newIntelPort);
-                    returnedNodes.Add(new ReplaceIntelForPlayerNode { oldIntel = oldIntel, newIntel = newIntel });
+                    returnedNodes.Add(new RTReplaceIntelForPlayerNode { oldIntel = oldIntel, newIntel = newIntel });
                     break;
                 default:
                     throw new ArgumentException($"Unsupported node type: {nodeModel.GetType()}");

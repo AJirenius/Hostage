@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Hostage.SO;
+using Hostage.Core;
 
 namespace Hostage.UI
 {
@@ -9,15 +10,15 @@ namespace Hostage.UI
     {
         public TMPro.TMP_Text personNameText;
         public TMPro.TMP_Text descriptionText;
-        private ActionPerson _person;
+        private Person _person;
         private UIManager _uiManager;
 
-        public void Setup(ActionPerson person, UIManager uiManager)
+        public void Setup(Person person, UIManager uiManager)
         {
             _person = person;
             _uiManager = uiManager;
-            personNameText.text = person.Name;
-            descriptionText.text = person.Description;
+            personNameText.text = person.SOReference.Name;
+            descriptionText.text = person.SOReference.Description;
         }
 
         public void OnDrop(PointerEventData eventData)

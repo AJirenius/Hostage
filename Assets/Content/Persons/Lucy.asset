@@ -10,9 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8cd6f09f3dc6442cbd119b61c9adc01b, type: 3}
-  m_Name: Anne Wagner
+  m_Name: Lucy
   m_EditorClassIdentifier: Assembly-CSharp:Hostage.SO:ActionPerson
-  Name: Anne Wagner
-  Description: some
+  Id: Lucy
+  Name: Lucy
+  FullName: 
+  Description: Forensic
   Portrait: {fileID: 0}
-  skillTags: 00000000
+  defaultStatus: 0
+  skillTags: 03000000

@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: IntelList
   m_EditorClassIdentifier: Assembly-CSharp::Hostage.SO.IntelList
   _intels:
-  - {fileID: 11400000, guid: b8da30993dc0f444e9dbd434850ff016, type: 2}
-  - {fileID: 11400000, guid: d6949a746e54944f3b93e02ba3b8028e, type: 2}
-  - {fileID: 11400000, guid: a9d5c076401b04f4993de3e8e6cb9338, type: 2}
   - {fileID: 11400000, guid: ed6cc3bc65cad419f925a34878b79e5c, type: 2}
+  - {fileID: 11400000, guid: cafff6bb4216f41e3a820ddd395b4ab9, type: 2}
+  - {fileID: 11400000, guid: a9d5c076401b04f4993de3e8e6cb9338, type: 2}

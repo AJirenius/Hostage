@@ -14,10 +14,12 @@ namespace Hostage
         readonly IntelProvider _intelProvider;
         readonly EventGraph _eventGraph;
         readonly EventGraphRunner _eventGraphRunner;
+        readonly SOActionPersonList _personList;
+        
         readonly UIManager _uiManager;
 
         public GameInitializer(ActionManager actionManager, PlayerInventory playerInventory, IntelProvider intelProvider, EventGraph eventGraph, EventGraphRunner eventGraphRunner,
-            UIManager uiManager)
+            SOActionPersonList personList, UIManager uiManager)
         {
             Debug.Log("Initializing player inventory");
             _actionManager = actionManager;
@@ -25,6 +27,7 @@ namespace Hostage
             _intelProvider = intelProvider;
             _eventGraph = eventGraph;
             _eventGraphRunner = eventGraphRunner;
+            _personList = personList;
             
             _uiManager = uiManager;
         }
@@ -33,8 +36,8 @@ namespace Hostage
         {
             _playerInventory.AddIntel(_intelProvider.GetWithId("IntelAlanBarker 3"));
             _eventGraphRunner.RunGraph(_eventGraph);
-            _uiManager.Initialize(_playerInventory, null, _actionManager);
-            _uiManager.CreateInventory();
+            _uiManager.Initialize(_playerInventory, _actionManager, _eventGraphRunner.PersonManager);
+            //_uiManager.CreateInventory();
         }
 
         public void Tick()
@@ -42,7 +45,5 @@ namespace Hostage
             float deltaTime = UnityEngine.Time.deltaTime; // fix later on with modifiable gametime
             _actionManager.HandleTime(deltaTime);
         }
-
-        
     }
 }

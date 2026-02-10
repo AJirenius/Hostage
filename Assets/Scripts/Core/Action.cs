@@ -14,15 +14,15 @@ namespace Hostage.Core
     public class Action
     {
         public Verb verb;
-        public ActionPerson person;
+        public SOActionPerson SoPerson;
         public float timeLeft;
         public float modifiedTime;
 
 
 
-        public Action(Verb verb, ActionPerson person)
+        public Action(Verb verb, SOActionPerson soPerson)
         {
-            this.person = person;
+            this.SoPerson = soPerson;
             this.verb = verb;
         }
 

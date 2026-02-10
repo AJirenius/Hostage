@@ -10,12 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8cd6f09f3dc6442cbd119b61c9adc01b, type: 3}
-  m_Name: Kitty
-  m_EditorClassIdentifier: Assembly-CSharp:Hostage.SO:ActionPerson
-  Id: Kitty
-  Name: Kitty
-  FullName: 
-  Description: Techie
+  m_Name: Steve
+  m_EditorClassIdentifier: Assembly-CSharp::Hostage.SO.SOActionPerson
+  Name: Steve
+  Description: Jumper
   Portrait: {fileID: 0}
-  defaultStatus: 3
-  skillTags: 02000000
+  defaultStatus: 1
+  skillTags: 
