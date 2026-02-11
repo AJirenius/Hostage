@@ -40,20 +40,22 @@ namespace Hostage.UI
         private void ShowCommandButtons(Intel intel)
         {
             var verbs = GetAvailableVerbs(intel);
-            float offsetX = 0f;
+            float offsetY = 0f;
+            float buttonHeight = 100f;
+            float startY = -((verbs.Count - 1) * buttonHeight) / 2f;
 
             foreach (var verb in verbs)
             {
                 var buttonGo = Instantiate(commandPrefab, transform);
                 buttonGo.transform.SetAsLastSibling();
-                buttonGo.transform.localPosition = new Vector3(100f, offsetX, 0f);
+                buttonGo.transform.localPosition = new Vector3(100f, startY + offsetY, 0f);
 
                 var commandButton = buttonGo.GetComponent<CommandButtonUI>();
                 if (commandButton != null)
                     commandButton.Setup(verb, _person, _uiManager);
 
                 _spawnedButtons.Add(buttonGo);
-                offsetX += 100f;
+                offsetY += buttonHeight;
             }
         }
 

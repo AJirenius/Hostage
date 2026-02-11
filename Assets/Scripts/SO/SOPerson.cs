@@ -1,5 +1,6 @@
 using Hostage.Core;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Hostage.SO
 {
@@ -10,7 +11,7 @@ namespace Hostage.SO
         public string FullName;
         public string Description;
         public Sprite Portrait;
-        public PersonStatus defaultStatus;
+        [FormerlySerializedAs("defaultStatus")] public PersonFlag defaultFlag;
 
     }
 }

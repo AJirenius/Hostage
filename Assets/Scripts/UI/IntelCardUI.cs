@@ -42,7 +42,7 @@ namespace Hostage.UI
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            //_rectTransform.position = _startPosition;
+            _rectTransform.position = _startPosition;
             _canvasGroup.alpha = 1f;
             _canvasGroup.blocksRaycasts = true;
             _uiManager.ClearAllCommandButtons();

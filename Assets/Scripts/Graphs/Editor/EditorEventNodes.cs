@@ -1,5 +1,6 @@
 
 using System;
+using Hostage.Core;
 using Hostage.SO;
 using Unity.GraphToolkit.Editor;
 
@@ -27,12 +28,23 @@ namespace Hostage.Graphs.Editor
     [Serializable]
     public class DialogueNode:Node
     {
+        private const string TARGETNAME = "Target";
+        protected override void OnDefineOptions(IOptionDefinitionContext context)
+        {
+            context.AddOption<PersonTargetType>(TARGETNAME)
+                .WithDisplayName("Target")
+                .WithDefaultValue(PersonTargetType.SpecifiedPerson)
+                .Delayed();
+        }
+
         protected override void OnDefinePorts(IPortDefinitionContext context)
         {
+            var option = GetNodeOptionByName(TARGETNAME);
+            option.TryGetValue<PersonTargetType>(out var target);
+            
             context.AddInputPort("in").Build();
             context.AddOutputPort("out").Build();
-            
-            context.AddInputPort<SOPerson>("Person").Build();
+            if (target == PersonTargetType.SpecifiedPerson) context.AddInputPort<SOPerson>("Person").Build();
             context.AddInputPort<string>("Dialogue").Build();
 
         }
@@ -86,6 +98,54 @@ namespace Hostage.Graphs.Editor
             
             context.AddInputPort<Intel>("OldIntel").Build();
             context.AddInputPort<Intel>("NewIntel").Build();
+        }
+    }
+    
+    [Serializable]
+    public class SetPersonFlag:Node
+    {
+        const string k_TargetName = "Target";
+        protected override void OnDefineOptions(IOptionDefinitionContext context)
+        {
+            context.AddOption<PersonTargetType>(k_TargetName)
+                .WithDisplayName("Target")
+                .WithDefaultValue(PersonTargetType.SpecifiedPerson)
+                .Delayed();
+        }
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            var option = GetNodeOptionByName(k_TargetName);
+            option.TryGetValue<PersonTargetType>(out var target);
+            
+            context.AddInputPort("in").Build();
+            context.AddOutputPort("out").Build();
+            
+            context.AddInputPort<PersonFlag>("Flag").Build();
+            if (target == PersonTargetType.SpecifiedPerson) context.AddInputPort<SOPerson>("Person").Build();
+        }
+    }
+    
+    [Serializable]
+    public class ClearPersonFlag:Node
+    {
+        const string k_TargetName = "Target";
+        protected override void OnDefineOptions(IOptionDefinitionContext context)
+        {
+            context.AddOption<PersonTargetType>(k_TargetName)
+                .WithDisplayName("Target")
+                .WithDefaultValue(PersonTargetType.SpecifiedPerson)
+                .Delayed();
+        }
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            var option = GetNodeOptionByName(k_TargetName);
+            option.TryGetValue<PersonTargetType>(out var target);
+            
+            context.AddInputPort("in").Build();
+            context.AddOutputPort("out").Build();
+            
+            context.AddInputPort<PersonFlag>("Flag").Build();
+            if (target == PersonTargetType.SpecifiedPerson) context.AddInputPort<SOPerson>("Person").Build();
         }
     }
     

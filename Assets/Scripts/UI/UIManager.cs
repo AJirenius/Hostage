@@ -104,7 +104,7 @@ namespace Hostage.UI
             }
             _createdPersonCards.Clear();
 
-            float x = 0;
+            float x = -450;
             var persons = _personManager.GetAllPersons();
             foreach (var person in persons)
             {
@@ -113,9 +113,9 @@ namespace Hostage.UI
                 var card = Instantiate(personCardPrefab, personParent);
                 var personCard = card.GetComponent<PersonCardUI>();
                 personCard.Setup(person, this);
-                card.transform.localPosition += new Vector3(x, Random.Range(-50, 50), 0);
+                card.transform.localPosition += new Vector3(x, 0, 0);
                 _createdPersonCards[person] = card;
-                x += 200;
+                x += 300;
             }
         }
 

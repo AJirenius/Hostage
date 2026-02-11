@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Hostage.Core
 {
     [System.Flags]
-    public enum PersonStatus
+    public enum PersonFlag
     {
         None = 0,
         Available = 1 << 0,
@@ -18,33 +18,33 @@ namespace Hostage.Core
     public class Person
     {
         public SOActionPerson SOReference { get; }
-        public PersonStatus Status { get; set; }
+        public PersonFlag Flag { get; set; }
         public List<Intel> Intels { get; } = new List<Intel>();
 
         public Person(SOActionPerson soReference)
         {
             SOReference = soReference;
-            Status = soReference.defaultStatus;
+            Flag = soReference.defaultFlag;
         }
 
         // helpers
-        public bool IsAvailable() => (Status & PersonStatus.Available) != 0;
-        public bool IsAway() => (Status & PersonStatus.Away) != 0;
-        public bool IsUnknown() => (Status & PersonStatus.Unknown) != 0;
-        public bool IsOccupied() => (Status & PersonStatus.Occupied) != 0;
-        public bool IsAssistant() => (Status & PersonStatus.Assistant) != 0;
+        public bool IsAvailable() => (Flag & PersonFlag.Available) != 0;
+        public bool IsAway() => (Flag & PersonFlag.Away) != 0;
+        public bool IsUnknown() => (Flag & PersonFlag.Unknown) != 0;
+        public bool IsOccupied() => (Flag & PersonFlag.Occupied) != 0;
+        public bool IsAssistant() => (Flag & PersonFlag.Assistant) != 0;
         
-        public void SetAway() => Status |= PersonStatus.Away;
-        public void SetUnknown() => Status |= PersonStatus.Unknown;
-        public void SetOccupied() => Status |= PersonStatus.Occupied;
-        public void SetAvailable() => Status |= PersonStatus.Available;
-        public void SetAssistant() => Status |= PersonStatus.Assistant;
+        public void SetAway() => Flag |= PersonFlag.Away;
+        public void SetUnknown() => Flag |= PersonFlag.Unknown;
+        public void SetOccupied() => Flag |= PersonFlag.Occupied;
+        public void SetAvailable() => Flag |= PersonFlag.Available;
+        public void SetAssistant() => Flag |= PersonFlag.Assistant;
         
-        public void ClearAway() => Status &= ~PersonStatus.Away;
-        public void ClearUnknown() => Status &= ~PersonStatus.Unknown;
-        public void ClearOccupied() => Status &= ~PersonStatus.Occupied;
-        public void ClearAvailable() => Status &= ~PersonStatus.Available;
-        public void ClearAssistant() => Status &= ~PersonStatus.Assistant;
+        public void ClearAway() => Flag &= ~PersonFlag.Away;
+        public void ClearUnknown() => Flag &= ~PersonFlag.Unknown;
+        public void ClearOccupied() => Flag &= ~PersonFlag.Occupied;
+        public void ClearAvailable() => Flag &= ~PersonFlag.Available;
+        public void ClearAssistant() => Flag &= ~PersonFlag.Assistant;
         
         public void AddIntel(Intel intel)
         {

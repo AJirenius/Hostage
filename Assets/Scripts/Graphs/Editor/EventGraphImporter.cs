@@ -94,11 +94,15 @@ namespace Hostage.Graphs.Editor {
                 case DialogueNode dialogueNode:
                     var dialoguePort = dialogueNode.GetInputPortByName("Dialogue");
                     var dialogueText = GetInputPortValue<string>(dialoguePort);
+                    var targetPerson = dialogueNode.GetNodeOptionByName("Target").TryGetValue<PersonTargetType>(out var target) ? target : PersonTargetType.SpecifiedPerson;
+                    var speaker = targetPerson == PersonTargetType.SpecifiedPerson?GetInputPortValue<Hostage.SO.SOPerson>(dialogueNode.GetInputPortByName("Person")):null;
+
                     returnedNodes.Add(
                         new RTDialogueNode()
                         {
-                            speaker = GetInputPortValue<Hostage.SO.SOPerson>(dialogueNode.GetInputPortByName("Person")),
-                            dialogueText = dialogueText
+                            speaker = speaker,
+                            dialogueText = dialogueText,
+                            personTargetType = targetPerson
                         });
                     break;
                 case GiveIntelToPerson giveIntelNode:
@@ -124,6 +128,18 @@ namespace Hostage.Graphs.Editor {
                     var oldIntel = GetInputPortValue<Hostage.SO.Intel>(oldIntelPort);
                     var newIntel = GetInputPortValue<Hostage.SO.Intel>(newIntelPort);
                     returnedNodes.Add(new RTReplaceIntelForPlayerNode { oldIntel = oldIntel, newIntel = newIntel });
+                    break;
+                case SetPersonFlag setFlagNode:
+                    var setFlagTarget = setFlagNode.GetNodeOptionByName("Target").TryGetValue<PersonTargetType>(out var setTarget) ? setTarget : PersonTargetType.SpecifiedPerson;
+                    var setFlagValue = GetInputPortValue<Hostage.Core.PersonFlag>(setFlagNode.GetInputPortByName("Flag"));
+                    var setFlagPerson = setFlagTarget == PersonTargetType.SpecifiedPerson ? GetInputPortValue<Hostage.SO.SOPerson>(setFlagNode.GetInputPortByName("Person")) : null;
+                    returnedNodes.Add(new RTSetPersonFlagNode { flag = setFlagValue, personTargetType = setFlagTarget, soPerson = setFlagPerson });
+                    break;
+                case ClearPersonFlag clearFlagNode:
+                    var clearFlagTarget = clearFlagNode.GetNodeOptionByName("Target").TryGetValue<PersonTargetType>(out var clearTarget) ? clearTarget : PersonTargetType.SpecifiedPerson;
+                    var clearFlagValue = GetInputPortValue<Hostage.Core.PersonFlag>(clearFlagNode.GetInputPortByName("Flag"));
+                    var clearFlagPerson = clearFlagTarget == PersonTargetType.SpecifiedPerson ? GetInputPortValue<Hostage.SO.SOPerson>(clearFlagNode.GetInputPortByName("Person")) : null;
+                    returnedNodes.Add(new RTClearPersonFlagNode { flag = clearFlagValue, personTargetType = clearFlagTarget, soPerson = clearFlagPerson });
                     break;
                 default:
                     throw new ArgumentException($"Unsupported node type: {nodeModel.GetType()}");
