@@ -54,6 +54,7 @@ MonoBehaviour:
   personNameText: {fileID: 4164105772483064399}
   descriptionText: {fileID: 5259091554262449488}
   commandPrefab: {fileID: 8928859418711084867, guid: db9615d3c66db44e28adcde224dca6df, type: 3}
+  panel: {fileID: 2932477173618358719}
 --- !u!225 &6183391444355586892
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -78,7 +79,7 @@ GameObject:
   - component: {fileID: 5283207568705895226}
   - component: {fileID: 5482623899044824890}
   m_Layer: 5
-  m_Name: Panel (1)
+  m_Name: ClickArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

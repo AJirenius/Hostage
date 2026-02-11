@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aed93ebcd1654c9da0e65a32e3ae35b6, type: 3}
-  m_Name: Steve
+  m_Name: Witness1
   m_EditorClassIdentifier: Assembly-CSharp::Hostage.SO.SOPerson
-  Name: Steve
-  FullName: Steve Carell
-  UnknownName: Jumper
-  Description: Jumper
+  Name: Laura
+  FullName: Laura Mitchel
+  UnknownName: Witness 1
+  Description: asd
   Portrait: {fileID: 0}
-  defaultFlag: 1
+  defaultFlag: 8
   skillTags: 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using Hostage.SO;
 using Hostage.Core;
 
@@ -11,9 +12,15 @@ namespace Hostage.UI
         public TMPro.TMP_Text personNameText;
         public TMPro.TMP_Text descriptionText;
         public GameObject commandPrefab;
+        public Image panel;
         private Person _person;
         private UIManager _uiManager;
         private readonly List<GameObject> _spawnedButtons = new();
+
+        private static readonly Color NormalColor = Color.gray;
+        private static readonly Color OccupiedColor = Color.red;
+
+        public Person Person => _person;
 
         public void Setup(Person person, UIManager uiManager)
         {
@@ -21,10 +28,21 @@ namespace Hostage.UI
             _uiManager = uiManager;
             personNameText.text = person.SOReference.Name;
             descriptionText.text = person.SOReference.Description;
+            UpdateStatus();
+        }
+
+        public void UpdateStatus()
+        {
+            if (panel != null)
+                panel.color = _person.IsOccupied() ? OccupiedColor : NormalColor;
+
+            personNameText.text = _person.IsUnknown() ? "Unknown" : _person.SOReference.Name;
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+            if (_person.IsOccupied()) return;
+
             var intelCard = eventData.pointerDrag?.GetComponent<IntelCardUI>();
             if (intelCard == null) return;
 

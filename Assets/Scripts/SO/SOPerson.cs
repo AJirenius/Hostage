@@ -10,6 +10,7 @@ namespace Hostage.SO
     {
         public string Name;
         public string FullName;
+        public string UnknownName;
         public string Description;
         public Sprite Portrait;
         [FormerlySerializedAs("defaultStatus")] public PersonFlag defaultFlag;

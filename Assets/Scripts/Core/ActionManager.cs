@@ -39,7 +39,8 @@ namespace Hostage.Core
         private void ExecuteAction(int index)
         {
             TimedCommand timedCommand = _commands[index];
-            _signalBus.Publish(new ActionCompletedSignal { TimedCommand = timedCommand });
+            timedCommand.Person.ClearOccupied();
+            _signalBus.Publish(new TimedCommandCompletedSignal { TimedCommand = timedCommand });
             Debug.Log("ExecuteAction: " + timedCommand.verb.actionType);
             switch (timedCommand.verb.actionType)
             {
@@ -64,13 +65,20 @@ namespace Hostage.Core
             }
         }
 
-        public void AddAction(TimedCommand timedCommand)
+        public void AddTimedCommand(TimedCommand timedCommand)
         {
+            if (timedCommand.Person.IsOccupied() || timedCommand.Person.IsUnknown() || !timedCommand.Person.IsAvailable())
+            {
+                Debug.LogWarning($"Cannot add action {timedCommand.verb.actionType}: person '{timedCommand.Person.SOReference.Name}' is {timedCommand.Person.Flag}");
+                return;
+            }
+
             Debug.Log("Adding action" + timedCommand.verb.actionType);
+            timedCommand.Person.SetOccupied();
             timedCommand.modifiedTime = timedCommand.verb.GetModifiedTime(timedCommand.Person.SOReference);
             timedCommand.timeLeft = timedCommand.modifiedTime;
             _commands.Add(timedCommand);
-            _signalBus.Publish(new ActionAddedSignal { TimedCommand = timedCommand });
+            _signalBus.Publish(new TimedCommandStartedSignal { TimedCommand = timedCommand });
         }
     }
 }

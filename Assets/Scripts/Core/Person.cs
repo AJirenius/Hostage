@@ -4,10 +4,10 @@ using System.Collections.Generic;
 namespace Hostage.Core
 {
     [System.Flags]
-    public enum PersonFlag
+    public enum  PersonFlag
     {
         None = 0,
-        Available = 1 << 0,
+        Available = 1 << 0, // is enabled in game for player to interact with
         Assistant = 1 << 1,
         Away = 1 << 2,
         Unknown = 1 << 3,
@@ -17,14 +17,29 @@ namespace Hostage.Core
 
     public class Person
     {
+        private readonly SignalBus _signalBus;
+        private PersonFlag _flag;
+
         public SOPerson SOReference { get; }
-        public PersonFlag Flag { get; set; }
+
+        public PersonFlag Flag
+        {
+            get => _flag;
+            set
+            {
+                if (_flag == value) return;
+                _flag = value;
+                _signalBus.Publish(new PersonStatusChangedSignal { Person = this });
+            }
+        }
+
         public List<Intel> Intels { get; } = new List<Intel>();
 
-        public Person(SOPerson soReference)
+        public Person(SOPerson soReference, SignalBus signalBus)
         {
+            _signalBus = signalBus;
             SOReference = soReference;
-            Flag = soReference.defaultFlag;
+            _flag = soReference.defaultFlag;
         }
 
         // helpers

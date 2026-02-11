@@ -10,17 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 99eb3a8859a54922bebb772659b728e8, type: 3}
-  m_Name: IntelPieceOfPaper
+  m_Name: IntelRoom504
   m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.Intel
-  intelName: Piece of paper
-  description: At first glance it is just a torn piece from a newspaper
-  category: 0
+  intelName: Room 504
+  description: It seems to be the room that our jumper are staying at
+  category: 3
   investigate:
-    isAvailable: 1
-    baseTime: 10
-    modifiers: []
-    requiredTags: 03000000
-    occupyingIntel: 1
+    isAvailable: 0
+    baseTime: 40
+    modifiers:
+    - skillTag: 1
+      value: 0.8
+    - skillTag: 2
+      value: 1.2
+    requiredTags: 
+    occupyingIntel: 0
     result: {fileID: 2841676755933307327, guid: f0cd4b3baa61a473abe663c3d4fdedc7, type: 3}
   interview:
     isAvailable: 0
@@ -46,10 +50,10 @@ MonoBehaviour:
     - time: 0
       graph: {fileID: 0}
   analyze:
-    isAvailable: 1
-    baseTime: 40
+    isAvailable: 0
+    baseTime: 0
     modifiers: []
-    requiredTags: 03000000
-    occupyingIntel: 1
+    requiredTags: 
+    occupyingIntel: 0
     timedEvents: []
     result: {fileID: 0}

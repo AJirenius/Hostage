@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99eb3a8859a54922bebb772659b728e8, type: 3}
+  m_Name: IntelScene
+  m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.Intel
+  intelName: Hotel Admaria
+  description: 'It''s a beautiful hotel with 4 floors. '
+  category: 3
+  investigate:
+    isAvailable: 1
+    baseTime: 10
+    modifiers:
+    - skillTag: 0
+      value: -0.5
+    requiredTags: 
+    occupyingIntel: 0
+    result: {fileID: -5475051401550479605, guid: 26a538ce472944d2299b4d12876d815f, type: 3}
+  interview:
+    isAvailable: 0
+    baseTime: 30
+    modifiers:
+    - skillTag: 0
+      value: 0.8
+    requiredTags: 
+    occupyingIntel: 0
+    linkedIntels: []
+    result: {fileID: 0}
+  surveillance:
+    isAvailable: 1
+    baseTime: 10
+    modifiers: []
+    requiredTags: 
+    occupyingIntel: 0
+    linkedIntels:
+    - {fileID: 0}
+    timedEvents:
+    - time: 10
+      graph: {fileID: 0}
+    - time: 15
+      graph: {fileID: 0}
+  analyze:
+    isAvailable: 0
+    baseTime: 0
+    modifiers: []
+    requiredTags: 
+    occupyingIntel: 0
+    timedEvents: []
+    result: {fileID: 0}

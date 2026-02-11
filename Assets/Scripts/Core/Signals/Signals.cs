@@ -12,12 +12,12 @@ namespace Hostage.Core
         public Intel Intel;
     }
 
-    public struct ActionAddedSignal
+    public struct TimedCommandStartedSignal
     {
         public TimedCommand TimedCommand;
     }
 
-    public struct ActionCompletedSignal
+    public struct TimedCommandCompletedSignal
     {
         public TimedCommand TimedCommand;
     }

@@ -10,31 +10,34 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 99eb3a8859a54922bebb772659b728e8, type: 3}
-  m_Name: IntelAlanBarker
+  m_Name: IntelPieceOfPaper
   m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.Intel
-  intelName: Alan Barker
-  description: 'This is a matter of change. He is our suspect at this point. '
+  intelName: Piece of paper
+  description: At first glance it is just a torn piece from a newspaper
+  category: 0
   investigate:
-    baseTime: 40
-    modifiers:
-    - skillTag: 1
-      value: 0.8
-    - skillTag: 2
-      value: 1.2
-    requiredTags: 
+    isAvailable: 0
+    baseTime: 10
+    modifiers: []
+    requiredTags: 03000000
+    occupyingIntel: 1
     result: {fileID: 2841676755933307327, guid: f0cd4b3baa61a473abe663c3d4fdedc7, type: 3}
   interview:
+    isAvailable: 0
     baseTime: 30
     modifiers:
     - skillTag: 0
       value: 0.8
     requiredTags: 
+    occupyingIntel: 0
     linkedIntels: []
     result: {fileID: 0}
   surveillance:
+    isAvailable: 0
     baseTime: 5
     modifiers: []
     requiredTags: 01000000
+    occupyingIntel: 0
     linkedIntels:
     - {fileID: 0}
     timedEvents:
@@ -43,8 +46,10 @@ MonoBehaviour:
     - time: 0
       graph: {fileID: 0}
   analyze:
-    baseTime: 0
+    isAvailable: 0
+    baseTime: 40
     modifiers: []
-    requiredTags: 
+    requiredTags: 03000000
+    occupyingIntel: 1
     timedEvents: []
     result: {fileID: 0}

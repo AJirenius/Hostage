@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 790b4d75d92f4b0984310a268dbd952f, type: 3}
-  m_Name: InitGraph
+  m_Name: 1_SurveillanseScene1
   m_EditorClassIdentifier: Unity.GraphToolkit.Editor::Unity.GraphToolkit.Editor.Implementation.GraphObjectImp
   m_GraphModel:
     rid: 4760844903422099535
@@ -28,7 +28,7 @@ MonoBehaviour:
         m_HashGuid:
           serializedVersion: 2
           Hash: 044f0b2138654fd67edf97e7f21aac1e
-        m_Name: 
+        m_Name: 1_SurveillanseScene1
         m_GraphNodeModels:
         - rid: 4760844903422099538
         - rid: 4760844903422099545

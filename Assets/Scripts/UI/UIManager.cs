@@ -29,6 +29,7 @@ namespace Hostage.UI
 
             _signalBus.Subscribe<IntelAddedSignal>(OnIntelAdded);
             _signalBus.Subscribe<IntelRemovedSignal>(OnIntelRemoved);
+            _signalBus.Subscribe<PersonStatusChangedSignal>(OnPersonStatusChanged);
 
             RefreshIntelCards();
             RefreshPersonCards();
@@ -39,6 +40,7 @@ namespace Hostage.UI
             if (_signalBus == null) return;
             _signalBus.Unsubscribe<IntelAddedSignal>(OnIntelAdded);
             _signalBus.Unsubscribe<IntelRemovedSignal>(OnIntelRemoved);
+            _signalBus.Unsubscribe<PersonStatusChangedSignal>(OnPersonStatusChanged);
         }
 
         private void OnIntelAdded(IntelAddedSignal signal)
@@ -97,32 +99,57 @@ namespace Hostage.UI
 
         private void RefreshPersonCards()
         {
-            // Remove old cards
+            // Remove cards for persons no longer available
+            var toRemove = new List<Person>();
             foreach (var kvp in _createdPersonCards)
             {
-                Destroy(kvp.Value);
+                if (!kvp.Key.IsAvailable())
+                {
+                    Destroy(kvp.Value);
+                    toRemove.Add(kvp.Key);
+                }
             }
-            _createdPersonCards.Clear();
+            foreach (var key in toRemove)
+                _createdPersonCards.Remove(key);
 
-            float x = -450;
+            // Add cards for newly available persons
             var persons = _personManager.GetAllPersons();
             foreach (var person in persons)
             {
-                if (!person.IsAvailable())
+                if (!person.IsAvailable() || _createdPersonCards.ContainsKey(person))
                     continue;
+
                 var card = Instantiate(personCardPrefab, personParent);
                 var personCard = card.GetComponent<PersonCardUI>();
                 personCard.Setup(person, this);
-                card.transform.localPosition += new Vector3(x, 0, 0);
                 _createdPersonCards[person] = card;
+            }
+
+            // Reposition all cards
+            float x = -450;
+            foreach (var kvp in _createdPersonCards)
+            {
+                kvp.Value.transform.localPosition = new Vector3(x, 0, 0);
                 x += 300;
             }
+        }
+
+        private void OnPersonStatusChanged(PersonStatusChangedSignal signal)
+        {
+            if (_createdPersonCards.TryGetValue(signal.Person, out var cardGo))
+            {
+                var personCard = cardGo.GetComponent<PersonCardUI>();
+                if (personCard != null)
+                    personCard.UpdateStatus();
+            }
+
+            RefreshPersonCards();
         }
 
         public void OnVerbSelected(Verb verb, Person person)
         {
             var command = new TimedCommand(verb, person);
-            _actionManager.AddAction(command);
+            _actionManager.AddTimedCommand(command);
             ClearAllCommandButtons();
         }
 

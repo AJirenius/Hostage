@@ -6,9 +6,11 @@ namespace Hostage.Core
     public class PersonManager
     {
         private readonly Dictionary<SOPerson, Person> _personMap = new();
+        private readonly SignalBus _signalBus;
 
-        public PersonManager(SOPersonList personList)
+        public PersonManager(SOPersonList personList, SignalBus signalBus)
         {
+            _signalBus = signalBus;
             LoadPersons(personList);
         }
 
@@ -18,7 +20,7 @@ namespace Hostage.Core
             foreach (var soPerson in personList.GetPersons())
             {
                 if (soPerson != null && !_personMap.ContainsKey(soPerson))
-                    _personMap[soPerson] = new Person(soPerson);
+                    _personMap[soPerson] = new Person(soPerson, _signalBus);
             }
         }
 

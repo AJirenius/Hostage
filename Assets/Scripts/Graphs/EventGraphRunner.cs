@@ -42,6 +42,16 @@ namespace Hostage.Graphs
             RunNode(0);
         }
         
+        // Will run a startnode with multiple outputs, allowing you to choose which path to take right from the start
+        public void RunStartNodeWithOutput(int outputIndex)
+        {
+            var node = eventGraph.Nodes[0];
+            node.Execute(this, nextOutput => {
+                if (node.nextNodeIndices.Count > outputIndex)
+                    RunNode(node.nextNodeIndices[outputIndex]);
+            });
+        }
+        
         public void RunNode(int index)
         {
             if (index < 0 || index >= eventGraph.Nodes.Count)
