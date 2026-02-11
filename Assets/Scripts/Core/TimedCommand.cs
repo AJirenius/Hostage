@@ -10,19 +10,17 @@ namespace Hostage.Core
         Surveillance,
         Analyze,
     }
-    
+
     public class TimedCommand
     {
         public Verb verb;
-        public SOActionPerson SoPerson;
+        public Person Person;
         public float timeLeft;
         public float modifiedTime;
 
-
-
-        public TimedCommand(Verb verb, SOActionPerson soPerson)
+        public TimedCommand(Verb verb, Person person)
         {
-            this.SoPerson = soPerson;
+            this.Person = person;
             this.verb = verb;
         }
 

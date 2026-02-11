@@ -121,7 +121,7 @@ namespace Hostage.UI
 
         public void OnVerbSelected(Verb verb, Person person)
         {
-            var command = new TimedCommand(verb, person.SOReference);
+            var command = new TimedCommand(verb, person);
             _actionManager.AddAction(command);
             ClearAllCommandButtons();
         }

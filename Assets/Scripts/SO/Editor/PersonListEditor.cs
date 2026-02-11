@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Hostage.SO.Editor
 {
-    [CustomEditor(typeof(SOActionPersonList))]
+    [CustomEditor(typeof(SOPersonList))]
     public class PersonListEditor : UnityEditor.Editor
     {
         private string _folderPath = "Assets/Content/Persons";
@@ -12,32 +12,32 @@ namespace Hostage.SO.Editor
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
-            
-            SOActionPersonList soActionPersonList = (SOActionPersonList)target;
+
+            SOPersonList soPersonList = (SOPersonList)target;
 
             EditorGUILayout.Space();
             _folderPath = EditorGUILayout.TextField("Folder Path", _folderPath);
 
             if (GUILayout.Button("Scan Folder and Populate List"))
             {
-                PopulatePersonList(soActionPersonList, _folderPath);
+                PopulatePersonList(soPersonList, _folderPath);
             }
         }
 
-        private void PopulatePersonList(SOActionPersonList soActionPersonList, string folder)
+        private void PopulatePersonList(SOPersonList soPersonList, string folder)
         {
-            string[] guids = AssetDatabase.FindAssets("t:Hostage.SO.SOActionPerson", new[] { folder });
-            var foundPersons = new List<SOActionPerson>();
+            string[] guids = AssetDatabase.FindAssets("t:Hostage.SO.SOPerson", new[] { folder });
+            var foundPersons = new List<SOPerson>();
             foreach (string guid in guids)
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
-                SOActionPerson soPerson = AssetDatabase.LoadAssetAtPath<SOActionPerson>(path);
+                SOPerson soPerson = AssetDatabase.LoadAssetAtPath<SOPerson>(path);
                 if (soPerson != null)
                     foundPersons.Add(soPerson);
             }
-            Undo.RecordObject(soActionPersonList, "Populate Person List");
-            soActionPersonList.SetPersons(foundPersons);
-            EditorUtility.SetDirty(soActionPersonList);
+            Undo.RecordObject(soPersonList, "Populate Person List");
+            soPersonList.SetPersons(foundPersons);
+            EditorUtility.SetDirty(soPersonList);
         }
     }
 }

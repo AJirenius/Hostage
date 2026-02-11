@@ -30,7 +30,7 @@ namespace Hostage.SO
         public List<SkillTag> requiredTags;
         public bool occupyingIntel; // the intel will be unavailable during action
 
-        public float GetModifier(SOActionPerson soPerson)
+        public float GetModifier(SOPerson soPerson)
         {
             
             float modifier = 1;
@@ -44,7 +44,7 @@ namespace Hostage.SO
             return modifier; 
         }
         
-        public float GetModifiedTime(SOActionPerson soPerson)
+        public float GetModifiedTime(SOPerson soPerson)
         {
             return baseTime * GetModifier(soPerson);
         }

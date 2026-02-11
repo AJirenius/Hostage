@@ -11,7 +11,7 @@ namespace Hostage.Scopes
     public class GameLifetimeScope : LifetimeScope
     {
         [Header("Databases")]
-        public SOActionPersonList personList;
+        public SOPersonList personList;
         public IntelList allIntelList;
         public EventGraph firstGraph;
         [Header("UI")]

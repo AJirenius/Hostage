@@ -8,16 +8,14 @@ namespace Hostage.Core
 {
     public class ActionManager
     {
-        private readonly PersonManager _personManager;
         private readonly SignalBus _signalBus;
 
         public event Action<EventGraph, GraphContext> OnGraphRequested;
 
         private List<TimedCommand> _commands = new List<TimedCommand>();
 
-        public ActionManager(PersonManager personManager, SignalBus signalBus)
+        public ActionManager(SignalBus signalBus)
         {
-            _personManager = personManager;
             _signalBus = signalBus;
         }
         
@@ -54,8 +52,7 @@ namespace Hostage.Core
                     Investigate v = (Investigate)timedCommand.verb;
                     if (v.result)
                     {
-                        var person = _personManager.GetPerson(timedCommand.SoPerson);
-                        var context = new GraphContext(person);
+                        var context = new GraphContext(timedCommand.Person);
                         OnGraphRequested?.Invoke(v.result, context);
                     }
                     break;
@@ -70,7 +67,7 @@ namespace Hostage.Core
         public void AddAction(TimedCommand timedCommand)
         {
             Debug.Log("Adding action" + timedCommand.verb.actionType);
-            timedCommand.modifiedTime = timedCommand.verb.GetModifiedTime(timedCommand.SoPerson);
+            timedCommand.modifiedTime = timedCommand.verb.GetModifiedTime(timedCommand.Person.SOReference);
             timedCommand.timeLeft = timedCommand.modifiedTime;
             _commands.Add(timedCommand);
             _signalBus.Publish(new ActionAddedSignal { TimedCommand = timedCommand });

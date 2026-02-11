@@ -17,11 +17,11 @@ namespace Hostage.Core
 
     public class Person
     {
-        public SOActionPerson SOReference { get; }
+        public SOPerson SOReference { get; }
         public PersonFlag Flag { get; set; }
         public List<Intel> Intels { get; } = new List<Intel>();
 
-        public Person(SOActionPerson soReference)
+        public Person(SOPerson soReference)
         {
             SOReference = soReference;
             Flag = soReference.defaultFlag;

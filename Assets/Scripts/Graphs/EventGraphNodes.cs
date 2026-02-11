@@ -133,7 +133,7 @@ namespace Hostage.Graphs
     public class RTSetPersonFlagNode : RuntimeNode
     {
         public PersonFlag flag;
-        [FormerlySerializedAs("targetPerson")] public PersonTargetType personTargetType;
+        public PersonTargetType personTargetType;
         public SOPerson soPerson;
 
         public override void Execute(EventGraphRunner runner, Action<int> onComplete)
@@ -154,7 +154,7 @@ namespace Hostage.Graphs
                 case PersonTargetType.ContextPerson:
                     return runner.Context.TriggeredBy;
                 case PersonTargetType.SpecifiedPerson:
-                    return soPerson is SOActionPerson ap ? runner.PersonManager.GetPerson(ap) : null;
+                    return runner.PersonManager.GetPerson(soPerson);
                 default:
                     Debug.LogWarning("RTSetPersonFlagNode: unsupported target " + personTargetType);
                     return null;
@@ -187,7 +187,7 @@ namespace Hostage.Graphs
                 case PersonTargetType.ContextPerson:
                     return runner.Context.TriggeredBy;
                 case PersonTargetType.SpecifiedPerson:
-                    return soPerson is SOActionPerson ap ? runner.PersonManager.GetPerson(ap) : null;
+                    return runner.PersonManager.GetPerson(soPerson);
                 default:
                     Debug.LogWarning("RTClearPersonFlagNode: unsupported target " + personTargetType);
                     return null;
