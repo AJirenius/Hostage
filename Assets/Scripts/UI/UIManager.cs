@@ -16,16 +16,50 @@ namespace Hostage.UI
         private PlayerInventory _playerInventory;
         private ActionManager _actionManager;
         private PersonManager _personManager;
+        private SignalBus _signalBus;
         private Dictionary<Intel, GameObject > _createdIntelCards = new Dictionary<Intel, GameObject>();
         private Dictionary<Person, GameObject > _createdPersonCards = new Dictionary<Person, GameObject>();
         private float _spawnX = -200;
-        public void Initialize(PlayerInventory inventory, ActionManager actionManager, PersonManager personManager)
+        public void Initialize(PlayerInventory inventory, ActionManager actionManager, PersonManager personManager, SignalBus signalBus)
         {
             _playerInventory = inventory;
             _actionManager = actionManager;
             _personManager = personManager;
+            _signalBus = signalBus;
+
+            _signalBus.Subscribe<IntelAddedSignal>(OnIntelAdded);
+            _signalBus.Subscribe<IntelRemovedSignal>(OnIntelRemoved);
+
             RefreshIntelCards();
             RefreshPersonCards();
+        }
+
+        private void OnDestroy()
+        {
+            if (_signalBus == null) return;
+            _signalBus.Unsubscribe<IntelAddedSignal>(OnIntelAdded);
+            _signalBus.Unsubscribe<IntelRemovedSignal>(OnIntelRemoved);
+        }
+
+        private void OnIntelAdded(IntelAddedSignal signal)
+        {
+            if (_createdIntelCards.ContainsKey(signal.Intel)) return;
+            var card = Instantiate(intelCardPrefab, intelParent);
+            var intelCard = card.GetComponent<IntelCardUI>();
+            intelCard.Setup(signal.Intel, this);
+            card.transform.localPosition += new Vector3(_spawnX, Random.Range(-50, 50), 0);
+            _createdIntelCards[signal.Intel] = card;
+            _spawnX += 200;
+            if (_spawnX > 800) _spawnX = -200;
+        }
+
+        private void OnIntelRemoved(IntelRemovedSignal signal)
+        {
+            if (_createdIntelCards.TryGetValue(signal.Intel, out var cardGo))
+            {
+                Destroy(cardGo);
+                _createdIntelCards.Remove(signal.Intel);
+            }
         }
 
         private void RefreshIntelCards()
@@ -85,13 +119,21 @@ namespace Hostage.UI
             }
         }
 
-        // Called by IntelCardUI when dropped on a PersonCardUI
-        public void OnIntelDroppedOnPerson(Intel intel, Person person)
+        public void OnVerbSelected(Verb verb, Person person)
         {
-            Verb verb = intel.investigate ?? intel.interview ?? (Verb)intel.surveillance ?? intel.analyze;
-            if (verb == null) return;
-            var action = new Action(verb, person.SOReference);
-            _actionManager.AddAction(action);
+            var command = new TimedCommand(verb, person.SOReference);
+            _actionManager.AddAction(command);
+            ClearAllCommandButtons();
+        }
+
+        public void ClearAllCommandButtons()
+        {
+            foreach (var kvp in _createdPersonCards)
+            {
+                var personCard = kvp.Value.GetComponent<PersonCardUI>();
+                if (personCard != null)
+                    personCard.ClearCommandButtons();
+            }
         }
     }
 }

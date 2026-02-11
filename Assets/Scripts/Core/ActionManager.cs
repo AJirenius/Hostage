@@ -9,38 +9,41 @@ namespace Hostage.Core
     public class ActionManager
     {
         private readonly PersonManager _personManager;
+        private readonly SignalBus _signalBus;
 
         public event Action<EventGraph, GraphContext> OnGraphRequested;
 
-        private List<Action> _actions = new List<Action>();
+        private List<TimedCommand> _commands = new List<TimedCommand>();
 
-        public ActionManager(PersonManager personManager)
+        public ActionManager(PersonManager personManager, SignalBus signalBus)
         {
             _personManager = personManager;
+            _signalBus = signalBus;
         }
         
         public void HandleTime(float gameTime)
         {
             // loop through _actions in reverse order so you can remove if time is 0
-            for (int i = _actions.Count - 1; i >= 0; i--)
+            for (int i = _commands.Count - 1; i >= 0; i--)
             {
-                Action action = _actions[i];
-                action.timeLeft -= gameTime;
-                Debug.Log("Action: " + action.timeLeft);
-                if (action.timeLeft <= 0)
+                TimedCommand timedCommand = _commands[i];
+                timedCommand.timeLeft -= gameTime;
+                Debug.Log("Action: " + timedCommand.timeLeft);
+                if (timedCommand.timeLeft <= 0)
                 {
                     // Execute event in Verb
                     ExecuteAction(i);
-                    _actions.RemoveAt(i);
+                    _commands.RemoveAt(i);
                 }
             }
         }
 
         private void ExecuteAction(int index)
         {
-            Action action = _actions[index];
-            Debug.Log("ExecuteAction: " + action.verb.actionType);
-            switch (action.verb.actionType)
+            TimedCommand timedCommand = _commands[index];
+            _signalBus.Publish(new ActionCompletedSignal { TimedCommand = timedCommand });
+            Debug.Log("ExecuteAction: " + timedCommand.verb.actionType);
+            switch (timedCommand.verb.actionType)
             {
                 case ActionType.Analyze:
                     
@@ -48,10 +51,10 @@ namespace Hostage.Core
                 case ActionType.Interview:
                     break;
                 case ActionType.Investigate:
-                    Investigate v = (Investigate)action.verb;
+                    Investigate v = (Investigate)timedCommand.verb;
                     if (v.result)
                     {
-                        var person = _personManager.GetPerson(action.SoPerson);
+                        var person = _personManager.GetPerson(timedCommand.SoPerson);
                         var context = new GraphContext(person);
                         OnGraphRequested?.Invoke(v.result, context);
                     }
@@ -64,12 +67,13 @@ namespace Hostage.Core
             }
         }
 
-        public void AddAction(Action action)
+        public void AddAction(TimedCommand timedCommand)
         {
-            Debug.Log("Adding action" + action.verb.actionType);
-            action.modifiedTime = action.verb.GetModifiedTime(action.SoPerson);
-            action.timeLeft = action.modifiedTime;
-            _actions.Add(action);
+            Debug.Log("Adding action" + timedCommand.verb.actionType);
+            timedCommand.modifiedTime = timedCommand.verb.GetModifiedTime(timedCommand.SoPerson);
+            timedCommand.timeLeft = timedCommand.modifiedTime;
+            _commands.Add(timedCommand);
+            _signalBus.Publish(new ActionAddedSignal { TimedCommand = timedCommand });
         }
     }
 }

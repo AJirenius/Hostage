@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5305781013653124861}
   - component: {fileID: 1354094181249720512}
+  - component: {fileID: 8768623076634388778}
   m_Layer: 5
   m_Name: IntelCardNew
   m_TagString: Untagged
@@ -29,6 +30,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 4550975674110786847}
   - {fileID: 2355126024537896402}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -51,6 +53,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hostage.UI.IntelCardUI
   intelNameText: {fileID: 4164105772483064399}
   descriptionText: {fileID: 5259091554262449488}
+--- !u!225 &8768623076634388778
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2306799691279935758}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5027966181887561205
 GameObject:
   m_ObjectHideFlags: 0
@@ -70,7 +84,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2355126024537896402
 RectTransform:
   m_ObjectHideFlags: 0
@@ -82,8 +96,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 4550975674110786847}
+  m_Children: []
   m_Father: {fileID: 5305781013653124861}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -330,14 +343,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8141818804154025545}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4183704479651359921}
   - {fileID: 2673434869400842239}
-  m_Father: {fileID: 2355126024537896402}
+  m_Father: {fileID: 5305781013653124861}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}

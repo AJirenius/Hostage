@@ -6,7 +6,13 @@ namespace Hostage.Core
 {
     public class PlayerInventory
     {
+        private readonly SignalBus _signalBus;
         private List<Intel> _intelList = new List<Intel>();
+
+        public PlayerInventory(SignalBus signalBus)
+        {
+            _signalBus = signalBus;
+        }
 
         public bool AddIntel(Intel intel)
         {
@@ -14,6 +20,7 @@ namespace Hostage.Core
                 return false;
             _intelList.Add(intel);
             Debug.Log($"Added Intel: {intel}");
+            _signalBus.Publish(new IntelAddedSignal { Intel = intel });
             return true;
         }
         
@@ -24,7 +31,12 @@ namespace Hostage.Core
 
         public bool RemoveIntel(Intel intel)
         {
-            return _intelList.Remove(intel);
+            if (_intelList.Remove(intel))
+            {
+                _signalBus.Publish(new IntelRemovedSignal { Intel = intel });
+                return true;
+            }
+            return false;
         }
 
         public IReadOnlyList<Intel> GetAllIntel()

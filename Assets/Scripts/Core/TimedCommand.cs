@@ -11,7 +11,7 @@ namespace Hostage.Core
         Analyze,
     }
     
-    public class Action
+    public class TimedCommand
     {
         public Verb verb;
         public SOActionPerson SoPerson;
@@ -20,7 +20,7 @@ namespace Hostage.Core
 
 
 
-        public Action(Verb verb, SOActionPerson soPerson)
+        public TimedCommand(Verb verb, SOActionPerson soPerson)
         {
             this.SoPerson = soPerson;
             this.verb = verb;
