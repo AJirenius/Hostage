@@ -15,6 +15,18 @@ namespace Hostage.Graphs.Editor
             context.AddOutputPort("out").Build();
         }
     }
+
+    [Serializable]
+    public class ActionStartNode:Node
+    {
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            context.AddOutputPort("Investigate").Build();
+            context.AddOutputPort("Interview").Build();
+            context.AddOutputPort("Surveillance").Build();
+            context.AddOutputPort("Analyze").Build();
+        }
+    }
     
     [Serializable]
     public class EndNode:Node

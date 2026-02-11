@@ -29,7 +29,7 @@ namespace Hostage.Graphs
             RunNode(0);
         }
 
-        public void RunGraph(EventGraph graph, GraphContext context = null)
+        public void RunGraph(EventGraph graph, GraphContext context, int outputIndex)
         {
             // check if already got graph and if it hasn't finished yet
             if(eventGraph != null && eventGraph.Nodes.Count > 0)
@@ -39,7 +39,16 @@ namespace Hostage.Graphs
 
             eventGraph = graph;
             Context = context ?? new GraphContext();
-            RunNode(0);
+
+            if (outputIndex >= 0)
+                RunStartNodeWithOutput(outputIndex);
+            else
+                RunNode(0);
+        }
+
+        public void RunGraph(EventGraph graph, GraphContext context = null)
+        {
+            RunGraph(graph, context, -1);
         }
         
         // Will run a startnode with multiple outputs, allowing you to choose which path to take right from the start

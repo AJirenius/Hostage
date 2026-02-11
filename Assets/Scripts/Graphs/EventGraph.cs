@@ -18,5 +18,10 @@ namespace Hostage.Graphs
     {
         [SerializeReference]
         public List<RuntimeNode> Nodes = new();
+
+        public int StartNodeOutputCount;
+        public List<int> ConnectedOutputs = new();
+
+        public bool IsOutputConnected(int outputIndex) => ConnectedOutputs.Contains(outputIndex);
     }
 }

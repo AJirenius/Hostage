@@ -15,6 +15,7 @@ MonoBehaviour:
   intelName: Hotel Admaria
   description: 'It''s a beautiful hotel with 4 floors. '
   category: 3
+  masterGraph: {fileID: -5475051401550479605, guid: 023124a948cf44b74bb0a394f306ef80, type: 3}
   investigate:
     isAvailable: 1
     baseTime: 10
@@ -32,14 +33,15 @@ MonoBehaviour:
       value: 0.8
     requiredTags: 
     occupyingIntel: 0
-    linkedIntels: []
     result: {fileID: 0}
+    linkedIntels: []
   surveillance:
     isAvailable: 1
     baseTime: 10
     modifiers: []
     requiredTags: 
     occupyingIntel: 0
+    result: {fileID: 0}
     linkedIntels:
     - {fileID: 0}
     timedEvents:
@@ -53,5 +55,5 @@ MonoBehaviour:
     modifiers: []
     requiredTags: 
     occupyingIntel: 0
-    timedEvents: []
     result: {fileID: 0}
+    timedEvents: []

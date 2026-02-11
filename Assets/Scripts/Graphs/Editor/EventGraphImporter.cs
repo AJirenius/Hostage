@@ -16,7 +16,8 @@ namespace Hostage.Graphs.Editor {
                 return;
             }
             
-            var startNodeModel = graph.GetNodes().OfType<Graphs.Editor.StartNode>().FirstOrDefault();
+            var startNodeModel = (INode)graph.GetNodes().OfType<Graphs.Editor.ActionStartNode>().FirstOrDefault()
+                              ?? graph.GetNodes().OfType<Graphs.Editor.StartNode>().FirstOrDefault();
             
             if (startNodeModel == null) {
                 return;
@@ -33,7 +34,15 @@ namespace Hostage.Graphs.Editor {
             
             // Second pass: Set up connections using the indices
             SetupConnections(startNodeModel, runtimeAsset, nodeMap);
-            
+
+            // Record start node output port metadata
+            runtimeAsset.StartNodeOutputCount = startNodeModel.outputPortCount;
+            for (int i = 0; i < startNodeModel.outputPortCount; i++) {
+                if (startNodeModel.GetOutputPort(i).isConnected) {
+                    runtimeAsset.ConnectedOutputs.Add(i);
+                }
+            }
+
             ctx.AddObjectToAsset("MainAsset", runtimeAsset);
             ctx.SetMainObject(runtimeAsset);
         }
@@ -76,6 +85,8 @@ namespace Hostage.Graphs.Editor {
 
                     if (port.isConnected && nodeMap.TryGetValue(port.firstConnectedPort.GetNode(), out int nextIndex)) {
                         runtimeNode.nextNodeIndices.Add(nextIndex);
+                    } else {
+                        runtimeNode.nextNodeIndices.Add(-1);
                     }
                 }
             }
@@ -85,6 +96,9 @@ namespace Hostage.Graphs.Editor {
             var returnedNodes = new List<RuntimeNode>();
 
             switch (nodeModel) {
+                case ActionStartNode:
+                    returnedNodes.Add(new RTStartNode());
+                    break;
                 case StartNode:
                     returnedNodes.Add(new RTStartNode());
                     break;

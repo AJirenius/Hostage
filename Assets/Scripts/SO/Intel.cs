@@ -13,6 +13,8 @@ namespace Hostage.SO
         public string description; // this should change due to what intel one have.
         public IntelCategory category = IntelCategory.Unknown;
 
+        public EventGraph masterGraph;
+
         public Investigate investigate;
         public Interview interview;
         public Surveillance surveillance;
@@ -29,6 +31,7 @@ namespace Hostage.SO
         public List<TimeModifier> modifiers;
         public List<SkillTag> requiredTags;
         public bool occupyingIntel; // the intel will be unavailable during action
+        public EventGraph result;
 
         public float GetModifier(SOPerson soPerson)
         {
@@ -57,9 +60,6 @@ namespace Hostage.SO
     public class Investigate: Verb
     {
         public override ActionType actionType => ActionType.Investigate;
-
-        public EventGraph result;
-       
     }
     
     [Serializable]
@@ -68,8 +68,6 @@ namespace Hostage.SO
         public override ActionType actionType => ActionType.Interview;
 
         public List<Intel> linkedIntels; // intel that can be run instead of this
-        public EventGraph result;
-       
     }
     
     [Serializable]
@@ -88,8 +86,6 @@ namespace Hostage.SO
         public override ActionType actionType => ActionType.Analyze;
 
         public List<TimedEvent> timedEvents;
-        public EventGraph result;
-        
     }
 
     [Serializable]

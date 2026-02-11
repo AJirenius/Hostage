@@ -146,9 +146,9 @@ namespace Hostage.UI
             RefreshPersonCards();
         }
 
-        public void OnVerbSelected(Verb verb, Person person)
+        public void OnVerbSelected(Verb verb, Person person, Intel intel)
         {
-            var command = new TimedCommand(verb, person);
+            var command = new TimedCommand(verb, person, intel);
             _actionManager.AddTimedCommand(command);
             ClearAllCommandButtons();
         }

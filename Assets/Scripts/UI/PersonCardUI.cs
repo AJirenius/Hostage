@@ -70,7 +70,7 @@ namespace Hostage.UI
 
                 var commandButton = buttonGo.GetComponent<CommandButtonUI>();
                 if (commandButton != null)
-                    commandButton.Setup(verb, _person, _uiManager);
+                    commandButton.Setup(verb, _person, _uiManager, intel);
 
                 _spawnedButtons.Add(buttonGo);
                 offsetY += buttonHeight;

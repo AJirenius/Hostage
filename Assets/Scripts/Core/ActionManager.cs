@@ -10,7 +10,7 @@ namespace Hostage.Core
     {
         private readonly SignalBus _signalBus;
 
-        public event Action<EventGraph, GraphContext> OnGraphRequested;
+        public event Action<EventGraph, GraphContext, int> OnGraphRequested;
 
         private List<TimedCommand> _commands = new List<TimedCommand>();
 
@@ -42,26 +42,16 @@ namespace Hostage.Core
             timedCommand.Person.ClearOccupied();
             _signalBus.Publish(new TimedCommandCompletedSignal { TimedCommand = timedCommand });
             Debug.Log("ExecuteAction: " + timedCommand.verb.actionType);
-            switch (timedCommand.verb.actionType)
+
+            var context = new GraphContext(timedCommand.Person);
+
+            if (timedCommand.verb.result != null)
             {
-                case ActionType.Analyze:
-                    
-                    break;
-                case ActionType.Interview:
-                    break;
-                case ActionType.Investigate:
-                    Investigate v = (Investigate)timedCommand.verb;
-                    if (v.result)
-                    {
-                        var context = new GraphContext(timedCommand.Person);
-                        OnGraphRequested?.Invoke(v.result, context);
-                    }
-                    break;
-                case ActionType.Surveillance:
-                    // loop through timestamps and execeute whatever. Dont remove action from list
-                    break;
-                default:
-                    break;
+                OnGraphRequested?.Invoke(timedCommand.verb.result, context, -1);
+            }
+            else if (timedCommand.Intel?.masterGraph != null)
+            {
+                OnGraphRequested?.Invoke(timedCommand.Intel.masterGraph, context, timedCommand.verb.actionType.ToOutputIndex());
             }
         }
 
