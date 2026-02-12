@@ -17,6 +17,7 @@ namespace Hostage.Graphs.Editor {
             }
 
             var startNodeModel = (INode)graph.GetNodes().OfType<Graphs.Editor.AssistantStartNode>().FirstOrDefault()
+                              ?? (INode)graph.GetNodes().OfType<Graphs.Editor.PersonStartNode>().FirstOrDefault()
                               ?? graph.GetNodes().OfType<Graphs.Editor.StartNode>().FirstOrDefault();
 
             if (startNodeModel == null) {
@@ -104,13 +105,24 @@ namespace Hostage.Graphs.Editor {
 
         static List<RuntimeNode> TranslateNodeModelToRuntimeNodes(INode nodeModel) {
             var returnedNodes = new List<RuntimeNode>();
-
+            IPort intelPort;
             switch (nodeModel) {
                 case AssistantStartNode:
                     returnedNodes.Add(new RTStartNode());
                     break;
                 case StartNode:
                     returnedNodes.Add(new RTStartNode());
+                    break;
+                case PersonStartNode personStartNode:
+                    var nrIntel = personStartNode.GetNodeOptionByName("NrIntel").TryGetValue<int>(out var intelCount) ? intelCount : 3;
+                    var rtPersonStart = new RTPersonStartNode();
+                    for (int i = 0; i < nrIntel; i++)
+                    {
+                        intelPort = personStartNode.GetInputPortByName($"intel{i}");
+                        var soIntel = GetInputPortValue<Hostage.SO.SOIntel>(intelPort);
+                        rtPersonStart.intelList.Add(soIntel);
+                    }
+                    returnedNodes.Add(rtPersonStart);
                     break;
                 case EndNode:
                     returnedNodes.Add(new RTEndNode());
@@ -130,7 +142,7 @@ namespace Hostage.Graphs.Editor {
                         });
                     break;
                 case GiveIntelToPerson giveIntelNode:
-                    var intelPort = giveIntelNode.GetInputPortByName("Intel");
+                    intelPort = giveIntelNode.GetInputPortByName("Intel");
                     var personPort = giveIntelNode.GetInputPortByName("Person");
                     var intel = GetInputPortValue<Hostage.SO.SOIntel>(intelPort);
                     var person = GetInputPortValue<Hostage.SO.SOPerson>(personPort);

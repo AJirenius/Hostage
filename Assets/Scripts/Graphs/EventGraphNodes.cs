@@ -113,6 +113,18 @@ namespace Hostage.Graphs
     }
 
     [Serializable]
+    public class RTPersonStartNode : RuntimeNode
+    {
+        public List<SOIntel> intelList = new();
+
+        public override void Execute(EventGraphRunner runner, Action<int> onComplete)
+        {
+            
+            onComplete?.Invoke(0);
+        }
+    }
+
+    [Serializable]
     public class RTEndNode : RuntimeNode
     {
         public override void Execute(EventGraphRunner runner, Action<int> onComplete)

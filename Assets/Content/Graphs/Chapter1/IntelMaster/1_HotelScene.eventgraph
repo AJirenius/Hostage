@@ -1483,7 +1483,7 @@ MonoBehaviour:
     - rid: 4760844950035497025
       type: {class: 'Constant`1[[Hostage.SO.SOIntel, Assembly-CSharp]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
       data:
-        m_Value: {fileID: 0}
+        m_Value: {fileID: 11400000, guid: fa41d90a325984091a0fb1efb4daf71c, type: 2}
     - rid: 4760844950035497032
       type: {class: UserNodeModelImp, ns: Unity.GraphToolkit.Editor.Implementation, asm: Unity.GraphToolkit.Editor}
       data:

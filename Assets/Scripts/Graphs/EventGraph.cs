@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Hostage.Core;
+using Hostage.SO;
 
 namespace Hostage.Graphs
 {
@@ -9,12 +10,14 @@ namespace Hostage.Graphs
         public const string TimedEventIndexKey = "timed_event_index";
 
         public Person TriggeredBy { get; }
+        public SOIntel Intel { get; set; }
         public Dictionary<string, int> IntVariables { get; } = new();
         public Dictionary<string, string> StringVariables { get; } = new();
 
-        public GraphContext(Person triggeredBy = null)
+        public GraphContext(Person triggeredBy = null, SOIntel intel = null)
         {
             TriggeredBy = triggeredBy;
+            Intel = intel;
         }
     }
 

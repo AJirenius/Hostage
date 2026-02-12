@@ -33,7 +33,7 @@ namespace Hostage.Core
                 });
                 if (timedCommand.timeLeft <= 0)
                 {
-                    if (ExecuteAction(i))
+                    if (ExecuteTimedCommand(i))
                     {
                         _commands.RemoveAt(i);
                     }
@@ -41,22 +41,34 @@ namespace Hostage.Core
             }
         }
 
-        private bool ExecuteAction(int index)
+        private bool ExecuteTimedCommand(int index)
         {
             TimedCommand timedCommand = _commands[index];
-            Debug.Log("ExecuteAction: " + timedCommand.verb.actionType + " index: " + timedCommand.timedEventIndex);
+            
 
             var context = new GraphContext(timedCommand.Person);
             context.IntVariables[GraphContext.TimedEventIndexKey] = timedCommand.timedEventIndex;
+            
+            if (timedCommand.verb != null)
+            {
+                Debug.Log("ExecuteAction: " + timedCommand.verb.actionType + " index: " + timedCommand.timedEventIndex);
+                if (timedCommand.verb.result != null)
+                {
+                    OnGraphRequested?.Invoke(timedCommand.verb.result, context, -1);
+                }
+                else if (timedCommand.SoIntel?.masterGraph != null)
+                {
+                    OnGraphRequested?.Invoke(timedCommand.SoIntel.masterGraph, context, timedCommand.verb.actionType.ToOutputIndex());
+                }
+            }
+            else
+            {
+                Debug.Log("ExecutePersonAction: " + timedCommand.Person.SOReference.Name + " index: " + timedCommand.timedEventIndex);
+                context.Intel = timedCommand.SoIntel;
+                OnGraphRequested?.Invoke(timedCommand.SoIntel.masterGraph, context, -1);
+            }
 
-            if (timedCommand.verb.result != null)
-            {
-                OnGraphRequested?.Invoke(timedCommand.verb.result, context, -1);
-            }
-            else if (timedCommand.SoIntel?.masterGraph != null)
-            {
-                OnGraphRequested?.Invoke(timedCommand.SoIntel.masterGraph, context, timedCommand.verb.actionType.ToOutputIndex());
-            }
+            
 
             if (timedCommand.timedEvents != null && timedCommand.timedEventIndex < timedCommand.timedEvents.Count)
             {
@@ -104,5 +116,6 @@ namespace Hostage.Core
             _commands.Add(timedCommand);
             _signalBus.Publish(new TimedCommandStartedSignal { TimedCommand = timedCommand });
         }
+        
     }
 }
