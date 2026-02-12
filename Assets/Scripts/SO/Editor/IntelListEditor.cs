@@ -26,7 +26,7 @@ namespace Hostage.SO.Editor
 
         private void PopulateIntelList(IntelList intelList, string folder)
         {
-            string[] guids = AssetDatabase.FindAssets("t:Hostage.SO.Intel", new[] { folder });
+            string[] guids = AssetDatabase.FindAssets("t:SOIntel", new[] { folder });
             var foundIntels = new List<SOIntel>();
             foreach (string guid in guids)
             {

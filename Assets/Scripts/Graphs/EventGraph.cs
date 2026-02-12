@@ -8,6 +8,7 @@ namespace Hostage.Graphs
     public class GraphContext
     {
         public const string TimedEventIndexKey = "timed_event_index";
+        public const string ActionOutputKey = "action_output";
 
         public Person TriggeredBy { get; }
         public SOIntel Intel { get; set; }

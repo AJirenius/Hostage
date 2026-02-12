@@ -2,13 +2,12 @@ using System.Collections.Generic;
 using VContainer;
 using Hostage.Core;
 using Hostage.SO;
-using JetBrains.Annotations;
 using UnityEngine;
 using VContainer.Unity;
 
 namespace Hostage.Graphs
 {
-    public class EventGraphRunner : IStartable
+    public class EventGraphRunner
     {
         public EventGraph eventGraph;
         public GraphContext Context { get; private set; }
@@ -18,54 +17,26 @@ namespace Hostage.Graphs
 
         // Injected dependencies - accessible by nodes via runner reference
         [Inject] public PlayerInventory PlayerInventory { get; private set; }
-        [Inject] public ActionManager ActionManager { get; private set; }
+        [Inject] public CommandManager CommandManager { get; private set; }
         [Inject] public PersonManager PersonManager { get; private set; }
         [Inject] public IntelProvider IntelProvider { get; private set; }
 
         [Inject]
         private void Init()
         {
-            ActionManager.OnGraphRequested += RunGraph;
-            Context = new GraphContext();
-        }
-
-        public void Start()
-        {
-            RunNode(0);
-        }
-
-        public void RunGraph(EventGraph graph, [CanBeNull] GraphContext context, int outputIndex)
-        {
-            // check if already got graph and if it hasn't finished yet
-            if(eventGraph != null && eventGraph.Nodes.Count > 0)
-            {
-                Debug.LogWarning("EventGraphRunner is already running a graph. Overwriting with new graph.");
-            }
-
-            eventGraph = graph;
-            Context = context ?? new GraphContext();
-
-            if (outputIndex >= 0)
-                RunStartNodeWithOutput(outputIndex);
-            else
-                RunNode(0);
+            CommandManager.OnGraphRequested += RunGraph;
         }
 
         public void RunGraph(EventGraph graph, GraphContext context = null)
         {
-            RunGraph(graph, context, -1);
+            if (eventGraph != null && eventGraph.Nodes.Count > 0)
+                Debug.LogWarning("EventGraphRunner is already running a graph. Overwriting with new graph.");
+
+            eventGraph = graph;
+            Context = context ?? new GraphContext();
+            RunNode(0);
         }
-        
-        // Will run a startnode with multiple outputs, allowing you to choose which path to take right from the start
-        public void RunStartNodeWithOutput(int outputIndex)
-        {
-            var node = eventGraph.Nodes[0];
-            node.Execute(this, nextOutput => {
-                if (node.nextNodeIndices.Count > outputIndex)
-                    RunNode(node.nextNodeIndices[outputIndex]);
-            });
-        }
-        
+
         public void RunNode(int index)
         {
             if (index < 0 || index >= eventGraph.Nodes.Count)

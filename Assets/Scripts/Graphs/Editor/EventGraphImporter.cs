@@ -108,7 +108,7 @@ namespace Hostage.Graphs.Editor {
             IPort intelPort;
             switch (nodeModel) {
                 case AssistantStartNode:
-                    returnedNodes.Add(new RTStartNode());
+                    returnedNodes.Add(new RTAssistantStartNode());
                     break;
                 case StartNode:
                     returnedNodes.Add(new RTStartNode());

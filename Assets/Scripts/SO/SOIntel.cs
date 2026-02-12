@@ -27,7 +27,7 @@ namespace Hostage.SO
     public abstract class Verb
     {
         public bool isAvailable;
-        public abstract ActionType actionType { get; }
+        public abstract CommandType CommandType { get; }
 
         public float baseTime; // seconds
         public List<TimeModifier> modifiers;
@@ -61,13 +61,13 @@ namespace Hostage.SO
     [Serializable]
     public class Investigate: Verb
     {
-        public override ActionType actionType => ActionType.Investigate;
+        public override CommandType CommandType => CommandType.Investigate;
     }
     
     [Serializable]
     public class Interview: Verb
     {
-        public override ActionType actionType => ActionType.Interview;
+        public override CommandType CommandType => CommandType.Interview;
 
         public List<SOIntel> linkedIntels; // intel that can be run instead of this
     }
@@ -75,7 +75,7 @@ namespace Hostage.SO
     [Serializable]
     public class Surveillance: Verb
     {
-        public override ActionType actionType => ActionType.Surveillance;
+        public override CommandType CommandType => CommandType.Surveillance;
 
         public List<SOIntel> linkedIntels; // intel that can be run instead of this
         public List<TimedEvent> timedEvents;
@@ -85,7 +85,7 @@ namespace Hostage.SO
     [Serializable]
     public class Analyze: Verb
     {
-        public override ActionType actionType => ActionType.Analyze;
+        public override CommandType CommandType => CommandType.Analyze;
 
         public List<TimedEvent> timedEvents;
     }

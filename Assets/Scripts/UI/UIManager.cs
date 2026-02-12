@@ -14,16 +14,16 @@ namespace Hostage.UI
         public Transform personParent;
 
         private PlayerInventory _playerInventory;
-        private ActionManager _actionManager;
+        private CommandManager _commandManager;
         private PersonManager _personManager;
         private SignalBus _signalBus;
         private Dictionary<SOIntel, GameObject > _createdIntelCards = new Dictionary<SOIntel, GameObject>();
         private Dictionary<Person, GameObject > _createdPersonCards = new Dictionary<Person, GameObject>();
         private float _spawnX = -200;
-        public void Initialize(PlayerInventory inventory, ActionManager actionManager, PersonManager personManager, SignalBus signalBus)
+        public void Initialize(PlayerInventory inventory, CommandManager commandManager, PersonManager personManager, SignalBus signalBus)
         {
             _playerInventory = inventory;
-            _actionManager = actionManager;
+            _commandManager = commandManager;
             _personManager = personManager;
             _signalBus = signalBus;
 
@@ -171,14 +171,14 @@ namespace Hostage.UI
         public void OnVerbSelected(Verb verb, Person person, SOIntel soIntel)
         {
             var command = new TimedCommand(verb, person, soIntel);
-            _actionManager.AddTimedCommand(command);
+            _commandManager.AddTimedCommand(command);
             ClearAllCommandButtons();
         }
 
         public void OnButtonSelected(Person person, SOIntel soIntel)
         {
             var command = new TimedCommand(null, person, soIntel);
-            _actionManager.AddTimedCommand(command);
+            _commandManager.AddTimedCommand(command);
             ClearAllCommandButtons();
         }
 

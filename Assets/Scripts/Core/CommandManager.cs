@@ -6,22 +6,21 @@ using UnityEngine;
 
 namespace Hostage.Core
 {
-    public class ActionManager
+    public class CommandManager
     {
         private readonly SignalBus _signalBus;
 
-        public event Action<EventGraph, GraphContext, int> OnGraphRequested;
+        public event Action<EventGraph, GraphContext> OnGraphRequested;
 
         private List<TimedCommand> _commands = new List<TimedCommand>();
 
-        public ActionManager(SignalBus signalBus)
+        public CommandManager(SignalBus signalBus)
         {
             _signalBus = signalBus;
         }
         
         public void HandleTime(float gameTime)
         {
-            // loop through _actions in reverse order so you can remove if time is 0
             for (int i = _commands.Count - 1; i >= 0; i--)
             {
                 TimedCommand timedCommand = _commands[i];
@@ -51,21 +50,22 @@ namespace Hostage.Core
             
             if (timedCommand.verb != null)
             {
-                Debug.Log("ExecuteAction: " + timedCommand.verb.actionType + " index: " + timedCommand.timedEventIndex);
+                Debug.Log("ExecuteCommmand: " + timedCommand.verb.CommandType + " index: " + timedCommand.timedEventIndex);
                 if (timedCommand.verb.result != null)
                 {
-                    OnGraphRequested?.Invoke(timedCommand.verb.result, context, -1);
+                    OnGraphRequested?.Invoke(timedCommand.verb.result, context);
                 }
                 else if (timedCommand.SoIntel?.masterGraph != null)
                 {
-                    OnGraphRequested?.Invoke(timedCommand.SoIntel.masterGraph, context, timedCommand.verb.actionType.ToOutputIndex());
+                    context.IntVariables[GraphContext.ActionOutputKey] = timedCommand.verb.CommandType.ToOutputIndex();
+                    OnGraphRequested?.Invoke(timedCommand.SoIntel.masterGraph, context);
                 }
             }
             else
             {
                 Debug.Log("ExecutePersonAction: " + timedCommand.Person.SOReference.Name + " index: " + timedCommand.timedEventIndex);
                 context.Intel = timedCommand.SoIntel;
-                OnGraphRequested?.Invoke(timedCommand.Person.SOReference.personMasterGraph, context, -1);
+                OnGraphRequested?.Invoke(timedCommand.Person.SOReference.personMasterGraph, context);
             }
 
             
@@ -99,13 +99,13 @@ namespace Hostage.Core
                     {
                         if (!timedCommand.Person.SOReference.skillTags.Contains(tag))
                         {
-                            Debug.LogWarning($"Cannot add action {timedCommand.verb.actionType}: person '{timedCommand.Person.SOReference.Name}' missing required tag {tag}");
+                            Debug.LogWarning($"Cannot add action {timedCommand.verb.CommandType}: person '{timedCommand.Person.SOReference.Name}' missing required tag {tag}");
                             return;
                         }
                     }
                 }
 
-                Debug.Log("Adding action " + timedCommand.verb.actionType);
+                Debug.Log("Adding action " + timedCommand.verb.CommandType);
                 timedCommand.Person.SetOccupied();
                 timedCommand.modifiedTime = timedCommand.verb.GetModifiedTime(timedCommand.Person.SOReference);
                 timedCommand.timeLeft = timedCommand.modifiedTime;

@@ -31,7 +31,7 @@ namespace Hostage.UI
 
             var label = GetComponentInChildren<TMPro.TMP_Text>();
             if (label != null)
-                label.text = _verb.actionType.ToString();
+                label.text = _verb.CommandType.ToString();
         }
 
         public void SetupNoVerb(Person person, UIManager uiManager, SOIntel soIntel)

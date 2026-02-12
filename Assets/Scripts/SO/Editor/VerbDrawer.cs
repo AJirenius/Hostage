@@ -37,7 +37,7 @@ public class VerbDrawer : PropertyDrawer
             {
                 var verbObj = field.GetValue(targetObj) as Verb;
                 if (verbObj != null)
-                    actionTypeName = verbObj.actionType.ToString();
+                    actionTypeName = verbObj.CommandType.ToString();
             }
         }
 

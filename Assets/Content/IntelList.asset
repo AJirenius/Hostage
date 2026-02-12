@@ -12,7 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a609ec6bf83045ee8d46b10375c442e7, type: 3}
   m_Name: IntelList
   m_EditorClassIdentifier: Assembly-CSharp::Hostage.SO.IntelList
-  _intels:
-  - {fileID: 11400000, guid: ed6cc3bc65cad419f925a34878b79e5c, type: 2}
-  - {fileID: 11400000, guid: cafff6bb4216f41e3a820ddd395b4ab9, type: 2}
-  - {fileID: 11400000, guid: a9d5c076401b04f4993de3e8e6cb9338, type: 2}
+  _intels: []

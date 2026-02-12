@@ -3,7 +3,7 @@ using Hostage.SO;
 
 namespace Hostage.Core
 {
-    public enum ActionType
+    public enum CommandType
     {
         None,
         Investigate,
@@ -14,7 +14,7 @@ namespace Hostage.Core
 
     public static class ActionTypeExtensions
     {
-        public static int ToOutputIndex(this ActionType at) => (int)at - 1;
+        public static int ToOutputIndex(this CommandType at) => (int)at - 1;
     }
 
     public class TimedCommand

@@ -132,6 +132,18 @@ namespace Hostage.Graphs
     }
 
     [Serializable]
+    public class RTAssistantStartNode : RuntimeNode
+    {
+        public override void Execute(EventGraphRunner runner, Action<int> onComplete)
+        {
+            int output = 0;
+            if (runner.Context.IntVariables.TryGetValue(GraphContext.ActionOutputKey, out var value))
+                output = value;
+            onComplete?.Invoke(output);
+        }
+    }
+
+    [Serializable]
     public class RTEndNode : RuntimeNode
     {
         public override void Execute(EventGraphRunner runner, Action<int> onComplete)

@@ -9,7 +9,7 @@ namespace Hostage
 {
     public class GameInitializer: ITickable, IStartable
     {
-        readonly ActionManager _actionManager;
+        readonly CommandManager _commandManager;
         readonly PlayerInventory _playerInventory;
         readonly IntelProvider _intelProvider;
         readonly EventGraph _eventGraph;
@@ -19,11 +19,11 @@ namespace Hostage
         readonly SignalBus _signalBus;
         readonly GameClock _gameClock;
 
-        public GameInitializer(ActionManager actionManager, PlayerInventory playerInventory, IntelProvider intelProvider, EventGraph eventGraph, EventGraphRunner eventGraphRunner,
+        public GameInitializer(CommandManager commandManager, PlayerInventory playerInventory, IntelProvider intelProvider, EventGraph eventGraph, EventGraphRunner eventGraphRunner,
             SOPersonList personList, UIManager uiManager, SignalBus signalBus, GameClock gameClock)
         {
             Debug.Log("Initializing player inventory");
-            _actionManager = actionManager;
+            _commandManager = commandManager;
             _playerInventory = playerInventory;
             _intelProvider = intelProvider;
             _eventGraph = eventGraph;
@@ -37,14 +37,14 @@ namespace Hostage
         public void Start()
         {
             _playerInventory.AddIntel(_intelProvider.GetWithId("IntelAlanBarker 3"));
-            _uiManager.Initialize(_playerInventory, _actionManager, _eventGraphRunner.PersonManager, _signalBus);
+            _uiManager.Initialize(_playerInventory, _commandManager, _eventGraphRunner.PersonManager, _signalBus);
             _eventGraphRunner.RunGraph(_eventGraph);
         }
 
         public void Tick()
         {
             _gameClock.Tick();
-            _actionManager.HandleTime(_gameClock.GameDeltaTime);
+            _commandManager.HandleTime(_gameClock.GameDeltaTime);
         }
     }
 }
