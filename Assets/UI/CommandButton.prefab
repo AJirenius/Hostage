@@ -226,3 +226,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eadf3af9c68804421a6c80201d70f51c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Hostage.UI.CommandButtonUI
+  panel: {fileID: 469464333585355743}

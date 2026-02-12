@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Hostage.Core;
 using Hostage.SO;
+using UnityEngine.UI;
 
 namespace Hostage.UI
 {
@@ -12,6 +13,7 @@ namespace Hostage.UI
         private UIManager _uiManager;
         private SOIntel _soIntel;
         private CanvasGroup _canvasGroup;
+        public Image panel;
 
         public void Setup(Verb verb, Person person, UIManager uiManager, SOIntel soIntel)
         {
@@ -33,11 +35,14 @@ namespace Hostage.UI
         public void OnPointerEnter(PointerEventData eventData)
         {
             _canvasGroup.alpha = 1f;
+            panel.color = Color.green;
+            
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             _canvasGroup.alpha = 0.5f;
+            panel.color = Color.grey;
         }
 
         public void OnDrop(PointerEventData eventData)

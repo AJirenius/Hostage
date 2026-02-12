@@ -26,7 +26,11 @@ namespace Hostage.Core
             {
                 TimedCommand timedCommand = _commands[i];
                 timedCommand.timeLeft -= gameTime;
-                //Debug.Log(gameTime+ " Action: " + timedCommand.timeLeft);
+                _signalBus.Publish(new TimedCommandProgressSignal
+                {
+                    Person = timedCommand.Person,
+                    PercentageLeft = timedCommand.GetPercentageLeft()
+                });
                 if (timedCommand.timeLeft <= 0)
                 {
                     if (ExecuteAction(i))
@@ -73,6 +77,18 @@ namespace Hostage.Core
             {
                 Debug.LogWarning($"Cannot add action {timedCommand.verb.actionType}: person '{timedCommand.Person.SOReference.Name}' is {timedCommand.Person.Flag}");
                 return;
+            }
+
+            if (timedCommand.verb.requiredTags != null)
+            {
+                foreach (var tag in timedCommand.verb.requiredTags)
+                {
+                    if (!timedCommand.Person.SOReference.skillTags.Contains(tag))
+                    {
+                        Debug.LogWarning($"Cannot add action {timedCommand.verb.actionType}: person '{timedCommand.Person.SOReference.Name}' missing required tag {tag}");
+                        return;
+                    }
+                }
             }
 
             Debug.Log("Adding action" + timedCommand.verb.actionType);

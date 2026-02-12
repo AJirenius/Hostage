@@ -30,6 +30,7 @@ namespace Hostage.UI
             _signalBus.Subscribe<IntelAddedSignal>(OnIntelAdded);
             _signalBus.Subscribe<IntelRemovedSignal>(OnIntelRemoved);
             _signalBus.Subscribe<PersonStatusChangedSignal>(OnPersonStatusChanged);
+            _signalBus.Subscribe<TimedCommandProgressSignal>(OnTimedCommandProgress);
 
             RefreshIntelCards();
             RefreshPersonCards();
@@ -41,6 +42,7 @@ namespace Hostage.UI
             _signalBus.Unsubscribe<IntelAddedSignal>(OnIntelAdded);
             _signalBus.Unsubscribe<IntelRemovedSignal>(OnIntelRemoved);
             _signalBus.Unsubscribe<PersonStatusChangedSignal>(OnPersonStatusChanged);
+            _signalBus.Unsubscribe<TimedCommandProgressSignal>(OnTimedCommandProgress);
         }
 
         private void OnIntelAdded(IntelAddedSignal signal)
@@ -134,6 +136,16 @@ namespace Hostage.UI
             }
         }
 
+        private void OnTimedCommandProgress(TimedCommandProgressSignal signal)
+        {
+            if (_createdPersonCards.TryGetValue(signal.Person, out var cardGo))
+            {
+                var personCard = cardGo.GetComponent<PersonCardUI>();
+                if (personCard != null)
+                    personCard.UpdateProgress(signal.PercentageLeft);
+            }
+        }
+
         private void OnPersonStatusChanged(PersonStatusChangedSignal signal)
         {
             if (_createdPersonCards.TryGetValue(signal.Person, out var cardGo))
@@ -141,6 +153,16 @@ namespace Hostage.UI
                 var personCard = cardGo.GetComponent<PersonCardUI>();
                 if (personCard != null)
                     personCard.UpdateStatus();
+            }
+
+            foreach (var kvp in _createdIntelCards)
+            {
+                if (kvp.Key.category == IntelCategory.Person && kvp.Key.person == signal.Person.SOReference)
+                {
+                    var intelCard = kvp.Value.GetComponent<IntelCardUI>();
+                    if (intelCard != null)
+                        intelCard.UpdateName(signal.Person);
+                }
             }
 
             RefreshPersonCards();

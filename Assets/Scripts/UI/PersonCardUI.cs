@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Hostage.SO;
 using Hostage.Core;
+using UnityEngine.Rendering;
 
 namespace Hostage.UI
 {
@@ -13,6 +14,7 @@ namespace Hostage.UI
         public TMPro.TMP_Text descriptionText;
         public GameObject commandPrefab;
         public Image panel;
+        public RectTransform progress;
         private Person _person;
         private UIManager _uiManager;
         private readonly List<GameObject> _spawnedButtons = new();
@@ -29,6 +31,12 @@ namespace Hostage.UI
             personNameText.text = person.SOReference.Name;
             descriptionText.text = person.SOReference.Description;
             UpdateStatus();
+        }
+
+        public void UpdateProgress(float percentageLeft)
+        {
+            if (progress != null)
+                progress.localScale = new Vector3(progress.localScale.x, percentageLeft, progress.localScale.z);
         }
 
         public void UpdateStatus()

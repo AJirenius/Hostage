@@ -22,6 +22,12 @@ namespace Hostage.Core
         public TimedCommand TimedCommand;
     }
 
+    public struct TimedCommandProgressSignal
+    {
+        public Person Person;
+        public float PercentageLeft;
+    }
+
     public struct PersonStatusChangedSignal
     {
         public Person Person;

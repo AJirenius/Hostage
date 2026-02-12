@@ -49,13 +49,21 @@ namespace Hostage.UI
             _uiManager.ClearAllCommandButtons();
         }
 
-        string GetDisplayName(SOIntel soIntel)
+        public void UpdateName(Person person)
         {
-            if (soIntel.category == IntelCategory.Person
-                && soIntel.person != null
-                && (soIntel.person.defaultFlag & PersonFlag.Unknown) != 0)
+            intelNameText.text = GetDisplayName(_soIntel, person);
+        }
+
+        string GetDisplayName(SOIntel soIntel, Person person = null)
+        {
+            if (soIntel.category == IntelCategory.Person && soIntel.person != null)
             {
-                return soIntel.person.UnknownName;
+                bool isUnknown = person != null
+                    ? person.IsUnknown()
+                    : (soIntel.person.defaultFlag & PersonFlag.Unknown) != 0;
+
+                if (isUnknown)
+                    return soIntel.person.UnknownName;
             }
             return soIntel.intelName;
         }
