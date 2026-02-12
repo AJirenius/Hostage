@@ -119,8 +119,15 @@ namespace Hostage.Graphs
 
         public override void Execute(EventGraphRunner runner, Action<int> onComplete)
         {
-            
-            onComplete?.Invoke(0);
+            if (runner.Context.Intel == null)
+            {
+                Debug.LogError("Context.Intel must be set for a PersonStartNode");
+                return;
+            }
+
+            int index = intelList.FindIndex(intel => intel == runner.Context.Intel);
+            index = index == -1?intelList.Count:index;
+            onComplete?.Invoke(index);
         }
     }
 

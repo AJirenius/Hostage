@@ -65,23 +65,38 @@ namespace Hostage.UI
 
         private void ShowCommandButtons(SOIntel soIntel)
         {
-            var verbs = GetAvailableVerbs(soIntel);
-            float offsetY = 0f;
-            float buttonHeight = 100f;
-            float startY = -((verbs.Count - 1) * buttonHeight) / 2f;
+            if (_person.IsAssistant())
+            {
+                var verbs = GetAvailableVerbs(soIntel);
+                float offsetY = 0f;
+                float buttonHeight = 100f;
+                float startY = -((verbs.Count - 1) * buttonHeight) / 2f;
 
-            foreach (var verb in verbs)
+                foreach (var verb in verbs)
+                {
+                    var buttonGo = Instantiate(commandPrefab, transform);
+                    buttonGo.transform.SetAsLastSibling();
+                    buttonGo.transform.localPosition = new Vector3(100f, startY + offsetY, 0f);
+
+                    var commandButton = buttonGo.GetComponent<CommandButtonUI>();
+                    if (commandButton != null)
+                        commandButton.Setup(verb, _person, _uiManager, soIntel);
+
+                    _spawnedButtons.Add(buttonGo);
+                    offsetY += buttonHeight;
+                }
+            }
+            else
             {
                 var buttonGo = Instantiate(commandPrefab, transform);
                 buttonGo.transform.SetAsLastSibling();
-                buttonGo.transform.localPosition = new Vector3(100f, startY + offsetY, 0f);
+                buttonGo.transform.localPosition = new Vector3(100f, 0f, 0f);
 
                 var commandButton = buttonGo.GetComponent<CommandButtonUI>();
                 if (commandButton != null)
-                    commandButton.Setup(verb, _person, _uiManager, soIntel);
+                    commandButton.SetupNoVerb(_person, _uiManager, soIntel);
 
                 _spawnedButtons.Add(buttonGo);
-                offsetY += buttonHeight;
             }
         }
 

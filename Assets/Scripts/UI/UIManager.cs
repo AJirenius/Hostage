@@ -175,6 +175,13 @@ namespace Hostage.UI
             ClearAllCommandButtons();
         }
 
+        public void OnButtonSelected(Person person, SOIntel soIntel)
+        {
+            var command = new TimedCommand(null, person, soIntel);
+            _actionManager.AddTimedCommand(command);
+            ClearAllCommandButtons();
+        }
+
         public void ClearAllCommandButtons()
         {
             foreach (var kvp in _createdPersonCards)

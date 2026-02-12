@@ -65,7 +65,7 @@ namespace Hostage.Core
             {
                 Debug.Log("ExecutePersonAction: " + timedCommand.Person.SOReference.Name + " index: " + timedCommand.timedEventIndex);
                 context.Intel = timedCommand.SoIntel;
-                OnGraphRequested?.Invoke(timedCommand.SoIntel.masterGraph, context, -1);
+                OnGraphRequested?.Invoke(timedCommand.Person.SOReference.personMasterGraph, context, -1);
             }
 
             
@@ -87,32 +87,43 @@ namespace Hostage.Core
         {
             if (timedCommand.Person.IsOccupied() || timedCommand.Person.IsUnknown() || !timedCommand.Person.IsAvailable())
             {
-                Debug.LogWarning($"Cannot add action {timedCommand.verb.actionType}: person '{timedCommand.Person.SOReference.Name}' is {timedCommand.Person.Flag}");
+                Debug.LogWarning($"Cannot add action: person '{timedCommand.Person.SOReference.Name}' is {timedCommand.Person.Flag}");
                 return;
             }
 
-            if (timedCommand.verb.requiredTags != null)
+            if (timedCommand.verb != null)
             {
-                foreach (var tag in timedCommand.verb.requiredTags)
+                if (timedCommand.verb.requiredTags != null)
                 {
-                    if (!timedCommand.Person.SOReference.skillTags.Contains(tag))
+                    foreach (var tag in timedCommand.verb.requiredTags)
                     {
-                        Debug.LogWarning($"Cannot add action {timedCommand.verb.actionType}: person '{timedCommand.Person.SOReference.Name}' missing required tag {tag}");
-                        return;
+                        if (!timedCommand.Person.SOReference.skillTags.Contains(tag))
+                        {
+                            Debug.LogWarning($"Cannot add action {timedCommand.verb.actionType}: person '{timedCommand.Person.SOReference.Name}' missing required tag {tag}");
+                            return;
+                        }
                     }
                 }
+
+                Debug.Log("Adding action " + timedCommand.verb.actionType);
+                timedCommand.Person.SetOccupied();
+                timedCommand.modifiedTime = timedCommand.verb.GetModifiedTime(timedCommand.Person.SOReference);
+                timedCommand.timeLeft = timedCommand.modifiedTime;
+                timedCommand.timedEvents = timedCommand.verb switch
+                {
+                    Surveillance s => s.timedEvents,
+                    Analyze a => a.timedEvents,
+                    _ => null
+                };
+            }
+            else
+            {
+                Debug.Log("Adding verbless action for " + timedCommand.Person.SOReference.Name);
+                timedCommand.Person.SetOccupied();
+                timedCommand.modifiedTime = 0f;
+                timedCommand.timeLeft = 0f;
             }
 
-            Debug.Log("Adding action" + timedCommand.verb.actionType);
-            timedCommand.Person.SetOccupied();
-            timedCommand.modifiedTime = timedCommand.verb.GetModifiedTime(timedCommand.Person.SOReference);
-            timedCommand.timeLeft = timedCommand.modifiedTime;
-            timedCommand.timedEvents = timedCommand.verb switch
-            {
-                Surveillance s => s.timedEvents,
-                Analyze a => a.timedEvents,
-                _ => null
-            };
             _commands.Add(timedCommand);
             _signalBus.Publish(new TimedCommandStartedSignal { TimedCommand = timedCommand });
         }

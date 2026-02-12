@@ -49,6 +49,7 @@ namespace Hostage.Graphs.Editor
                 context.AddInputPort<SOIntel>($"intel{i}").Build();
                 context.AddOutputPort($"out{i}").Build();
             }
+            context.AddOutputPort($"default").Build();
         }
     }
     

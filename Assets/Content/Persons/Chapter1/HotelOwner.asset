@@ -19,3 +19,4 @@ MonoBehaviour:
   Portrait: {fileID: 0}
   defaultFlag: 8
   skillTags: 
+  personMasterGraph: {fileID: -5475051401550479605, guid: cd1c08454cde147c28ea1626cc338826, type: 3}

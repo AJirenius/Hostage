@@ -36,6 +36,7 @@ namespace Hostage.Core
 
         public float GetPercentageLeft()
         {
+            if (modifiedTime == 0) return 0;
             return timeLeft / modifiedTime;
         }
 
