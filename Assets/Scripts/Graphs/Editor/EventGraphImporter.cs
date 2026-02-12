@@ -177,6 +177,16 @@ namespace Hostage.Graphs.Editor {
                     var clearFlagPerson = clearFlagTarget == PersonTargetType.SpecifiedPerson ? GetInputPortValue<Hostage.SO.SOPerson>(clearFlagNode.GetInputPortByName("Person")) : null;
                     returnedNodes.Add(new RTClearPersonFlagNode { flag = clearFlagValue, personTargetType = clearFlagTarget, soPerson = clearFlagPerson });
                     break;
+                case BranchByPerson branchByPersonNode:
+                    var nrPersons = branchByPersonNode.GetNodeOptionByName("NrPersons").TryGetValue<int>(out var personCount) ? personCount : 3;
+                    var rtBranchByPerson = new RTBranchByPersonNode();
+                    for (int i = 0; i < nrPersons; i++)
+                    {
+                        var soPerson = GetInputPortValue<Hostage.SO.SOPerson>(branchByPersonNode.GetInputPortByName($"person{i}"));
+                        rtBranchByPerson.personList.Add(soPerson);
+                    }
+                    returnedNodes.Add(rtBranchByPerson);
+                    break;
                 case BranchByIndex branchByIndexNode:
                     var branchSourceType = branchByIndexNode.GetNodeOptionByName("SourceType").TryGetValue<IndexSourceType>(out var srcType) ? srcType : IndexSourceType.Context;
                     var rtBranch = new RTBranchByIndexNode { sourceType = branchSourceType };

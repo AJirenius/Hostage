@@ -166,7 +166,7 @@ namespace Hostage.Graphs
            switch (personTargetType)
            {
                case PersonTargetType.ContextPerson:
-                   name = runner.Context.TriggeredBy != null ? runner.Context.TriggeredBy.SOReference.Name : "Someone";
+                   name = runner.Context.Person != null ? runner.Context.Person.SOReference.Name : "Someone";
                    break;
                 case PersonTargetType.Player:
                    name = "You";
@@ -264,7 +264,7 @@ namespace Hostage.Graphs
             switch (personTargetType)
             {
                 case PersonTargetType.ContextPerson:
-                    return runner.Context.TriggeredBy;
+                    return runner.Context.Person;
                 case PersonTargetType.SpecifiedPerson:
                     return runner.PersonManager.GetPerson(soPerson);
                 default:
@@ -297,13 +297,34 @@ namespace Hostage.Graphs
             switch (personTargetType)
             {
                 case PersonTargetType.ContextPerson:
-                    return runner.Context.TriggeredBy;
+                    return runner.Context.Person;
                 case PersonTargetType.SpecifiedPerson:
                     return runner.PersonManager.GetPerson(soPerson);
                 default:
                     Debug.LogWarning("RTClearPersonFlagNode: unsupported target " + personTargetType);
                     return null;
             }
+        }
+    }
+
+    [Serializable]
+    public class RTBranchByPersonNode : RuntimeNode
+    {
+        public List<SOPerson> personList = new();
+
+        public override void Execute(EventGraphRunner runner, Action<int> onComplete)
+        {
+            if (runner.Context.Person == null)
+            {
+                Debug.LogWarning("RTBranchByPersonNode: Context.Person is null, using default output");
+                onComplete?.Invoke(0);
+                return;
+            }
+
+            int index = personList.FindIndex(p => p == runner.Context.Person.SOReference);
+            // output 0 = default, outputs 1..N = person matches
+            int output = index == -1 ? 0 : index + 1;
+            onComplete?.Invoke(output);
         }
     }
 

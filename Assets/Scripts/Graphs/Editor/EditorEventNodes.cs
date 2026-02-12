@@ -267,5 +267,30 @@ namespace Hostage.Graphs.Editor
         }
     }
     
+    [Serializable]
+    public class BranchByPerson:Node
+    {
+        const string NR_PERSONS = "NrPersons";
+        protected override void OnDefineOptions(IOptionDefinitionContext context)
+        {
+            context.AddOption<int>(NR_PERSONS)
+                .WithDisplayName("Nr SOPersons")
+                .WithDefaultValue(3)
+                .Delayed();
+        }
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            var option = GetNodeOptionByName(NR_PERSONS);
+            option.TryGetValue<int>(out var nrPersons);
+            context.AddInputPort("in").Build();
+            context.AddOutputPort($"default").Build();
+            for (int i = 0; i < nrPersons; i++)
+            {
+                context.AddInputPort<SOPerson>($"person{i}").Build();
+                context.AddOutputPort($"out{i}").Build();
+            }
+        }
+    }
+    
     
 }

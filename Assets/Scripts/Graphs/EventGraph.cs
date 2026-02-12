@@ -10,14 +10,14 @@ namespace Hostage.Graphs
         public const string TimedEventIndexKey = "timed_event_index";
         public const string ActionOutputKey = "action_output";
 
-        public Person TriggeredBy { get; }
+        public Person Person { get; }
         public SOIntel Intel { get; set; }
         public Dictionary<string, int> IntVariables { get; } = new();
         public Dictionary<string, string> StringVariables { get; } = new();
 
-        public GraphContext(Person triggeredBy = null, SOIntel intel = null)
+        public GraphContext(Person person = null, SOIntel intel = null)
         {
-            TriggeredBy = triggeredBy;
+            Person = person;
             Intel = intel;
         }
     }
