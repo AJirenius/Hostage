@@ -129,7 +129,7 @@ namespace Hostage.UI
             float x = -450;
             foreach (var kvp in _createdPersonCards)
             {
-                kvp.Value.transform.localPosition = new Vector3(x, 0, 0);
+                kvp.Value.transform.localPosition = new Vector3(x, -200, 0);
                 x += 300;
             }
         }

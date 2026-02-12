@@ -7,11 +7,92 @@ using UnityEngine.Serialization;
 
 namespace Hostage.Graphs
 {
+    // ── Value Node System ──────────────────────────────────────────────
+
+    [Serializable]
+    public abstract class RuntimeValueNode
+    {
+        public abstract object Evaluate(EventGraphRunner runner, int outputIndex = 0);
+    }
+
+    [Serializable]
+    public struct DataPort
+    {
+        public int valueNodeIndex;    // -1 = use baked value
+        public int outputPortIndex;   // which output of the value node
+
+        // Baked value storage (one field per supported type)
+        public string stringValue;
+        public int intValue;
+        public float floatValue;
+        public bool boolValue;
+        public UnityEngine.Object objectValue; // covers Intel, SOPerson, etc.
+
+        public bool HasValueNode => valueNodeIndex >= 0;
+
+        public static DataPort Baked() => new DataPort { valueNodeIndex = -1 };
+
+        public static DataPort FromValueNode(int nodeIndex, int outputPort = 0) =>
+            new DataPort { valueNodeIndex = nodeIndex, outputPortIndex = outputPort };
+    }
+
+    [Serializable]
+    public class RTAddIntNode : RuntimeValueNode
+    {
+        public DataPort a;
+        public DataPort b;
+
+        public override object Evaluate(EventGraphRunner runner, int outputIndex = 0)
+        {
+            var valA = runner.ResolveDataPort<int>(a);
+            var valB = runner.ResolveDataPort<int>(b);
+            return valA + valB;
+        }
+    }
+
+    [Serializable]
+    public class RTContextIntNode : RuntimeValueNode
+    {
+        public DataPort key;
+
+        public override object Evaluate(EventGraphRunner runner, int outputIndex = 0)
+        {
+            var keyStr = runner.ResolveDataPort<string>(key);
+            if (runner.Context.IntVariables.TryGetValue(keyStr, out var value))
+                return value;
+
+            Debug.LogWarning("RTContextIntNode: context key '" + keyStr + "' not found, returning 0");
+            return 0;
+        }
+    }
+
+    [Serializable]
+    public class RTRandomIntNode : RuntimeValueNode
+    {
+        public DataPort min;
+        public DataPort max;
+
+        public override object Evaluate(EventGraphRunner runner, int outputIndex = 0)
+        {
+            var minVal = runner.ResolveDataPort<int>(min);
+            var maxVal = runner.ResolveDataPort<int>(max);
+            return UnityEngine.Random.Range(minVal, maxVal + 1);
+        }
+    }
+
+    // ── Flow Nodes ─────────────────────────────────────────────────────
+
     public enum PersonTargetType
     {
         SpecifiedPerson,
         Player,
         ContextPerson,
+    }
+    
+    public enum IndexSourceType
+    {
+        Context,
+        GraphValue
     }
     
     [Serializable]
@@ -192,6 +273,41 @@ namespace Hostage.Graphs
                     Debug.LogWarning("RTClearPersonFlagNode: unsupported target " + personTargetType);
                     return null;
             }
+        }
+    }
+
+    [Serializable]
+    public class RTBranchByIndexNode : RuntimeNode
+    {
+        public IndexSourceType sourceType;
+        public DataPort contextKey;
+        public DataPort index;
+
+        public override void Execute(EventGraphRunner runner, Action<int> onComplete)
+        {
+            int branchIndex;
+            switch (sourceType)
+            {
+                case IndexSourceType.Context:
+                    var key = runner.ResolveDataPort<string>(contextKey);
+                    if (runner.Context.IntVariables.TryGetValue(key, out var ctxValue))
+                    {
+                        branchIndex = ctxValue;
+                    }
+                    else
+                    {
+                        Debug.LogWarning("RTBranchByIndexNode: context key '" + key + "' not found, defaulting to 0");
+                        branchIndex = 0;
+                    }
+                    break;
+                case IndexSourceType.GraphValue:
+                    branchIndex = runner.ResolveDataPort<int>(index);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            onComplete?.Invoke(branchIndex);
         }
     }
 }

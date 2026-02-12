@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Hostage.SO;
 
 namespace Hostage.Core
@@ -23,6 +24,8 @@ namespace Hostage.Core
         public Intel Intel;
         public float timeLeft;
         public float modifiedTime;
+        public List<TimedEvent> timedEvents;
+        public int timedEventIndex;
 
         public TimedCommand(Verb verb, Person person, Intel intel)
         {

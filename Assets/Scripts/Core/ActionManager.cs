@@ -26,24 +26,24 @@ namespace Hostage.Core
             {
                 TimedCommand timedCommand = _commands[i];
                 timedCommand.timeLeft -= gameTime;
-                Debug.Log("Action: " + timedCommand.timeLeft);
+                //Debug.Log(gameTime+ " Action: " + timedCommand.timeLeft);
                 if (timedCommand.timeLeft <= 0)
                 {
-                    // Execute event in Verb
-                    ExecuteAction(i);
-                    _commands.RemoveAt(i);
+                    if (ExecuteAction(i))
+                    {
+                        _commands.RemoveAt(i);
+                    }
                 }
             }
         }
 
-        private void ExecuteAction(int index)
+        private bool ExecuteAction(int index)
         {
             TimedCommand timedCommand = _commands[index];
-            timedCommand.Person.ClearOccupied();
-            _signalBus.Publish(new TimedCommandCompletedSignal { TimedCommand = timedCommand });
-            Debug.Log("ExecuteAction: " + timedCommand.verb.actionType);
+            Debug.Log("ExecuteAction: " + timedCommand.verb.actionType + " index: " + timedCommand.timedEventIndex);
 
             var context = new GraphContext(timedCommand.Person);
+            context.IntVariables[GraphContext.TimedEventIndexKey] = timedCommand.timedEventIndex;
 
             if (timedCommand.verb.result != null)
             {
@@ -53,6 +53,18 @@ namespace Hostage.Core
             {
                 OnGraphRequested?.Invoke(timedCommand.Intel.masterGraph, context, timedCommand.verb.actionType.ToOutputIndex());
             }
+
+            if (timedCommand.timedEvents != null && timedCommand.timedEventIndex < timedCommand.timedEvents.Count)
+            {
+                timedCommand.timeLeft = timedCommand.timedEvents[timedCommand.timedEventIndex].time;
+                timedCommand.modifiedTime = timedCommand.timeLeft;
+                timedCommand.timedEventIndex++;
+                return false;
+            }
+
+            timedCommand.Person.ClearOccupied();
+            _signalBus.Publish(new TimedCommandCompletedSignal { TimedCommand = timedCommand });
+            return true;
         }
 
         public void AddTimedCommand(TimedCommand timedCommand)
@@ -67,6 +79,12 @@ namespace Hostage.Core
             timedCommand.Person.SetOccupied();
             timedCommand.modifiedTime = timedCommand.verb.GetModifiedTime(timedCommand.Person.SOReference);
             timedCommand.timeLeft = timedCommand.modifiedTime;
+            timedCommand.timedEvents = timedCommand.verb switch
+            {
+                Surveillance s => s.timedEvents,
+                Analyze a => a.timedEvents,
+                _ => null
+            };
             _commands.Add(timedCommand);
             _signalBus.Publish(new TimedCommandStartedSignal { TimedCommand = timedCommand });
         }

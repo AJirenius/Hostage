@@ -160,6 +160,87 @@ namespace Hostage.Graphs.Editor
             if (target == PersonTargetType.SpecifiedPerson) context.AddInputPort<SOPerson>("Person").Build();
         }
     }
+
+    // ── Value Nodes (no flow ports) ───────────────────────────────────
+
+    public interface IEditorValueNode { }
+
+    [Serializable]
+    public class AddIntNode : Node, IEditorValueNode
+    {
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            context.AddInputPort<int>("A").Build();
+            context.AddInputPort<int>("B").Build();
+            context.AddOutputPort<int>("Result").Build();
+        }
+    }
+
+    [Serializable]
+    public class ContextIntNode : Node, IEditorValueNode
+    {
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            context.AddInputPort<string>("Key").Build();
+            context.AddOutputPort<int>("Value").Build();
+        }
+    }
+
+    [Serializable]
+    public class RandomIntNode : Node, IEditorValueNode
+    {
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            context.AddInputPort<int>("Min").Build();
+            context.AddInputPort<int>("Max").Build();
+            context.AddOutputPort<int>("Result").Build();
+        }
+    }
+
+    // ── Flow Nodes ──────────────────────────────────────────────────────
+
+    [Serializable]
+    public class BranchByIndex:Node
+    {
+        const string NR_OUTPUTS = "NrOutputs";
+        const string SOURCE_TYPE = "SourceType";
+        protected override void OnDefineOptions(IOptionDefinitionContext context)
+        {
+            context.AddOption<int>(NR_OUTPUTS)
+                .WithDisplayName("Nr outputs")
+                .WithDefaultValue(3)
+                .Delayed();
+            context.AddOption<IndexSourceType>(SOURCE_TYPE)
+                .WithDisplayName("Source Type")
+                .WithDefaultValue(IndexSourceType.Context)
+                .Delayed();
+        }
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            var option = GetNodeOptionByName(NR_OUTPUTS);
+            option.TryGetValue<int>(out var nrOutputs);
+            var option2 = GetNodeOptionByName(SOURCE_TYPE);
+            option2.TryGetValue<IndexSourceType>(out var sourceType);
+
+            context.AddInputPort("in").Build();
+            switch (sourceType)
+            {
+                case IndexSourceType.Context:
+                    context.AddInputPort<string>("ContextKey").Build(); 
+                    break;
+                case IndexSourceType.GraphValue:
+                    context.AddInputPort<int>("Index").Build(); 
+                    break;
+                default: 
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            for (int i = 0; i < nrOutputs; i++)
+            {
+                context.AddOutputPort($"out{i}").Build();
+            }
+        }
+    }
     
     
 }

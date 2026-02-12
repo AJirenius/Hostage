@@ -101,7 +101,6 @@ namespace Hostage.SO
     public class TimedEvent
     {
         public int time;
-        public EventGraph graph;
     }
     
     

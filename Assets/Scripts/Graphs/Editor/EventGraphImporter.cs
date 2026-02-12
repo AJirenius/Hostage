@@ -6,34 +6,44 @@ using UnityEditor.AssetImporters;
 using UnityEngine;
 
 namespace Hostage.Graphs.Editor {
-    [ScriptedImporter(1, EditorEventGraph.AssetExtension)]
+    [ScriptedImporter(2, EditorEventGraph.AssetExtension)]
     internal class EventGraphImporter : ScriptedImporter {
         public override void OnImportAsset(AssetImportContext ctx) {
             var graph = GraphDatabase.LoadGraphForImporter<EditorEventGraph>(ctx.assetPath);
-            
+
             if (graph == null) {
                 Debug.LogError($"Failed to load State Machine Director graph asset: {ctx.assetPath}");
                 return;
             }
-            
+
             var startNodeModel = (INode)graph.GetNodes().OfType<Graphs.Editor.ActionStartNode>().FirstOrDefault()
                               ?? graph.GetNodes().OfType<Graphs.Editor.StartNode>().FirstOrDefault();
-            
+
             if (startNodeModel == null) {
                 return;
             }
-            
+
             var runtimeAsset = ScriptableObject.CreateInstance<Graphs.EventGraph>();
             // Set the name so Unity can properly identify it in the inspector
             runtimeAsset.name = System.IO.Path.GetFileNameWithoutExtension(ctx.assetPath);
-            
+
             var nodeMap = new Dictionary<INode, int>();
-            
+
             // First pass: Create all runtime nodes (without connections)
             CreateRuntimeNodes(startNodeModel, runtimeAsset, nodeMap);
-            
+
             // Second pass: Set up connections using the indices
             SetupConnections(startNodeModel, runtimeAsset, nodeMap);
+
+            // Third pass: Discover value nodes reachable from flow node data inputs
+            var valueNodeMap = new Dictionary<INode, int>();
+            DiscoverValueNodes(runtimeAsset, nodeMap, valueNodeMap);
+
+            // Fourth pass: Wire DataPort references within value nodes
+            WireValueNodeDataPorts(runtimeAsset, valueNodeMap);
+
+            // Fifth pass: Wire DataPort references on flow nodes that use DataPort fields
+            WireFlowNodeDataPorts(runtimeAsset, nodeMap, valueNodeMap);
 
             // Record start node output port metadata
             runtimeAsset.StartNodeOutputCount = startNodeModel.outputPortCount;
@@ -155,12 +165,189 @@ namespace Hostage.Graphs.Editor {
                     var clearFlagPerson = clearFlagTarget == PersonTargetType.SpecifiedPerson ? GetInputPortValue<Hostage.SO.SOPerson>(clearFlagNode.GetInputPortByName("Person")) : null;
                     returnedNodes.Add(new RTClearPersonFlagNode { flag = clearFlagValue, personTargetType = clearFlagTarget, soPerson = clearFlagPerson });
                     break;
+                case BranchByIndex branchByIndexNode:
+                    var branchSourceType = branchByIndexNode.GetNodeOptionByName("SourceType").TryGetValue<IndexSourceType>(out var srcType) ? srcType : IndexSourceType.Context;
+                    var rtBranch = new RTBranchByIndexNode { sourceType = branchSourceType };
+                    // DataPorts are baked here; value node refs are wired in WireFlowNodeDataPorts
+                    switch (branchSourceType)
+                    {
+                        case IndexSourceType.Context:
+                            rtBranch.contextKey = new DataPort { valueNodeIndex = -1, stringValue = GetInputPortValue<string>(branchByIndexNode.GetInputPortByName("ContextKey")) };
+                            break;
+                        case IndexSourceType.GraphValue:
+                            rtBranch.index = new DataPort { valueNodeIndex = -1, intValue = GetInputPortValue<int>(branchByIndexNode.GetInputPortByName("Index")) };
+                            break;
+                    }
+                    returnedNodes.Add(rtBranch);
+                    break;
                 default:
                     throw new ArgumentException($"Unsupported node type: {nodeModel.GetType()}");
             }
             
             return returnedNodes;
         }
+
+        // ── Value Node Discovery & Wiring ─────────────────────────────────
+
+        void DiscoverValueNodes(Graphs.EventGraph runtimeAsset, Dictionary<INode, int> flowNodeMap, Dictionary<INode, int> valueNodeMap) {
+            // Walk data input ports of all discovered flow nodes.
+            // If a data input connects to an IEditorValueNode, create the runtime value node.
+            var nodesToVisit = new Queue<INode>();
+
+            // Seed: scan all flow nodes for data inputs connected to value nodes
+            foreach (var editorNode in flowNodeMap.Keys) {
+                for (int i = 0; i < editorNode.inputPortCount; i++) {
+                    var port = editorNode.GetInputPort(i);
+                    if (port.isConnected) {
+                        var connectedNode = port.firstConnectedPort.GetNode();
+                        if (connectedNode is IEditorValueNode && !valueNodeMap.ContainsKey(connectedNode))
+                            nodesToVisit.Enqueue(connectedNode);
+                    }
+                }
+            }
+
+            // BFS through value node chain (value nodes feeding into other value nodes)
+            while (nodesToVisit.Count > 0) {
+                var editorValueNode = nodesToVisit.Dequeue();
+                if (valueNodeMap.ContainsKey(editorValueNode)) continue;
+
+                var runtimeValueNode = TranslateEditorValueNode(editorValueNode);
+                if (runtimeValueNode == null) {
+                    Debug.LogWarning($"Unsupported value node type: {editorValueNode.GetType()}");
+                    continue;
+                }
+
+                valueNodeMap[editorValueNode] = runtimeAsset.ValueNodes.Count;
+                runtimeAsset.ValueNodes.Add(runtimeValueNode);
+
+                // Check this value node's inputs for further value nodes
+                for (int i = 0; i < editorValueNode.inputPortCount; i++) {
+                    var port = editorValueNode.GetInputPort(i);
+                    if (port.isConnected) {
+                        var connectedNode = port.firstConnectedPort.GetNode();
+                        if (connectedNode is IEditorValueNode && !valueNodeMap.ContainsKey(connectedNode))
+                            nodesToVisit.Enqueue(connectedNode);
+                    }
+                }
+            }
+        }
+
+        void WireValueNodeDataPorts(Graphs.EventGraph runtimeAsset, Dictionary<INode, int> valueNodeMap) {
+            foreach (var kvp in valueNodeMap) {
+                var editorNode = kvp.Key;
+                var runtimeValueNode = runtimeAsset.ValueNodes[kvp.Value];
+
+                switch (runtimeValueNode) {
+                    case RTAddIntNode addNode:
+                        addNode.a = BuildDataPort(editorNode.GetInputPortByName("A"), valueNodeMap);
+                        addNode.b = BuildDataPort(editorNode.GetInputPortByName("B"), valueNodeMap);
+                        break;
+                    case RTContextIntNode ctxNode:
+                        ctxNode.key = BuildDataPort(editorNode.GetInputPortByName("Key"), valueNodeMap);
+                        break;
+                    case RTRandomIntNode randNode:
+                        randNode.min = BuildDataPort(editorNode.GetInputPortByName("Min"), valueNodeMap);
+                        randNode.max = BuildDataPort(editorNode.GetInputPortByName("Max"), valueNodeMap);
+                        break;
+                }
+            }
+        }
+
+        void WireFlowNodeDataPorts(Graphs.EventGraph runtimeAsset, Dictionary<INode, int> flowNodeMap, Dictionary<INode, int> valueNodeMap) {
+            foreach (var kvp in flowNodeMap) {
+                var editorNode = kvp.Key;
+                var runtimeNode = runtimeAsset.Nodes[kvp.Value];
+
+                switch (runtimeNode) {
+                    case RTBranchByIndexNode branchNode:
+                        switch (branchNode.sourceType) {
+                            case IndexSourceType.Context:
+                                branchNode.contextKey = BuildDataPort(editorNode.GetInputPortByName("ContextKey"), valueNodeMap);
+                                break;
+                            case IndexSourceType.GraphValue:
+                                branchNode.index = BuildDataPort(editorNode.GetInputPortByName("Index"), valueNodeMap);
+                                break;
+                        }
+                        break;
+                }
+            }
+        }
+
+        static RuntimeValueNode TranslateEditorValueNode(INode editorNode) {
+            switch (editorNode) {
+                case AddIntNode:
+                    return new RTAddIntNode();
+                case ContextIntNode:
+                    return new RTContextIntNode();
+                case RandomIntNode:
+                    return new RTRandomIntNode();
+                default:
+                    return null;
+            }
+        }
+
+        static DataPort BuildDataPort(IPort port, Dictionary<INode, int> valueNodeMap) {
+            var dp = DataPort.Baked();
+
+            if (port.isConnected) {
+                var connectedNode = port.firstConnectedPort.GetNode();
+
+                // Connected to a value node → reference it
+                if (connectedNode is IEditorValueNode && valueNodeMap.TryGetValue(connectedNode, out int vnIndex)) {
+                    // Find which output port index of the value node is connected
+                    var connectedPort = port.firstConnectedPort;
+                    int outputIndex = 0;
+                    var sourceNode = connectedPort.GetNode();
+                    for (int i = 0; i < sourceNode.outputPortCount; i++) {
+                        if (sourceNode.GetOutputPort(i) == connectedPort) {
+                            outputIndex = i;
+                            break;
+                        }
+                    }
+                    return DataPort.FromValueNode(vnIndex, outputIndex);
+                }
+
+                // Connected to constant/variable → bake value
+                switch (connectedNode) {
+                    case IVariableNode variableNode:
+                        return BakeVariableToDataPort(variableNode);
+                    case IConstantNode constantNode:
+                        return BakeConstantToDataPort(constantNode);
+                }
+            }
+            else {
+                // Inline value on the port itself
+                if (port.TryGetValue(out string s)) dp.stringValue = s;
+                else if (port.TryGetValue(out int i)) dp.intValue = i;
+                else if (port.TryGetValue(out float f)) dp.floatValue = f;
+                else if (port.TryGetValue(out bool b)) dp.boolValue = b;
+                else if (port.TryGetValue(out UnityEngine.Object o)) dp.objectValue = o;
+            }
+
+            return dp;
+        }
+
+        static DataPort BakeVariableToDataPort(IVariableNode variableNode) {
+            var dp = DataPort.Baked();
+            if (variableNode.variable.TryGetDefaultValue<string>(out var s)) dp.stringValue = s;
+            else if (variableNode.variable.TryGetDefaultValue<int>(out var i)) dp.intValue = i;
+            else if (variableNode.variable.TryGetDefaultValue<float>(out var f)) dp.floatValue = f;
+            else if (variableNode.variable.TryGetDefaultValue<bool>(out var b)) dp.boolValue = b;
+            else if (variableNode.variable.TryGetDefaultValue<UnityEngine.Object>(out var o)) dp.objectValue = o;
+            return dp;
+        }
+
+        static DataPort BakeConstantToDataPort(IConstantNode constantNode) {
+            var dp = DataPort.Baked();
+            if (constantNode.TryGetValue<string>(out var s)) dp.stringValue = s;
+            else if (constantNode.TryGetValue<int>(out var i)) dp.intValue = i;
+            else if (constantNode.TryGetValue<float>(out var f)) dp.floatValue = f;
+            else if (constantNode.TryGetValue<bool>(out var b)) dp.boolValue = b;
+            else if (constantNode.TryGetValue<UnityEngine.Object>(out var o)) dp.objectValue = o;
+            return dp;
+        }
+
+        // ── Existing Helpers ───────────────────────────────────────────────
 
         static T GetInputPortValue<T>(IPort port) {
             T value = default;
@@ -180,7 +367,7 @@ namespace Hostage.Graphs.Editor {
             else {
                 port.TryGetValue(out value);
             }
-            
+
             return value;
         }
     }

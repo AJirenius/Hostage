@@ -17,9 +17,10 @@ namespace Hostage
         readonly SOPersonList _personList;
         readonly UIManager _uiManager;
         readonly SignalBus _signalBus;
+        readonly GameClock _gameClock;
 
         public GameInitializer(ActionManager actionManager, PlayerInventory playerInventory, IntelProvider intelProvider, EventGraph eventGraph, EventGraphRunner eventGraphRunner,
-            SOPersonList personList, UIManager uiManager, SignalBus signalBus)
+            SOPersonList personList, UIManager uiManager, SignalBus signalBus, GameClock gameClock)
         {
             Debug.Log("Initializing player inventory");
             _actionManager = actionManager;
@@ -30,6 +31,7 @@ namespace Hostage
             _personList = personList;
             _uiManager = uiManager;
             _signalBus = signalBus;
+            _gameClock = gameClock;
         }
 
         public void Start()
@@ -40,9 +42,9 @@ namespace Hostage
         }
 
         public void Tick()
-        {   
-            float deltaTime = UnityEngine.Time.deltaTime; // fix later on with modifiable gametime
-            _actionManager.HandleTime(deltaTime);
+        {
+            _gameClock.Tick();
+            _actionManager.HandleTime(_gameClock.GameDeltaTime);
         }
     }
 }

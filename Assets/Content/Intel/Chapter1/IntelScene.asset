@@ -45,10 +45,12 @@ MonoBehaviour:
     linkedIntels:
     - {fileID: 0}
     timedEvents:
-    - time: 10
-      graph: {fileID: 0}
-    - time: 15
-      graph: {fileID: 0}
+    - time: 5
+    - time: 4
+    - time: 5
+    - time: 4
+    - time: 4
+    - time: 4
   analyze:
     isAvailable: 0
     baseTime: 0
