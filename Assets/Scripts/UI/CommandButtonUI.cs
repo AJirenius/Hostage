@@ -10,15 +10,15 @@ namespace Hostage.UI
         private Verb _verb;
         private Person _person;
         private UIManager _uiManager;
-        private Intel _intel;
+        private SOIntel _soIntel;
         private CanvasGroup _canvasGroup;
 
-        public void Setup(Verb verb, Person person, UIManager uiManager, Intel intel)
+        public void Setup(Verb verb, Person person, UIManager uiManager, SOIntel soIntel)
         {
             _verb = verb;
             _person = person;
             _uiManager = uiManager;
-            _intel = intel;
+            _soIntel = soIntel;
 
             _canvasGroup = GetComponent<CanvasGroup>();
             if (_canvasGroup == null)
@@ -45,7 +45,7 @@ namespace Hostage.UI
             var intelCard = eventData.pointerDrag?.GetComponent<IntelCardUI>();
             if (intelCard == null) return;
 
-            _uiManager.OnVerbSelected(_verb, _person, _intel);
+            _uiManager.OnVerbSelected(_verb, _person, _soIntel);
         }
     }
 }

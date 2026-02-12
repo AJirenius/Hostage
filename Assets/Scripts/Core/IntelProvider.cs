@@ -6,25 +6,25 @@ namespace Hostage.Core
     public class IntelProvider
     {
         private readonly IntelList _intelList;
-        private readonly List<Intel> _runtimeIntels;
+        private readonly List<SOIntel> _runtimeIntels;
 
         public IntelProvider(IntelList intelList)
         {
             _intelList = intelList;
-            _runtimeIntels = new List<Intel>((IEnumerable<Intel>)intelList.GetIntels());
+            _runtimeIntels = new List<SOIntel>((IEnumerable<SOIntel>)intelList.GetIntels());
         }
 
-        public IReadOnlyList<Intel> GetAllIntels() => _runtimeIntels;
+        public IReadOnlyList<SOIntel> GetAllIntels() => _runtimeIntels;
 
-        public Intel GetWithId(string id)
+        public SOIntel GetWithId(string id)
         {
             return _runtimeIntels.Find(i => i.name == id || i.intelName == id);
         }
 
-        public void AddIntel(Intel intel)
+        public void AddIntel(SOIntel soIntel)
         {
-            if (!_runtimeIntels.Contains(intel))
-                _runtimeIntels.Add(intel);
+            if (!_runtimeIntels.Contains(soIntel))
+                _runtimeIntels.Add(soIntel);
         }
     }
 }

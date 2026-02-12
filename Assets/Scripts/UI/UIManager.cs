@@ -17,7 +17,7 @@ namespace Hostage.UI
         private ActionManager _actionManager;
         private PersonManager _personManager;
         private SignalBus _signalBus;
-        private Dictionary<Intel, GameObject > _createdIntelCards = new Dictionary<Intel, GameObject>();
+        private Dictionary<SOIntel, GameObject > _createdIntelCards = new Dictionary<SOIntel, GameObject>();
         private Dictionary<Person, GameObject > _createdPersonCards = new Dictionary<Person, GameObject>();
         private float _spawnX = -200;
         public void Initialize(PlayerInventory inventory, ActionManager actionManager, PersonManager personManager, SignalBus signalBus)
@@ -45,30 +45,30 @@ namespace Hostage.UI
 
         private void OnIntelAdded(IntelAddedSignal signal)
         {
-            if (_createdIntelCards.ContainsKey(signal.Intel)) return;
+            if (_createdIntelCards.ContainsKey(signal.SoIntel)) return;
             var card = Instantiate(intelCardPrefab, intelParent);
             var intelCard = card.GetComponent<IntelCardUI>();
-            intelCard.Setup(signal.Intel, this);
+            intelCard.Setup(signal.SoIntel, this);
             card.transform.localPosition += new Vector3(_spawnX, Random.Range(-50, 50), 0);
-            _createdIntelCards[signal.Intel] = card;
+            _createdIntelCards[signal.SoIntel] = card;
             _spawnX += 200;
             if (_spawnX > 800) _spawnX = -200;
         }
 
         private void OnIntelRemoved(IntelRemovedSignal signal)
         {
-            if (_createdIntelCards.TryGetValue(signal.Intel, out var cardGo))
+            if (_createdIntelCards.TryGetValue(signal.SoIntel, out var cardGo))
             {
                 Destroy(cardGo);
-                _createdIntelCards.Remove(signal.Intel);
+                _createdIntelCards.Remove(signal.SoIntel);
             }
         }
 
         private void RefreshIntelCards()
         {
-            IReadOnlyList<Intel> inventoryIntels = _playerInventory.GetAllIntel();
-            var keysToRemove = new List<Intel>();
-            foreach (KeyValuePair<Intel, GameObject> kvp in _createdIntelCards)
+            IReadOnlyList<SOIntel> inventoryIntels = _playerInventory.GetAllIntel();
+            var keysToRemove = new List<SOIntel>();
+            foreach (KeyValuePair<SOIntel, GameObject> kvp in _createdIntelCards)
             {
                 if (!inventoryIntels.Contains(kvp.Key))
                 {
@@ -126,11 +126,11 @@ namespace Hostage.UI
             }
 
             // Reposition all cards
-            float x = -450;
+            float x = -500;
             foreach (var kvp in _createdPersonCards)
             {
                 kvp.Value.transform.localPosition = new Vector3(x, -200, 0);
-                x += 300;
+                x += 250;
             }
         }
 
@@ -146,9 +146,9 @@ namespace Hostage.UI
             RefreshPersonCards();
         }
 
-        public void OnVerbSelected(Verb verb, Person person, Intel intel)
+        public void OnVerbSelected(Verb verb, Person person, SOIntel soIntel)
         {
-            var command = new TimedCommand(verb, person, intel);
+            var command = new TimedCommand(verb, person, soIntel);
             _actionManager.AddTimedCommand(command);
             ClearAllCommandButtons();
         }

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Hostage.SO
 {
     [CreateAssetMenu(fileName = "NewIntel", menuName = "SO/Intel", order = 0)]
-    public class Intel : ScriptableObject
+    public class SOIntel : ScriptableObject
     {
         public string intelName;
         public string description; // this should change due to what intel one have.
@@ -67,7 +67,7 @@ namespace Hostage.SO
     {
         public override ActionType actionType => ActionType.Interview;
 
-        public List<Intel> linkedIntels; // intel that can be run instead of this
+        public List<SOIntel> linkedIntels; // intel that can be run instead of this
     }
     
     [Serializable]
@@ -75,7 +75,7 @@ namespace Hostage.SO
     {
         public override ActionType actionType => ActionType.Surveillance;
 
-        public List<Intel> linkedIntels; // intel that can be run instead of this
+        public List<SOIntel> linkedIntels; // intel that can be run instead of this
         public List<TimedEvent> timedEvents;
         
     }

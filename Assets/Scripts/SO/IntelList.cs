@@ -7,13 +7,13 @@ namespace Hostage.SO
     public class IntelList : ScriptableObject
     {
         [SerializeField]
-        private List<Intel> _intels = new List<Intel>();
+        private List<SOIntel> _intels = new List<SOIntel>();
 
-        public void SetIntels(List<Intel> newIntels)
+        public void SetIntels(List<SOIntel> newIntels)
         {
             _intels = newIntels;
         }
 
-        public List<Intel> GetIntels() => _intels;
+        public List<SOIntel> GetIntels() => _intels;
     }
 }

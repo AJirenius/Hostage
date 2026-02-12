@@ -33,7 +33,7 @@ namespace Hostage.Core
             }
         }
 
-        public List<Intel> Intels { get; } = new List<Intel>();
+        public List<SOIntel> Intels { get; } = new List<SOIntel>();
 
         public Person(SOPerson soReference, SignalBus signalBus)
         {
@@ -61,13 +61,13 @@ namespace Hostage.Core
         public void ClearAvailable() => Flag &= ~PersonFlag.Available;
         public void ClearAssistant() => Flag &= ~PersonFlag.Assistant;
         
-        public void AddIntel(Intel intel)
+        public void AddIntel(SOIntel soIntel)
         {
-            if (!Intels.Contains(intel))
-                Intels.Add(intel);
+            if (!Intels.Contains(soIntel))
+                Intels.Add(soIntel);
         }
 
-        public bool RemoveIntel(Intel intel) => Intels.Remove(intel);
-        public bool HasIntel(Intel intel) => Intels.Contains(intel);
+        public bool RemoveIntel(SOIntel soIntel) => Intels.Remove(soIntel);
+        public bool HasIntel(SOIntel soIntel) => Intels.Contains(soIntel);
     }
 }

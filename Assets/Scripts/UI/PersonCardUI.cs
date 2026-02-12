@@ -36,7 +36,7 @@ namespace Hostage.UI
             if (panel != null)
                 panel.color = _person.IsOccupied() ? OccupiedColor : NormalColor;
 
-            personNameText.text = _person.IsUnknown() ? "Unknown" : _person.SOReference.Name;
+            personNameText.text = _person.IsUnknown() ? (string.IsNullOrEmpty(_person.SOReference.UnknownName)?"Unknown":_person.SOReference.UnknownName) : _person.SOReference.Name;
         }
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -55,9 +55,9 @@ namespace Hostage.UI
             ClearCommandButtons();
         }
 
-        private void ShowCommandButtons(Intel intel)
+        private void ShowCommandButtons(SOIntel soIntel)
         {
-            var verbs = GetAvailableVerbs(intel);
+            var verbs = GetAvailableVerbs(soIntel);
             float offsetY = 0f;
             float buttonHeight = 100f;
             float startY = -((verbs.Count - 1) * buttonHeight) / 2f;
@@ -70,7 +70,7 @@ namespace Hostage.UI
 
                 var commandButton = buttonGo.GetComponent<CommandButtonUI>();
                 if (commandButton != null)
-                    commandButton.Setup(verb, _person, _uiManager, intel);
+                    commandButton.Setup(verb, _person, _uiManager, soIntel);
 
                 _spawnedButtons.Add(buttonGo);
                 offsetY += buttonHeight;
@@ -84,13 +84,13 @@ namespace Hostage.UI
             _spawnedButtons.Clear();
         }
 
-        private List<Verb> GetAvailableVerbs(Intel intel)
+        private List<Verb> GetAvailableVerbs(SOIntel soIntel)
         {
             var verbs = new List<Verb>();
-            if (intel.investigate is { isAvailable: true }) verbs.Add(intel.investigate);
-            if (intel.interview is { isAvailable: true }) verbs.Add(intel.interview);
-            if (intel.surveillance is { isAvailable: true }) verbs.Add(intel.surveillance);
-            if (intel.analyze is { isAvailable: true }) verbs.Add(intel.analyze);
+            if (soIntel.investigate is { isAvailable: true }) verbs.Add(soIntel.investigate);
+            if (soIntel.interview is { isAvailable: true }) verbs.Add(soIntel.interview);
+            if (soIntel.surveillance is { isAvailable: true }) verbs.Add(soIntel.surveillance);
+            if (soIntel.analyze is { isAvailable: true }) verbs.Add(soIntel.analyze);
             return verbs;
         }
     }

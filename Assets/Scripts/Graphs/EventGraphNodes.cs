@@ -155,13 +155,13 @@ namespace Hostage.Graphs
     [Serializable]
     public class RTGiveIntelToPersonNode : RuntimeNode
     {
-        public Intel intel;
+        [FormerlySerializedAs("intel")] public SOIntel soIntel;
         public SOPerson soPerson;
         public override void Execute(EventGraphRunner runner, Action<int> onComplete)
         {
             // take intel from inventory and give to person
 
-            Debug.Log("Taking " + intel.intelName + " from player and giving to " + soPerson.Name);
+            Debug.Log("Taking " + soIntel.intelName + " from player and giving to " + soPerson.Name);
             onComplete?.Invoke(0);
         }
     }
@@ -169,16 +169,16 @@ namespace Hostage.Graphs
     [Serializable]
     public class RTRemoveIntelFromPlayerNode : RuntimeNode
     {
-        public Intel intel;
+        [FormerlySerializedAs("intel")] public SOIntel soIntel;
         public override void Execute(EventGraphRunner runner, Action<int> onComplete)
         {
-            Debug.Log("Removing " + intel.intelName + " from player inventory");
-            if (runner.PlayerInventory.RemoveIntel(intel))           {
-                Debug.Log("Successfully removed " + intel.intelName + " from player inventory");
+            Debug.Log("Removing " + soIntel.intelName + " from player inventory");
+            if (runner.PlayerInventory.RemoveIntel(soIntel))           {
+                Debug.Log("Successfully removed " + soIntel.intelName + " from player inventory");
             }
             else
             {
-                Debug.LogWarning("Failed to remove " + intel.intelName + " from player inventory. Intel not found.");
+                Debug.LogWarning("Failed to remove " + soIntel.intelName + " from player inventory. Intel not found.");
             }
             onComplete?.Invoke(0);
         }
@@ -187,11 +187,11 @@ namespace Hostage.Graphs
     [Serializable]
     public class RTGiveIntelToPlayerNode : RuntimeNode
     {
-        public Intel intel;
+        [FormerlySerializedAs("intel")] public SOIntel soIntel;
         public override void Execute(EventGraphRunner runner, Action<int> onComplete)
         {
-            Debug.Log("Giving " + intel.intelName + " to player inventory");
-            runner.PlayerInventory.AddIntel(intel);
+            Debug.Log("Giving " + soIntel.intelName + " to player inventory");
+            runner.PlayerInventory.AddIntel(soIntel);
             onComplete?.Invoke(0);
         }
     }
@@ -199,13 +199,13 @@ namespace Hostage.Graphs
     [Serializable]
     public class RTReplaceIntelForPlayerNode : RuntimeNode
     {
-        public Intel oldIntel;
-        public Intel newIntel;
+        [FormerlySerializedAs("oldIntel")] public SOIntel oldSoIntel;
+        [FormerlySerializedAs("newIntel")] public SOIntel newSoIntel;
         public override void Execute(EventGraphRunner runner, Action<int> onComplete)
         {
-            runner.PlayerInventory.RemoveIntel(oldIntel);
-            runner.PlayerInventory.AddIntel(newIntel);
-            Debug.Log("Replacing " + oldIntel.intelName + " with " + newIntel.intelName + " in player inventory");
+            runner.PlayerInventory.RemoveIntel(oldSoIntel);
+            runner.PlayerInventory.AddIntel(newSoIntel);
+            Debug.Log("Replacing " + oldSoIntel.intelName + " with " + newSoIntel.intelName + " in player inventory");
             onComplete?.Invoke(0);
         }
     }

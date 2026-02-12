@@ -70,7 +70,7 @@ namespace Hostage.Graphs.Editor
             context.AddInputPort("in").Build();
             context.AddOutputPort("out").Build();
             
-            context.AddInputPort<Intel>("Intel").Build();
+            context.AddInputPort<SOIntel>("Intel").Build();
             context.AddInputPort<SOPerson>("Person").Build();
 
         }
@@ -84,7 +84,7 @@ namespace Hostage.Graphs.Editor
             context.AddInputPort("in").Build();
             context.AddOutputPort("out").Build();
             
-            context.AddInputPort<Intel>("Intel").Build();
+            context.AddInputPort<SOIntel>("Intel").Build();
         }
     }
     
@@ -96,7 +96,7 @@ namespace Hostage.Graphs.Editor
             context.AddInputPort("in").Build();
             context.AddOutputPort("out").Build();
             
-            context.AddInputPort<Intel>("Intel").Build();
+            context.AddInputPort<SOIntel>("Intel").Build();
         }
     }
     
@@ -108,8 +108,8 @@ namespace Hostage.Graphs.Editor
             context.AddInputPort("in").Build();
             context.AddOutputPort("out").Build();
             
-            context.AddInputPort<Intel>("OldIntel").Build();
-            context.AddInputPort<Intel>("NewIntel").Build();
+            context.AddInputPort<SOIntel>("OldIntel").Build();
+            context.AddInputPort<SOIntel>("NewIntel").Build();
         }
     }
     

@@ -7,46 +7,46 @@ namespace Hostage.Core
     public class PlayerInventory
     {
         private readonly SignalBus _signalBus;
-        private List<Intel> _intelList = new List<Intel>();
+        private List<SOIntel> _intelList = new List<SOIntel>();
 
         public PlayerInventory(SignalBus signalBus)
         {
             _signalBus = signalBus;
         }
 
-        public bool AddIntel(Intel intel)
+        public bool AddIntel(SOIntel soIntel)
         {
-            if (intel == null || _intelList.Contains(intel))
+            if (soIntel == null || _intelList.Contains(soIntel))
                 return false;
-            _intelList.Add(intel);
-            Debug.Log($"Added Intel: {intel}");
-            _signalBus.Publish(new IntelAddedSignal { Intel = intel });
+            _intelList.Add(soIntel);
+            Debug.Log($"Added Intel: {soIntel}");
+            _signalBus.Publish(new IntelAddedSignal { SoIntel = soIntel });
             return true;
         }
         
-        public bool HasIntel(Intel intel)
+        public bool HasIntel(SOIntel soIntel)
         {
-            return _intelList.Contains(intel);
+            return _intelList.Contains(soIntel);
         }
 
-        public bool RemoveIntel(Intel intel)
+        public bool RemoveIntel(SOIntel soIntel)
         {
-            if (_intelList.Remove(intel))
+            if (_intelList.Remove(soIntel))
             {
-                _signalBus.Publish(new IntelRemovedSignal { Intel = intel });
+                _signalBus.Publish(new IntelRemovedSignal { SoIntel = soIntel });
                 return true;
             }
             return false;
         }
 
-        public IReadOnlyList<Intel> GetAllIntel()
+        public IReadOnlyList<SOIntel> GetAllIntel()
         {
             return _intelList.AsReadOnly();
         }
 
-        public List<Intel> GetIntelByCategory(IntelCategory category)
+        public List<SOIntel> GetIntelByCategory(IntelCategory category)
         {
-            var result = new List<Intel>();
+            var result = new List<SOIntel>();
             foreach (var intel in _intelList)
             {
                 if (intel.category == category)

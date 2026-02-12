@@ -132,26 +132,26 @@ namespace Hostage.Graphs.Editor {
                 case GiveIntelToPerson giveIntelNode:
                     var intelPort = giveIntelNode.GetInputPortByName("Intel");
                     var personPort = giveIntelNode.GetInputPortByName("Person");
-                    var intel = GetInputPortValue<Hostage.SO.Intel>(intelPort);
+                    var intel = GetInputPortValue<Hostage.SO.SOIntel>(intelPort);
                     var person = GetInputPortValue<Hostage.SO.SOPerson>(personPort);
-                    returnedNodes.Add(new RTGiveIntelToPersonNode { intel = intel, soPerson = person });
+                    returnedNodes.Add(new RTGiveIntelToPersonNode { soIntel = intel, soPerson = person });
                     break;
                 case RemoveIntelFromPlayer removeIntelNode:
                     var removeIntelPort = removeIntelNode.GetInputPortByName("Intel");
-                    var removeIntel = GetInputPortValue<Hostage.SO.Intel>(removeIntelPort);
-                    returnedNodes.Add(new RTRemoveIntelFromPlayerNode { intel = removeIntel });
+                    var removeIntel = GetInputPortValue<Hostage.SO.SOIntel>(removeIntelPort);
+                    returnedNodes.Add(new RTRemoveIntelFromPlayerNode { soIntel = removeIntel });
                     break;
                 case GiveIntelToPlayer giveIntelToPlayerNode:
                     var giveIntelToPlayerPort = giveIntelToPlayerNode.GetInputPortByName("Intel");
-                    var giveIntelToPlayer = GetInputPortValue<Hostage.SO.Intel>(giveIntelToPlayerPort);
-                    returnedNodes.Add(new RTGiveIntelToPlayerNode { intel = giveIntelToPlayer });
+                    var giveIntelToPlayer = GetInputPortValue<Hostage.SO.SOIntel>(giveIntelToPlayerPort);
+                    returnedNodes.Add(new RTGiveIntelToPlayerNode { soIntel = giveIntelToPlayer });
                     break;
                 case ReplaceIntelForPlayer replaceIntelNode:
                     var oldIntelPort = replaceIntelNode.GetInputPortByName("OldIntel");
                     var newIntelPort = replaceIntelNode.GetInputPortByName("NewIntel");
-                    var oldIntel = GetInputPortValue<Hostage.SO.Intel>(oldIntelPort);
-                    var newIntel = GetInputPortValue<Hostage.SO.Intel>(newIntelPort);
-                    returnedNodes.Add(new RTReplaceIntelForPlayerNode { oldIntel = oldIntel, newIntel = newIntel });
+                    var oldIntel = GetInputPortValue<Hostage.SO.SOIntel>(oldIntelPort);
+                    var newIntel = GetInputPortValue<Hostage.SO.SOIntel>(newIntelPort);
+                    returnedNodes.Add(new RTReplaceIntelForPlayerNode { oldSoIntel = oldIntel, newSoIntel = newIntel });
                     break;
                 case SetPersonFlag setFlagNode:
                     var setFlagTarget = setFlagNode.GetNodeOptionByName("Target").TryGetValue<PersonTargetType>(out var setTarget) ? setTarget : PersonTargetType.SpecifiedPerson;

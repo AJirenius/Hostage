@@ -49,9 +49,9 @@ namespace Hostage.Core
             {
                 OnGraphRequested?.Invoke(timedCommand.verb.result, context, -1);
             }
-            else if (timedCommand.Intel?.masterGraph != null)
+            else if (timedCommand.SoIntel?.masterGraph != null)
             {
-                OnGraphRequested?.Invoke(timedCommand.Intel.masterGraph, context, timedCommand.verb.actionType.ToOutputIndex());
+                OnGraphRequested?.Invoke(timedCommand.SoIntel.masterGraph, context, timedCommand.verb.actionType.ToOutputIndex());
             }
 
             if (timedCommand.timedEvents != null && timedCommand.timedEventIndex < timedCommand.timedEvents.Count)

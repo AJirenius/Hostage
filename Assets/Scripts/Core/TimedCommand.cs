@@ -21,17 +21,17 @@ namespace Hostage.Core
     {
         public Verb verb;
         public Person Person;
-        public Intel Intel;
+        public SOIntel SoIntel;
         public float timeLeft;
         public float modifiedTime;
         public List<TimedEvent> timedEvents;
         public int timedEventIndex;
 
-        public TimedCommand(Verb verb, Person person, Intel intel)
+        public TimedCommand(Verb verb, Person person, SOIntel soIntel)
         {
             this.Person = person;
             this.verb = verb;
-            this.Intel = intel;
+            this.SoIntel = soIntel;
         }
 
         public float GetPercentageLeft()

@@ -9,18 +9,18 @@ namespace Hostage.UI
     {
         public TMPro.TMP_Text intelNameText;
         public TMPro.TMP_Text descriptionText;
-        private Intel _intel;
+        private SOIntel _soIntel;
         private UIManager _uiManager;
         private CanvasGroup _canvasGroup;
         private RectTransform _rectTransform;
         private Vector3 _startPosition;
 
-        public void Setup(Intel intel, UIManager uiManager)
+        public void Setup(SOIntel soIntel, UIManager uiManager)
         {
-            _intel = intel;
+            _soIntel = soIntel;
             _uiManager = uiManager;
-            intelNameText.text = intel.intelName;
-            descriptionText.text = intel.description;
+            intelNameText.text = soIntel.intelName;
+            descriptionText.text = soIntel.description;
             _canvasGroup = GetComponentInChildren<CanvasGroup>();
             _rectTransform = GetComponent<RectTransform>();
             _canvasGroup.alpha = 1f;
@@ -48,6 +48,6 @@ namespace Hostage.UI
             _uiManager.ClearAllCommandButtons();
         }
 
-        public Intel GetIntel() => _intel;
+        public SOIntel GetIntel() => _soIntel;
     }
 }

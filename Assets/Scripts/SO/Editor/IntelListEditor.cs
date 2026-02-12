@@ -27,13 +27,13 @@ namespace Hostage.SO.Editor
         private void PopulateIntelList(IntelList intelList, string folder)
         {
             string[] guids = AssetDatabase.FindAssets("t:Hostage.SO.Intel", new[] { folder });
-            var foundIntels = new List<Intel>();
+            var foundIntels = new List<SOIntel>();
             foreach (string guid in guids)
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
-                Intel intel = AssetDatabase.LoadAssetAtPath<Intel>(path);
-                if (intel != null)
-                    foundIntels.Add(intel);
+                SOIntel soIntel = AssetDatabase.LoadAssetAtPath<SOIntel>(path);
+                if (soIntel != null)
+                    foundIntels.Add(soIntel);
             }
             Undo.RecordObject(intelList, "Populate Intel List");
             intelList.SetIntels(foundIntels);

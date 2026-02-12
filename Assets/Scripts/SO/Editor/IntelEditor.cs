@@ -5,7 +5,7 @@ using Hostage.Graphs;
 
 namespace Hostage.SO.Editor
 {
-    [CustomEditor(typeof(Intel))]
+    [CustomEditor(typeof(SOIntel))]
     public class IntelEditor : UnityEditor.Editor
     {
         static readonly string[] VerbFieldNames = { "investigate", "interview", "surveillance", "analyze" };

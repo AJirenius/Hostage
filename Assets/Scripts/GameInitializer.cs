@@ -37,8 +37,8 @@ namespace Hostage
         public void Start()
         {
             _playerInventory.AddIntel(_intelProvider.GetWithId("IntelAlanBarker 3"));
-            _eventGraphRunner.RunGraph(_eventGraph);
             _uiManager.Initialize(_playerInventory, _actionManager, _eventGraphRunner.PersonManager, _signalBus);
+            _eventGraphRunner.RunGraph(_eventGraph);
         }
 
         public void Tick()

@@ -4,12 +4,12 @@ namespace Hostage.Core
 {
     public struct IntelAddedSignal
     {
-        public Intel Intel;
+        public SOIntel SoIntel;
     }
 
     public struct IntelRemovedSignal
     {
-        public Intel Intel;
+        public SOIntel SoIntel;
     }
 
     public struct TimedCommandStartedSignal
