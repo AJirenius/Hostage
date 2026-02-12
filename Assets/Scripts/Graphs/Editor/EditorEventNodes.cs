@@ -17,7 +17,7 @@ namespace Hostage.Graphs.Editor
     }
 
     [Serializable]
-    public class ActionStartNode:Node
+    public class AssistantStartNode:Node
     {
         protected override void OnDefinePorts(IPortDefinitionContext context)
         {
@@ -25,6 +25,30 @@ namespace Hostage.Graphs.Editor
             context.AddOutputPort("Interview").Build();
             context.AddOutputPort("Surveillance").Build();
             context.AddOutputPort("Analyze").Build();
+        }
+    }
+    
+    [Serializable]
+    public class PersonStartNode:Node
+    {
+        const string NR_INTEL = "NrIntel";
+        protected override void OnDefineOptions(IOptionDefinitionContext context)
+        {
+            context.AddOption<int>(NR_INTEL)
+                .WithDisplayName("Nr Intel")
+                .WithDefaultValue(3)
+                .Delayed();
+        }
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            var option = GetNodeOptionByName(NR_INTEL);
+            option.TryGetValue<int>(out var nrIntel);
+            
+            for (int i = 0; i < nrIntel; i++)
+            {
+                context.AddInputPort<SOIntel>($"intel{i}").Build();
+                context.AddOutputPort($"out{i}").Build();
+            }
         }
     }
     

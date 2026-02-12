@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Hostage.Core;
+using Hostage.Graphs;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -15,5 +16,6 @@ namespace Hostage.SO
         public Sprite Portrait;
         [FormerlySerializedAs("defaultStatus")] public PersonFlag defaultFlag;
         public List<SkillTag> skillTags;
+        public EventGraph personMasterGraph;
     }
 }

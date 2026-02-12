@@ -16,7 +16,7 @@ namespace Hostage.Graphs.Editor {
                 return;
             }
 
-            var startNodeModel = (INode)graph.GetNodes().OfType<Graphs.Editor.ActionStartNode>().FirstOrDefault()
+            var startNodeModel = (INode)graph.GetNodes().OfType<Graphs.Editor.AssistantStartNode>().FirstOrDefault()
                               ?? graph.GetNodes().OfType<Graphs.Editor.StartNode>().FirstOrDefault();
 
             if (startNodeModel == null) {
@@ -106,7 +106,7 @@ namespace Hostage.Graphs.Editor {
             var returnedNodes = new List<RuntimeNode>();
 
             switch (nodeModel) {
-                case ActionStartNode:
+                case AssistantStartNode:
                     returnedNodes.Add(new RTStartNode());
                     break;
                 case StartNode:
