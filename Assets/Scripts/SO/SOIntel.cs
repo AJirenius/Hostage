@@ -19,6 +19,8 @@ namespace Hostage.SO
         public Interview interview;
         public Surveillance surveillance;
         public Analyze analyze;
+        
+        public SOPerson person;
     }
     
     [Serializable]

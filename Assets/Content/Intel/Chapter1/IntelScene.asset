@@ -37,7 +37,7 @@ MonoBehaviour:
     linkedIntels: []
   surveillance:
     isAvailable: 1
-    baseTime: 10
+    baseTime: 2
     modifiers: []
     requiredTags: 
     occupyingIntel: 0
@@ -45,9 +45,9 @@ MonoBehaviour:
     linkedIntels:
     - {fileID: 0}
     timedEvents:
-    - time: 5
-    - time: 4
-    - time: 5
+    - time: 2
+    - time: 2
+    - time: 2
     - time: 4
     - time: 4
     - time: 4

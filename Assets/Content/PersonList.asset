@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hostage.SO.SOPersonList
   _persons:
   - {fileID: 11400000, guid: 0453885974c484dfe9ac823fd876ae81, type: 2}
+  - {fileID: 11400000, guid: 1763c46e50728490891823b94a2f5697, type: 2}
   - {fileID: 11400000, guid: 2fa9f312d52304cd3af9e3f9f474018f, type: 2}
+  - {fileID: 11400000, guid: 31c0238e5a938464f96ca20e9f988ad9, type: 2}
   - {fileID: 11400000, guid: 9452d1211419346d18b24052522f9a39, type: 2}

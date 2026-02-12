@@ -184,7 +184,7 @@ MonoBehaviour:
           m_KeyList:
           - Intel
           m_ValueList:
-          - rid: 4760844903422099547
+          - rid: 4760844950035497026
         m_InputPortInfos:
           expandedPortsById:
             m_KeyList: []
@@ -200,10 +200,6 @@ MonoBehaviour:
           m_HasUserColor: 0
         m_Node:
           rid: 4760844903422099548
-    - rid: 4760844903422099547
-      type: {class: 'Constant`1[[Hostage.SO.Intel, Assembly-CSharp]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
-      data:
-        m_Value: {fileID: 11400000, guid: a9d5c076401b04f4993de3e8e6cb9338, type: 2}
     - rid: 4760844903422099548
       type: {class: GiveIntelToPlayer, ns: Hostage.Graphs.Editor, asm: Assembly-CSharp-Editor}
       data: 
@@ -402,3 +398,7 @@ MonoBehaviour:
           m_PortDirection: 1
           m_PortOrientation: 0
           m_Title: in
+    - rid: 4760844950035497026
+      type: {class: 'Constant`1[[Hostage.SO.SOIntel, Assembly-CSharp]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
+      data:
+        m_Value: {fileID: 11400000, guid: a9d5c076401b04f4993de3e8e6cb9338, type: 2}

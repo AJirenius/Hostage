@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+using Hostage.Core;
 using Hostage.SO;
 
 namespace Hostage.UI
@@ -19,7 +20,7 @@ namespace Hostage.UI
         {
             _soIntel = soIntel;
             _uiManager = uiManager;
-            intelNameText.text = soIntel.intelName;
+            intelNameText.text = GetDisplayName(soIntel);
             descriptionText.text = soIntel.description;
             _canvasGroup = GetComponentInChildren<CanvasGroup>();
             _rectTransform = GetComponent<RectTransform>();
@@ -46,6 +47,17 @@ namespace Hostage.UI
             _canvasGroup.alpha = 1f;
             _canvasGroup.blocksRaycasts = true;
             _uiManager.ClearAllCommandButtons();
+        }
+
+        string GetDisplayName(SOIntel soIntel)
+        {
+            if (soIntel.category == IntelCategory.Person
+                && soIntel.person != null
+                && (soIntel.person.defaultFlag & PersonFlag.Unknown) != 0)
+            {
+                return soIntel.person.UnknownName;
+            }
+            return soIntel.intelName;
         }
 
         public SOIntel GetIntel() => _soIntel;

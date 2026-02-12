@@ -15,6 +15,7 @@ MonoBehaviour:
   intelName: Laura Mitchel
   description: Just a passer by
   category: 2
+  masterGraph: {fileID: 0}
   investigate:
     isAvailable: 0
     baseTime: 40
@@ -34,26 +35,26 @@ MonoBehaviour:
       value: 0.8
     requiredTags: 
     occupyingIntel: 0
-    linkedIntels: []
     result: {fileID: 0}
+    linkedIntels: []
   surveillance:
     isAvailable: 0
     baseTime: 5
     modifiers: []
     requiredTags: 01000000
     occupyingIntel: 0
+    result: {fileID: 0}
     linkedIntels:
     - {fileID: 0}
     timedEvents:
     - time: 8
-      graph: {fileID: 2841676755933307327, guid: f0cd4b3baa61a473abe663c3d4fdedc7, type: 3}
     - time: 0
-      graph: {fileID: 0}
   analyze:
     isAvailable: 0
     baseTime: 0
     modifiers: []
     requiredTags: 
     occupyingIntel: 0
-    timedEvents: []
     result: {fileID: 0}
+    timedEvents: []
+  person: {fileID: 11400000, guid: 31c0238e5a938464f96ca20e9f988ad9, type: 2}

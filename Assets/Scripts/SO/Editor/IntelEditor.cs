@@ -24,7 +24,23 @@ namespace Hostage.SO.Editor
         {
             serializedObject.Update();
 
-            DrawDefaultInspector();
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("intelName"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("description"));
+
+            var categoryProp = serializedObject.FindProperty("category");
+            EditorGUILayout.PropertyField(categoryProp);
+
+            if ((IntelCategory)categoryProp.enumValueIndex == IntelCategory.Person)
+            {
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("person"));
+            }
+
+            EditorGUILayout.PropertyField(masterGraphProp);
+
+            for (int i = 0; i < VerbFieldNames.Length; i++)
+            {
+                EditorGUILayout.PropertyField(serializedObject.FindProperty(VerbFieldNames[i]), true);
+            }
 
             var currentGraph = masterGraphProp.objectReferenceValue as EventGraph;
 
