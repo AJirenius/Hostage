@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using VContainer;
 using Hostage.Core;
@@ -14,6 +15,7 @@ namespace Hostage.Graphs
 
         // Cycle detection for value node evaluation
         private readonly HashSet<int> _evaluatingValueNodes = new();
+        private Action<GraphResult> _onGraphCompleted;
 
         // Injected dependencies - accessible by nodes via runner reference
         [Inject] public PlayerInventory PlayerInventory { get; private set; }
@@ -28,13 +30,14 @@ namespace Hostage.Graphs
             CommandManager.OnGraphRequested += RunGraph;
         }
 
-        public void RunGraph(EventGraph graph, GraphContext context = null)
+        public void RunGraph(EventGraph graph, GraphContext context=null, Action<GraphResult> onCompleted=null)
         {
             if (eventGraph != null && eventGraph.Nodes.Count > 0)
                 Debug.LogWarning("EventGraphRunner is already running a graph. Overwriting with new graph.");
 
             eventGraph = graph;
             Context = context ?? new GraphContext();
+            _onGraphCompleted = onCompleted ?? (result => { });
             RunNode(0);
         }
 
@@ -42,8 +45,11 @@ namespace Hostage.Graphs
         {
             if (index < 0 || index >= eventGraph.Nodes.Count)
             {
-                // graph is (probably) finished, or index is out of bounds
+                // graph is finished, or index is out of bounds
+                var completed = _onGraphCompleted;
+                _onGraphCompleted = null;
                 eventGraph = null;
+                completed?.Invoke(Context.Result);
                 return;
             };
 
@@ -51,6 +57,8 @@ namespace Hostage.Graphs
             node.Execute(this, nextOutput => {
                 if (node.nextNodeIndices.Count > nextOutput)
                     RunNode(node.nextNodeIndices[nextOutput]);
+                else
+                    RunNode(-1);
             });
         }
 

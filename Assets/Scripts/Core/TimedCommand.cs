@@ -27,11 +27,9 @@ namespace Hostage.Core
         public List<TimedEvent> timedEvents;
         public int timedEventIndex;
 
-        public TimedCommand(Verb verb, Person person, SOIntel soIntel)
+        public TimedCommand(Person person)
         {
             this.Person = person;
-            this.verb = verb;
-            this.SoIntel = soIntel;
         }
 
         public float GetPercentageLeft()

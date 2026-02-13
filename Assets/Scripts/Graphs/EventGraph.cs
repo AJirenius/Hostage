@@ -15,6 +15,8 @@ namespace Hostage.Graphs
         public Dictionary<string, int> IntVariables { get; } = new();
         public Dictionary<string, string> StringVariables { get; } = new();
 
+        public GraphResult Result { get; } = new();
+
         public GraphContext(Person person = null, SOIntel intel = null)
         {
             Person = person;

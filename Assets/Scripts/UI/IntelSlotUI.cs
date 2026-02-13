@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Hostage.Core;
 using Hostage.SO;
 
 namespace Hostage.UI
 {
-    public class IntelSlotUI : MonoBehaviour
+    public class IntelSlotUI : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
     {
         public TMPro.TMP_Text titleText;
         public RectTransform container;
@@ -13,45 +14,67 @@ namespace Hostage.UI
 
         private Verb _verb;
         private Person _person;
-        private SOIntel _soIntel;
         private UIManager _uiManager;
+        private CommandCardUI _commandCard;
         private bool _hasVerb;
 
-        public void Setup(Verb verb, Person person, SOIntel soIntel, UIManager uiManager)
+        public void Setup(Verb verb, Person person, UIManager uiManager, CommandCardUI commandCard)
         {
             _verb = verb;
             _person = person;
-            _soIntel = soIntel;
             _uiManager = uiManager;
+            _commandCard = commandCard;
             _hasVerb = true;
 
             if (titleText != null)
                 titleText.text = verb.CommandType.ToString();
-
-            if (button != null)
-                button.onClick.AddListener(OnSlotClicked);
         }
 
-        public void SetupNoVerb(Person person, SOIntel soIntel, UIManager uiManager)
+        public void SetupNoVerb(Person person, UIManager uiManager, CommandCardUI commandCard)
         {
             _person = person;
-            _soIntel = soIntel;
             _uiManager = uiManager;
+            _commandCard = commandCard;
             _hasVerb = false;
 
             if (titleText != null)
                 titleText.text = "?";
-
-            if (button != null)
-                button.onClick.AddListener(OnSlotClicked);
         }
 
-        private void OnSlotClicked()
+        public void ShowStatus(string label, float percentageLeft)
         {
-            if (_hasVerb)
-                _uiManager.OnVerbSelected(_verb, _person, _soIntel);
-            else
-                _uiManager.OnButtonSelected(_person, _soIntel);
+            if (titleText != null)
+                titleText.text = label;
+
+            if (button != null)
+                button.interactable = false;
+        }
+
+        public void OnDrop(PointerEventData eventData)
+        {
+            var intelCard = eventData.pointerDrag?.GetComponent<IntelCardUI>();
+            if (intelCard == null) return;
+
+            AcceptIntel(intelCard);
+        }
+
+        public void AcceptIntel(IntelCardUI intelCard)
+        {
+            intelCard.AttachToSlot(container, _commandCard);
+            _commandCard.OnIntelDroppedOnSlot(intelCard, _verb);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            var intelCard = eventData.pointerDrag?.GetComponent<IntelCardUI>();
+            if (intelCard == null) return;
+
+            // TODO: highlight slot visual
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            // TODO: remove highlight
         }
     }
 }

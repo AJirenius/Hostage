@@ -25,7 +25,6 @@ namespace Hostage.Scopes
             builder.Register<GameInitializer>(Lifetime.Singleton);
             builder.Register<PlayerInventory>(Lifetime.Singleton);
             builder.Register<EventGraphRunner>(Lifetime.Singleton);
-            builder.RegisterEntryPoint<GameInitializer>();
             builder.RegisterInstance(personList);
             builder.RegisterInstance(allIntelList);
             builder.RegisterInstance(firstGraph);
@@ -33,6 +32,8 @@ namespace Hostage.Scopes
             builder.Register<IntelProvider>(Lifetime.Singleton);
             builder.Register<FlagManager>(Lifetime.Singleton);
             builder.RegisterInstance(uiManager);
+            builder.RegisterEntryPoint<GameInitializer>();
+
         }
     }
 }

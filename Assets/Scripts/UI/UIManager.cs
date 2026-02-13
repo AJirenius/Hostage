@@ -32,8 +32,10 @@ namespace Hostage.UI
 
             _signalBus.Subscribe<IntelAddedSignal>(OnIntelAdded);
             _signalBus.Subscribe<IntelRemovedSignal>(OnIntelRemoved);
-            _signalBus.Subscribe<PersonStatusChangedSignal>(OnPersonStatusChanged);
+            _signalBus.Subscribe<PersonFlagsChangedSignal>(OnPersonFlagsChanged);
             _signalBus.Subscribe<TimedCommandProgressSignal>(OnTimedCommandProgress);
+            _signalBus.Subscribe<TimedCommandStartedSignal>(OnTimedCommandStarted);
+            _signalBus.Subscribe<TimedCommandCompletedSignal>(OnTimedCommandCompleted);
 
             RefreshIntelCards();
             RefreshPersonCards();
@@ -44,8 +46,10 @@ namespace Hostage.UI
             if (_signalBus == null) return;
             _signalBus.Unsubscribe<IntelAddedSignal>(OnIntelAdded);
             _signalBus.Unsubscribe<IntelRemovedSignal>(OnIntelRemoved);
-            _signalBus.Unsubscribe<PersonStatusChangedSignal>(OnPersonStatusChanged);
+            _signalBus.Unsubscribe<PersonFlagsChangedSignal>(OnPersonFlagsChanged);
             _signalBus.Unsubscribe<TimedCommandProgressSignal>(OnTimedCommandProgress);
+            _signalBus.Unsubscribe<TimedCommandStartedSignal>(OnTimedCommandStarted);
+            _signalBus.Unsubscribe<TimedCommandCompletedSignal>(OnTimedCommandCompleted);
         }
 
         private void OnIntelAdded(IntelAddedSignal signal)
@@ -149,7 +153,29 @@ namespace Hostage.UI
             }
         }
 
-        private void OnPersonStatusChanged(PersonStatusChangedSignal signal)
+        private void OnTimedCommandStarted(TimedCommandStartedSignal signal)
+        {
+            var soIntel = signal.TimedCommand.SoIntel;
+            if (soIntel != null && _createdIntelCards.TryGetValue(soIntel, out var cardGo))
+            {
+                var intelCard = cardGo.GetComponent<IntelCardUI>();
+                if (intelCard != null)
+                    intelCard.SetLocked(true);
+            }
+        }
+
+        private void OnTimedCommandCompleted(TimedCommandCompletedSignal signal)
+        {
+            var soIntel = signal.TimedCommand.SoIntel;
+            if (soIntel != null && _createdIntelCards.TryGetValue(soIntel, out var cardGo))
+            {
+                var intelCard = cardGo.GetComponent<IntelCardUI>();
+                if (intelCard != null)
+                    intelCard.SetLocked(false);
+            }
+        }
+
+        private void OnPersonFlagsChanged(PersonFlagsChangedSignal signal)
         {
             if (_createdPersonCards.TryGetValue(signal.Person, out var cardGo))
             {
@@ -171,31 +197,70 @@ namespace Hostage.UI
             RefreshPersonCards();
         }
 
-        public void OnVerbSelected(Verb verb, Person person, SOIntel soIntel)
+        public void OnIntelDragStarted(SOIntel soIntel)
         {
-            var command = new TimedCommand(verb, person, soIntel);
-            _commandManager.AddTimedCommand(command);
-            DismissCommandCard();
+            foreach (var kvp in _createdPersonCards)
+            {
+                var personCard = kvp.Value.GetComponent<PersonCardUI>();
+                if (personCard == null) continue;
+
+                bool valid = !kvp.Key.IsOccupied() && kvp.Key.CanInteractWithIntel(soIntel);
+                personCard.SetHighlight(valid);
+            }
+
+            if (_activeCommandCard != null && !_activeCommandCard.IsLocked && !_activeCommandCard.HasAttachedIntel)
+                _activeCommandCard.PopulateSlots(soIntel);
         }
 
-        public void OnButtonSelected(Person person, SOIntel soIntel)
+        public void OnIntelDragEnded()
         {
-            var command = new TimedCommand(null, person, soIntel);
-            _commandManager.AddTimedCommand(command);
-            DismissCommandCard();
+            foreach (var kvp in _createdPersonCards)
+            {
+                var personCard = kvp.Value.GetComponent<PersonCardUI>();
+                if (personCard != null)
+                    personCard.SetHighlight(false);
+            }
+
+            if (_activeCommandCard != null && !_activeCommandCard.HasAttachedIntel)
+                _activeCommandCard.ClearSlots();
         }
 
-        public void ShowCommandCard(Person person, SOIntel soIntel)
+        public void ShowCommandCard(Person person)
         {
+            if (_activeCommandCard != null && _activeCommandCard.Person == person)
+            {
+                DismissCommandCard();
+                return;
+            }
+
             DismissCommandCard();
+
+            if (!person.IsOccupied())
+                person.TryCreateCommand();
+
             var go = Instantiate(commandCardPrefab, commandCardParent);
             _activeCommandCard = go.GetComponent<CommandCardUI>();
-            _activeCommandCard.Setup(person, soIntel, this);
+            _activeCommandCard.Setup(person, this);
+        }
+
+        public void ShowCommandCardWithIntel(Person person, IntelCardUI intelCard)
+        {
+            ShowCommandCard(person);
+            if (_activeCommandCard != null)
+                _activeCommandCard.AutoAssignIntel(intelCard);
+        }
+
+        public void SubmitCommand(Person person)
+        {
+            if (person.Command == null) return;
+            _commandManager.AddTimedCommand(person.Command);
+            DismissCommandCard();
         }
 
         public void DismissCommandCard()
         {
             if (_activeCommandCard == null) return;
+            _activeCommandCard.ClearPendingCommand();
             _activeCommandCard.Cleanup();
             Destroy(_activeCommandCard.gameObject);
             _activeCommandCard = null;

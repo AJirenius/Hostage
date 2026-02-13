@@ -28,7 +28,7 @@ namespace Hostage.Core
         public float PercentageLeft;
     }
 
-    public struct PersonStatusChangedSignal
+    public struct PersonFlagsChangedSignal
     {
         public Person Person;
     }

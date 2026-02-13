@@ -6,17 +6,17 @@ using Hostage.Core;
 
 namespace Hostage.UI
 {
-    public class PersonCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDropHandler
+    public class PersonCardUI : MonoBehaviour, IPointerClickHandler, IDropHandler
     {
         public TMPro.TMP_Text personNameText;
-        public TMPro.TMP_Text descriptionText;
         public Image panel;
+        public RectTransform highlight;
         public RectTransform progress;
         private Person _person;
         private UIManager _uiManager;
 
         private static readonly Color NormalColor = Color.gray;
-        private static readonly Color OccupiedColor = Color.red;
+        private static readonly Color OccupiedColor = Color.gray2;
 
         public Person Person => _person;
 
@@ -25,13 +25,18 @@ namespace Hostage.UI
             _person = person;
             _uiManager = uiManager;
             personNameText.text = person.SOReference.Name;
+            progress.gameObject.SetActive(false);
             UpdatePersonFlag();
+            SetHighlight(false);
         }
 
         public void UpdateProgress(float percentageLeft)
         {
-            //if (progress != null)
-              // show progress
+            if (progress != null)
+            {
+                progress.gameObject.SetActive(true);
+                progress.localScale = new Vector3(1f, percentageLeft, 1f);
+            }
         }
 
         public void UpdatePersonFlag()
@@ -42,35 +47,26 @@ namespace Hostage.UI
             personNameText.text = _person.IsUnknown() ? (string.IsNullOrEmpty(_person.SOReference.UnknownName)?"Unknown":_person.SOReference.UnknownName) : _person.SOReference.Name;
         }
 
-        public void OnPointerEnter(PointerEventData eventData)
+        public void OnPointerClick(PointerEventData eventData)
         {
-            if (_person.IsOccupied()) return;
-
-            var intelCard = eventData.pointerDrag?.GetComponent<IntelCardUI>();
-            if (intelCard == null) return;
-
-            SetHighlight(true);
-        }
-
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            SetHighlight(false);
+            if (eventData.dragging) return;
+            _uiManager.ShowCommandCard(_person);
         }
 
         public void OnDrop(PointerEventData eventData)
         {
-            if (_person.IsOccupied()) return;
+            if (!highlight.gameObject.activeSelf) return;
 
             var intelCard = eventData.pointerDrag?.GetComponent<IntelCardUI>();
             if (intelCard == null) return;
 
+            _uiManager.ShowCommandCardWithIntel(_person, intelCard);
             SetHighlight(false);
-            _uiManager.ShowCommandCard(_person, intelCard.GetIntel());
         }
 
-        private void SetHighlight(bool highlighted)
+        public void SetHighlight(bool highlighted)
         {
-            // TODO: highlight border visual
+            highlight.gameObject.SetActive(highlighted);
         }
     }
 }

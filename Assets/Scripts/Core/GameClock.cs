@@ -16,6 +16,7 @@ namespace Hostage.Core
             _timeMultiplier = 3f;
         }
 
+        public bool Paused { get; set; }
         public float GameDeltaTime { get; private set; }
         public float TimeMultiplier
         {
@@ -45,6 +46,12 @@ namespace Hostage.Core
 
         public void Tick()
         {
+            if (Paused)
+            {
+                GameDeltaTime = 0f;
+                return;
+            }
+
             GameDeltaTime = Time.deltaTime * _timeMultiplier;
             _currentTimeInSeconds += GameDeltaTime;
             if (_currentTimeInSeconds >= SecondsPerDay)

@@ -29,11 +29,20 @@ namespace Hostage.Core
             {
                 if (_flag == value) return;
                 _flag = value;
-                _signalBus.Publish(new PersonStatusChangedSignal { Person = this });
+                _signalBus.Publish(new PersonFlagsChangedSignal { Person = this });
             }
         }
+        
+        public TimedCommand Command { get; private set; }
 
         public List<SOIntel> Intels { get; } = new List<SOIntel>();
+        private readonly HashSet<(SOIntel, CommandType)> _completedCommands = new();
+
+        public bool HasCompletedCommand(SOIntel intel, CommandType commandType)
+            => _completedCommands.Contains((intel, commandType));
+
+        public void RecordCompletedCommand(SOIntel intel, CommandType commandType)
+            => _completedCommands.Add((intel, commandType));
 
         public Person(SOPerson soReference, SignalBus signalBus)
         {
@@ -69,5 +78,38 @@ namespace Hostage.Core
 
         public bool RemoveIntel(SOIntel soIntel) => Intels.Remove(soIntel);
         public bool HasIntel(SOIntel soIntel) => Intels.Contains(soIntel);
+
+        public TimedCommand TryCreateCommand()
+        {
+            if (IsOccupied() || IsUnknown() || !IsAvailable())
+                return null;
+
+            Command = new TimedCommand(this);
+            return Command;
+        }
+
+        public void ClearCommand()
+        {
+            Command = null;
+        }
+
+        public bool CanInteractWithIntel(SOIntel soIntel)
+        {
+            if (IsAssistant())
+            {
+                foreach (var verb in soIntel.GetAvailableVerbs())
+                {
+                    if (!HasCompletedCommand(soIntel, verb.CommandType))
+                        return true;
+                }
+            }
+            else
+            {
+                if (!HasCompletedCommand(soIntel, CommandType.None))
+                    return true;
+            }
+
+            return false;
+        }
     }
 }

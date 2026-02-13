@@ -21,6 +21,16 @@ namespace Hostage.SO
         public Analyze analyze;
         
         public SOPerson person;
+        
+        public List<Verb> GetAvailableVerbs()
+        {
+            var verbs = new List<Verb>();
+            if (investigate is { isAvailable: true }) verbs.Add(investigate);
+            if (interview is { isAvailable: true }) verbs.Add(interview);
+            if (surveillance is { isAvailable: true }) verbs.Add(surveillance);
+            if (analyze is { isAvailable: true }) verbs.Add(analyze);
+            return verbs;
+        }
     }
     
     [Serializable]
