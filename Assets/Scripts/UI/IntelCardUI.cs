@@ -9,7 +9,6 @@ namespace Hostage.UI
     public class IntelCardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         public TMPro.TMP_Text intelNameText;
-        public TMPro.TMP_Text descriptionText;
         private SOIntel _soIntel;
         private UIManager _uiManager;
         private CanvasGroup _canvasGroup;
@@ -21,7 +20,6 @@ namespace Hostage.UI
             _soIntel = soIntel;
             _uiManager = uiManager;
             intelNameText.text = GetDisplayName(soIntel);
-            descriptionText.text = soIntel.description;
             _canvasGroup = GetComponentInChildren<CanvasGroup>();
             _rectTransform = GetComponent<RectTransform>();
             _canvasGroup.alpha = 1f;
@@ -34,6 +32,7 @@ namespace Hostage.UI
             _startPosition = _rectTransform.position;
             _canvasGroup.alpha = 0.6f;
             _canvasGroup.blocksRaycasts = false;
+            _uiManager.DismissCommandCard();
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -46,7 +45,6 @@ namespace Hostage.UI
             _rectTransform.position = _startPosition;
             _canvasGroup.alpha = 1f;
             _canvasGroup.blocksRaycasts = true;
-            _uiManager.ClearAllCommandButtons();
         }
 
         public void UpdateName(Person person)

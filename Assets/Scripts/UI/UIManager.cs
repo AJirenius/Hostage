@@ -10,8 +10,10 @@ namespace Hostage.UI
     {
         [Header("Prefabs")] public GameObject intelCardPrefab;
         public GameObject personCardPrefab;
+        public GameObject commandCardPrefab;
         [Header("Parents")] public Transform intelParent;
         public Transform personParent;
+        public Transform commandCardParent;
 
         private PlayerInventory _playerInventory;
         private CommandManager _commandManager;
@@ -19,6 +21,7 @@ namespace Hostage.UI
         private SignalBus _signalBus;
         private Dictionary<SOIntel, GameObject > _createdIntelCards = new Dictionary<SOIntel, GameObject>();
         private Dictionary<Person, GameObject > _createdPersonCards = new Dictionary<Person, GameObject>();
+        private CommandCardUI _activeCommandCard;
         private float _spawnX = -200;
         public void Initialize(PlayerInventory inventory, CommandManager commandManager, PersonManager personManager, SignalBus signalBus)
         {
@@ -152,7 +155,7 @@ namespace Hostage.UI
             {
                 var personCard = cardGo.GetComponent<PersonCardUI>();
                 if (personCard != null)
-                    personCard.UpdateStatus();
+                    personCard.UpdatePersonFlag();
             }
 
             foreach (var kvp in _createdIntelCards)
@@ -172,24 +175,30 @@ namespace Hostage.UI
         {
             var command = new TimedCommand(verb, person, soIntel);
             _commandManager.AddTimedCommand(command);
-            ClearAllCommandButtons();
+            DismissCommandCard();
         }
 
         public void OnButtonSelected(Person person, SOIntel soIntel)
         {
             var command = new TimedCommand(null, person, soIntel);
             _commandManager.AddTimedCommand(command);
-            ClearAllCommandButtons();
+            DismissCommandCard();
         }
 
-        public void ClearAllCommandButtons()
+        public void ShowCommandCard(Person person, SOIntel soIntel)
         {
-            foreach (var kvp in _createdPersonCards)
-            {
-                var personCard = kvp.Value.GetComponent<PersonCardUI>();
-                if (personCard != null)
-                    personCard.ClearCommandButtons();
-            }
+            DismissCommandCard();
+            var go = Instantiate(commandCardPrefab, commandCardParent);
+            _activeCommandCard = go.GetComponent<CommandCardUI>();
+            _activeCommandCard.Setup(person, soIntel, this);
+        }
+
+        public void DismissCommandCard()
+        {
+            if (_activeCommandCard == null) return;
+            _activeCommandCard.Cleanup();
+            Destroy(_activeCommandCard.gameObject);
+            _activeCommandCard = null;
         }
     }
 }
