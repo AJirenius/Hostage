@@ -186,6 +186,51 @@ namespace Hostage.Graphs.Editor
         }
     }
 
+    [Serializable]
+    public class ClearScopeNode : Node
+    {
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            context.AddInputPort("in").Build();
+            context.AddOutputPort("out").Build();
+            context.AddInputPort<FlagScope>("Scope").Build();
+        }
+    }
+
+    [Serializable]
+    public class SetFlag : Node
+    {
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            context.AddInputPort("in").Build();
+            context.AddOutputPort("out").Build();
+            context.AddInputPort<Flag>("Flag").Build();
+        }
+    }
+
+    [Serializable]
+    public class ClearFlag : Node
+    {
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            context.AddInputPort("in").Build();
+            context.AddOutputPort("out").Build();
+            context.AddInputPort<Flag>("Flag").Build();
+        }
+    }
+
+    [Serializable]
+    public class IfNode : Node
+    {
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            context.AddInputPort("in").Build();
+            context.AddOutputPort("True").Build();
+            context.AddOutputPort("False").Build();
+            context.AddInputPort<bool>("Condition").Build();
+        }
+    }
+
     // ── Value Nodes (no flow ports) ───────────────────────────────────
 
     public interface IEditorValueNode { }
@@ -219,6 +264,16 @@ namespace Hostage.Graphs.Editor
             context.AddInputPort<int>("Min").Build();
             context.AddInputPort<int>("Max").Build();
             context.AddOutputPort<int>("Result").Build();
+        }
+    }
+
+    [Serializable]
+    public class CheckFlag : Node, IEditorValueNode
+    {
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            context.AddInputPort<Flag>("Flag").Build();
+            context.AddOutputPort<bool>("Result").Build();
         }
     }
 

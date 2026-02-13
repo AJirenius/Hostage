@@ -34,4 +34,10 @@ namespace Hostage.Core
     }
 
     public struct PersonListChangedSignal { }
+
+    public struct FlagChangedSignal
+    {
+        public Flag Flag;
+        public bool IsSet;
+    }
 }

@@ -177,6 +177,21 @@ namespace Hostage.Graphs.Editor {
                     var clearFlagPerson = clearFlagTarget == PersonTargetType.SpecifiedPerson ? GetInputPortValue<Hostage.SO.SOPerson>(clearFlagNode.GetInputPortByName("Person")) : null;
                     returnedNodes.Add(new RTClearPersonFlagNode { flag = clearFlagValue, personTargetType = clearFlagTarget, soPerson = clearFlagPerson });
                     break;
+                case ClearScopeNode clearScopeNode:
+                    var clearScopeValue = GetInputPortValue<Hostage.Core.FlagScope>(clearScopeNode.GetInputPortByName("Scope"));
+                    returnedNodes.Add(new RTClearScopeNode { scope = clearScopeValue });
+                    break;
+                case IfNode:
+                    returnedNodes.Add(new RTIfNode());
+                    break;
+                case SetFlag setFlagNode:
+                    var setFlagValue2 = GetInputPortValue<Hostage.Core.Flag>(setFlagNode.GetInputPortByName("Flag"));
+                    returnedNodes.Add(new RTSetFlagNode { flag = setFlagValue2 });
+                    break;
+                case ClearFlag clearFlagNode:
+                    var clearFlagValue2 = GetInputPortValue<Hostage.Core.Flag>(clearFlagNode.GetInputPortByName("Flag"));
+                    returnedNodes.Add(new RTClearFlagNode { flag = clearFlagValue2 });
+                    break;
                 case BranchByPerson branchByPersonNode:
                     var nrPersons = branchByPersonNode.GetNodeOptionByName("NrPersons").TryGetValue<int>(out var personCount) ? personCount : 3;
                     var rtBranchByPerson = new RTBranchByPersonNode();
@@ -271,6 +286,9 @@ namespace Hostage.Graphs.Editor {
                         randNode.min = BuildDataPort(editorNode.GetInputPortByName("Min"), valueNodeMap);
                         randNode.max = BuildDataPort(editorNode.GetInputPortByName("Max"), valueNodeMap);
                         break;
+                    case RTCheckFlagNode checkFlagNode:
+                        checkFlagNode.flag = GetInputPortValue<Hostage.Core.Flag>(editorNode.GetInputPortByName("Flag"));
+                        break;
                 }
             }
         }
@@ -281,6 +299,9 @@ namespace Hostage.Graphs.Editor {
                 var runtimeNode = runtimeAsset.Nodes[kvp.Value];
 
                 switch (runtimeNode) {
+                    case RTIfNode ifNode:
+                        ifNode.condition = BuildDataPort(editorNode.GetInputPortByName("Condition"), valueNodeMap);
+                        break;
                     case RTBranchByIndexNode branchNode:
                         switch (branchNode.sourceType) {
                             case IndexSourceType.Context:
@@ -303,6 +324,8 @@ namespace Hostage.Graphs.Editor {
                     return new RTContextIntNode();
                 case RandomIntNode:
                     return new RTRandomIntNode();
+                case CheckFlag:
+                    return new RTCheckFlagNode();
                 default:
                     return null;
             }

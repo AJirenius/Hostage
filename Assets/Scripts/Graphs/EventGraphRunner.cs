@@ -20,6 +20,7 @@ namespace Hostage.Graphs
         [Inject] public CommandManager CommandManager { get; private set; }
         [Inject] public PersonManager PersonManager { get; private set; }
         [Inject] public IntelProvider IntelProvider { get; private set; }
+        [Inject] public FlagManager FlagManager { get; private set; }
 
         [Inject]
         private void Init()

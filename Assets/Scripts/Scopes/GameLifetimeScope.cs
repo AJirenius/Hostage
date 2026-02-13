@@ -31,6 +31,7 @@ namespace Hostage.Scopes
             builder.RegisterInstance(firstGraph);
             builder.Register<PersonManager>(Lifetime.Singleton);
             builder.Register<IntelProvider>(Lifetime.Singleton);
+            builder.Register<FlagManager>(Lifetime.Singleton);
             builder.RegisterInstance(uiManager);
         }
     }

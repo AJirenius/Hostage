@@ -80,6 +80,17 @@ namespace Hostage.Graphs
         }
     }
 
+    [Serializable]
+    public class RTCheckFlagNode : RuntimeValueNode
+    {
+        public Flag flag;
+
+        public override object Evaluate(EventGraphRunner runner, int outputIndex = 0)
+        {
+            return runner.FlagManager.HasFlag(flag);
+        }
+    }
+
     // ── Flow Nodes ─────────────────────────────────────────────────────
 
     public enum PersonTargetType
@@ -304,6 +315,54 @@ namespace Hostage.Graphs
                     Debug.LogWarning("RTClearPersonFlagNode: unsupported target " + personTargetType);
                     return null;
             }
+        }
+    }
+
+    [Serializable]
+    public class RTIfNode : RuntimeNode
+    {
+        public DataPort condition;
+
+        public override void Execute(EventGraphRunner runner, Action<int> onComplete)
+        {
+            var value = runner.ResolveDataPort<bool>(condition);
+            onComplete?.Invoke(value ? 0 : 1);
+        }
+    }
+
+    [Serializable]
+    public class RTClearScopeNode : RuntimeNode
+    {
+        public FlagScope scope;
+
+        public override void Execute(EventGraphRunner runner, Action<int> onComplete)
+        {
+            runner.FlagManager.ClearScope(scope);
+            onComplete?.Invoke(0);
+        }
+    }
+
+    [Serializable]
+    public class RTSetFlagNode : RuntimeNode
+    {
+        public Flag flag;
+
+        public override void Execute(EventGraphRunner runner, Action<int> onComplete)
+        {
+            runner.FlagManager.SetFlag(flag);
+            onComplete?.Invoke(0);
+        }
+    }
+
+    [Serializable]
+    public class RTClearFlagNode : RuntimeNode
+    {
+        public Flag flag;
+
+        public override void Execute(EventGraphRunner runner, Action<int> onComplete)
+        {
+            runner.FlagManager.ClearFlag(flag);
+            onComplete?.Invoke(0);
         }
     }
 
