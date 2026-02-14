@@ -27,6 +27,7 @@ MonoBehaviour:
     requiredTags: 01000000
     occupyingIntel: 0
     result: {fileID: 2841676755933307327, guid: f0cd4b3baa61a473abe663c3d4fdedc7, type: 3}
+    personStartMessages: []
   interview:
     isAvailable: 1
     baseTime: 5
@@ -36,6 +37,11 @@ MonoBehaviour:
     requiredTags: 
     occupyingIntel: 0
     result: {fileID: 0}
+    personStartMessages:
+    - person: {fileID: 11400000, guid: 0453885974c484dfe9ac823fd876ae81, type: 2}
+      message: I can go talk to the boss, give me a minute
+    - person: {fileID: 11400000, guid: 9452d1211419346d18b24052522f9a39, type: 2}
+      message: 'Do I have to? yeee... '
     linkedIntels: []
   surveillance:
     isAvailable: 0
@@ -44,6 +50,7 @@ MonoBehaviour:
     requiredTags: 01000000
     occupyingIntel: 0
     result: {fileID: 0}
+    personStartMessages: []
     linkedIntels:
     - {fileID: 0}
     timedEvents:
@@ -56,5 +63,6 @@ MonoBehaviour:
     requiredTags: 
     occupyingIntel: 0
     result: {fileID: 0}
+    personStartMessages: []
     timedEvents: []
   person: {fileID: 11400000, guid: 1763c46e50728490891823b94a2f5697, type: 2}

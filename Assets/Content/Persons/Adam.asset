@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aed93ebcd1654c9da0e65a32e3ae35b6, type: 3}
   m_Name: Adam
   m_EditorClassIdentifier: Assembly-CSharp::Hostage.SO.SOPerson
-  Id: 
   Name: Adam
   FullName: Adam Kingsley
+  UnknownName: 
   Description: Assistant
   Portrait: {fileID: 0}
   defaultFlag: 3
   skillTags: 0000000002000000
+  personMasterGraph: {fileID: 0}
+  defaultIntelMessages: {fileID: 11400000, guid: 7934403497789405caa83ed782426b2f, type: 2}

@@ -11,6 +11,7 @@ namespace Hostage.UI
     {
         public RectTransform slotGroup;
         public TMPro.TMP_Text personNameText;
+        public TMPro.TMP_Text textArea;
         public Image profileIcon;
         public GameObject intelSlotUIPrefab;
         public Button actionButton;
@@ -40,6 +41,8 @@ namespace Hostage.UI
 
             if (actionButton != null)
                 actionButton.onClick.AddListener(OnActionButtonClicked);
+
+            UpdateTextArea(null, null);
 
             if (person.IsOccupied())
             {
@@ -128,6 +131,7 @@ namespace Hostage.UI
                 _person.Command.SoIntel = null;
                 _person.Command.verb = null;
             }
+            UpdateTextArea(null, null);
             SetActionButton("Assign Intel", false);
         }
 
@@ -141,12 +145,51 @@ namespace Hostage.UI
                 _person.Command.verb = verb;
             }
 
+            UpdateTextArea(intelCard.GetIntel(), verb);
             SetActionButton("Execute", true);
         }
 
         private void OnActionButtonClicked()
         {
             _uiManager.SubmitCommand(_person);
+        }
+
+        private void UpdateTextArea(SOIntel soIntel, Verb verb)
+        {
+            if (textArea == null || _person == null) return;
+
+            if (soIntel == null || verb == null)
+            {
+                textArea.text = _person.SOReference.Description;
+                return;
+            }
+
+            // Check verb's PersonStartMessages for this person
+            if (verb.personStartMessages != null)
+            {
+                foreach (var psm in verb.personStartMessages)
+                {
+                    if (psm.person == _person.SOReference)
+                    {
+                        textArea.text = psm.message;
+                        return;
+                    }
+                }
+            }
+
+            // Fall back to default intel messages
+            var defaults = _person.SOReference.defaultIntelMessages;
+            if (defaults != null)
+            {
+                var msg = defaults.GetMessage(soIntel.category, verb.CommandType);
+                if (!string.IsNullOrEmpty(msg))
+                {
+                    textArea.text = msg;
+                    return;
+                }
+            }
+
+            textArea.text = _person.SOReference.Description;
         }
 
         private void SetActionButton(string text, bool interactable)

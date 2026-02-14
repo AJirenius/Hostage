@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a27cdb822a134f95bea401a945c04661, type: 3}
+  m_Name: AdamMessages
+  m_EditorClassIdentifier: Assembly-CSharp::Hostage.SO.SOPersonDefaultMessages
+  categoryMessages:
+    unknown:
+      investigate: Let me take a look at that
+      interview: '??? '
+      surveillance: Happy to see whats going on
+      analyze: Lets take it to the lab
+    phoneNumber:
+      investigate: I'll try to figure out more about that number
+      interview: Sure, I'll give it a call
+      surveillance: Let's tap that line and see what we can find out
+      analyze: There's something with this number...
+    person:
+      investigate: I'll try to find out more about this person
+      interview: 'You want me to talk to that person? '
+      surveillance: I'll not let this person out of sight!
+      analyze: I'll try to find out as much as possible, just give me some time
+    location:
+      investigate: I'll look around and get a better view of the situation
+      interview: I'll go there and talk to whoever I can find
+      surveillance: Let me go there and sit tight
+      analyze: ???
+    document:
+      investigate: I'll try to find out more
+      interview: ???
+      surveillance: ???
+      analyze: I'll try to see if it has something that we are missing
