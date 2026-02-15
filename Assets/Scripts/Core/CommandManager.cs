@@ -13,7 +13,7 @@ namespace Hostage.Core
 
         public event Action<EventGraph, GraphContext, Action<GraphResult>> OnGraphRequested;
 
-        private List<TimedCommand> _commands = new List<TimedCommand>();
+        private List<PersonCommand> _commands = new List<PersonCommand>();
 
         public CommandManager(SignalBus signalBus, GameClock gameClock)
         {
@@ -27,93 +27,89 @@ namespace Hostage.Core
 
             for (int i = _commands.Count - 1; i >= 0; i--)
             {
-                TimedCommand timedCommand = _commands[i];
-                timedCommand.timeLeft -= gameTime;
+                PersonCommand personCommand = _commands[i];
+                personCommand.timeLeft -= gameTime;
                 _signalBus.Publish(new TimedCommandProgressSignal
                 {
-                    Person = timedCommand.Person,
-                    PercentageLeft = timedCommand.GetPercentageLeft()
+                    Person = personCommand.Person,
+                    PercentageLeft = personCommand.GetPercentageLeft()
                 });
-                if (timedCommand.timeLeft <= 0)
+                if (personCommand.timeLeft <= 0)
                 {
-                    ExecuteTimedCommand(timedCommand);
+                    ExecuteTimedCommand(personCommand);
                     if (_gameClock.Paused) return;
                 }
             }
         }
 
-        private void ExecuteTimedCommand(TimedCommand timedCommand)
+        private void ExecuteTimedCommand(PersonCommand personCommand)
         {
             _gameClock.Paused = true;
 
-            var context = new GraphContext(timedCommand.Person);
-            context.IntVariables[GraphContext.TimedEventIndexKey] = timedCommand.timedEventIndex;
+            var context = new GraphContext(personCommand.Person);
+            context.IntVariables[GraphContext.TimedEventIndexKey] = personCommand.timedEventIndex;
 
             EventGraph graph = null;
 
-            if (timedCommand.verb != null)
+            if (personCommand.verb != null)
             {
-                Debug.Log("ExecuteCommmand: " + timedCommand.verb.CommandType + " index: " + timedCommand.timedEventIndex);
-                if (timedCommand.verb.result != null)
+                Debug.Log("ExecuteCommmand: " + personCommand.verb.CommandType + " index: " + personCommand.timedEventIndex);
+                if (personCommand.SoIntel?.graph != null)
                 {
-                    graph = timedCommand.verb.result;
-                }
-                else if (timedCommand.SoIntel?.masterGraph != null)
-                {
-                    context.IntVariables[GraphContext.ActionOutputKey] = timedCommand.verb.CommandType.ToOutputIndex();
-                    graph = timedCommand.SoIntel.masterGraph;
+                    context.IntVariables[GraphContext.ActionOutputKey] = personCommand.verb.CommandType.ToOutputIndex();
+                    graph = personCommand.SoIntel.graph;
                 }
             }
             else
             {
-                Debug.Log("ExecutePersonAction: " + timedCommand.Person.SOReference.Name + " index: " + timedCommand.timedEventIndex);
-                context.Intel = timedCommand.SoIntel;
-                graph = timedCommand.Person.SOReference.personMasterGraph;
+                Debug.Log("ExecutePersonAction: " + personCommand.Person.SOReference.Name + " index: " + personCommand.timedEventIndex);
+                context.Intel = personCommand.SoIntel;
+                graph = personCommand.Person.SOReference.personMasterGraph;
             }
 
             if (graph != null && OnGraphRequested != null)
             {
-                OnGraphRequested.Invoke(graph, context, result => OnGraphCompleted(timedCommand, result));
+                OnGraphRequested.Invoke(graph, context, result => OnGraphCompleted(personCommand, result));
             }
             else
             {
-                OnGraphCompleted(timedCommand, new GraphResult());
+                OnGraphCompleted(personCommand, new GraphResult());
             }
         }
 
-        private void OnGraphCompleted(TimedCommand timedCommand, GraphResult result)
+        private void OnGraphCompleted(PersonCommand personCommand, GraphResult result)
         {
             _gameClock.Paused = false;
 
-            if (timedCommand.timedEvents != null && timedCommand.timedEventIndex < timedCommand.timedEvents.Count)
+            if (personCommand.timedEvents != null && personCommand.timedEventIndex < personCommand.timedEvents.Count)
             {
-                timedCommand.timeLeft = timedCommand.timedEvents[timedCommand.timedEventIndex].time;
-                timedCommand.modifiedTime = timedCommand.timeLeft;
-                timedCommand.timedEventIndex++;
+                personCommand.timeLeft = personCommand.timedEvents[personCommand.timedEventIndex].time;
+                personCommand.modifiedTime = personCommand.timeLeft;
+                personCommand.timedEventIndex++;
                 return;
             }
 
             // Finishing up
             if (!result.AllowRepeat)
             {
-                var commandType = timedCommand.verb?.CommandType ?? CommandType.None;
-                timedCommand.Person.RecordCompletedCommand(timedCommand.SoIntel, commandType);
+                var commandType = personCommand.verb?.CommandType ?? CommandType.None;
+                personCommand.Person.RecordCompletedCommand(personCommand.SoIntel, commandType);
             }
 
-            timedCommand.Person.ClearOccupied();
-            timedCommand.Person.ClearCommand();
-            _commands.Remove(timedCommand);
-            _signalBus.Publish(new TimedCommandCompletedSignal { TimedCommand = timedCommand });
+            personCommand.Person.ClearOccupied();
+            personCommand.Person.ClearCommand();
+            _commands.Remove(personCommand);
+            _signalBus.Publish(new TimedCommandCompletedSignal { PersonCommand = personCommand });
         }
 
-        public void AddTimedCommand(TimedCommand timedCommand)
+        public void AddTimedCommand(PersonCommand personCommand)
         {
-            if (timedCommand.verb != null)
+            if (personCommand.verb != null)
             {
-                timedCommand.Person.SetOccupied();
-                timedCommand.modifiedTime = timedCommand.verb.GetModifiedTime(timedCommand.Person.SOReference);
-                timedCommand.timeLeft = timedCommand.modifiedTime;
-                timedCommand.timedEvents = timedCommand.verb switch
+                personCommand.Person.SetOccupied();
+                personCommand.modifiedTime = personCommand.verb.GetModifiedTime(personCommand.Person.SOReference);
+                personCommand.timeLeft = personCommand.modifiedTime;
+                personCommand.timedEvents = personCommand.verb switch
                 {
                     Surveillance s => s.timedEvents,
                     Analyze a => a.timedEvents,
@@ -122,13 +118,13 @@ namespace Hostage.Core
             }
             else
             {
-                timedCommand.Person.SetOccupied();
-                timedCommand.modifiedTime = 0f;
-                timedCommand.timeLeft = 0f;
+                personCommand.Person.SetOccupied();
+                personCommand.modifiedTime = 0f;
+                personCommand.timeLeft = 0f;
             }
 
-            _commands.Add(timedCommand);
-            _signalBus.Publish(new TimedCommandStartedSignal { TimedCommand = timedCommand });
+            _commands.Add(personCommand);
+            _signalBus.Publish(new TimedCommandStartedSignal { PersonCommand = personCommand });
         }
 
     }

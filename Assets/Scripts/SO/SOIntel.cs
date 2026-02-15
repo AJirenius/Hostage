@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Hostage.Core;
 using Hostage.Graphs;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Hostage.SO
 {
@@ -13,7 +14,7 @@ namespace Hostage.SO
         public string description; // this should change due to what intel one have.
         public IntelCategory category = IntelCategory.Unknown;
 
-        public EventGraph masterGraph;
+        [FormerlySerializedAs("masterGraph")] public EventGraph graph;
 
         public Investigate investigate;
         public Interview interview;

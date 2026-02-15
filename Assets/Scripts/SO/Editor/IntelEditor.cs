@@ -11,13 +11,13 @@ namespace Hostage.SO.Editor
         static readonly string[] VerbFieldNames = { "investigate", "interview", "surveillance", "analyze" };
         static readonly string[] VerbDisplayNames = { "Investigate", "Interview", "Surveillance", "Analyze" };
 
-        SerializedProperty masterGraphProp;
+        SerializedProperty graphProp;
         EventGraph previousGraph;
 
         void OnEnable()
         {
-            masterGraphProp = serializedObject.FindProperty("masterGraph");
-            previousGraph = masterGraphProp.objectReferenceValue as EventGraph;
+            graphProp = serializedObject.FindProperty("graph");
+            previousGraph = graphProp.objectReferenceValue as EventGraph;
         }
 
         public override void OnInspectorGUI()
@@ -35,14 +35,14 @@ namespace Hostage.SO.Editor
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("person"));
             }
 
-            EditorGUILayout.PropertyField(masterGraphProp);
+            EditorGUILayout.PropertyField(graphProp);
 
             for (int i = 0; i < VerbFieldNames.Length; i++)
             {
                 EditorGUILayout.PropertyField(serializedObject.FindProperty(VerbFieldNames[i]), true);
             }
 
-            var currentGraph = masterGraphProp.objectReferenceValue as EventGraph;
+            var currentGraph = graphProp.objectReferenceValue as EventGraph;
 
             // Auto-sync verbs when masterGraph is assigned or changed
             if (currentGraph != previousGraph)
@@ -95,13 +95,13 @@ namespace Hostage.SO.Editor
                 if (verbEnabled && !graphConnected)
                 {
                     EditorGUILayout.HelpBox(
-                        $"{VerbDisplayNames[i]} is enabled but has no connection in the masterGraph.",
+                        $"{VerbDisplayNames[i]} is enabled but has no connection in the graph.",
                         MessageType.Warning);
                 }
                 else if (!verbEnabled && graphConnected)
                 {
                     EditorGUILayout.HelpBox(
-                        $"{VerbDisplayNames[i]} is disabled but has a connection in the masterGraph.",
+                        $"{VerbDisplayNames[i]} is disabled but has a connection in the graph.",
                         MessageType.Warning);
                 }
             }

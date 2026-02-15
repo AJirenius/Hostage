@@ -155,7 +155,7 @@ namespace Hostage.UI
 
         private void OnTimedCommandStarted(TimedCommandStartedSignal signal)
         {
-            var soIntel = signal.TimedCommand.SoIntel;
+            var soIntel = signal.PersonCommand.SoIntel;
             if (soIntel != null && _createdIntelCards.TryGetValue(soIntel, out var cardGo))
             {
                 var intelCard = cardGo.GetComponent<IntelCardUI>();
@@ -166,7 +166,7 @@ namespace Hostage.UI
 
         private void OnTimedCommandCompleted(TimedCommandCompletedSignal signal)
         {
-            var soIntel = signal.TimedCommand.SoIntel;
+            var soIntel = signal.PersonCommand.SoIntel;
             if (soIntel != null && _createdIntelCards.TryGetValue(soIntel, out var cardGo))
             {
                 var intelCard = cardGo.GetComponent<IntelCardUI>();

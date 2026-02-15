@@ -14,12 +14,12 @@ namespace Hostage.Core
 
     public struct TimedCommandStartedSignal
     {
-        public TimedCommand TimedCommand;
+        public PersonCommand PersonCommand;
     }
 
     public struct TimedCommandCompletedSignal
     {
-        public TimedCommand TimedCommand;
+        public PersonCommand PersonCommand;
     }
 
     public struct TimedCommandProgressSignal

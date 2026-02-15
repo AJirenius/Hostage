@@ -16,7 +16,6 @@ namespace Hostage.SO
         public List<TimeModifier> modifiers;
         public List<SkillTag> requiredTags;
         public bool occupyingIntel; // the intel will be unavailable during action
-        public EventGraph result;
         public List<PersonStartMessage> personStartMessages;
 
         public float GetModifier(SOPerson soPerson)

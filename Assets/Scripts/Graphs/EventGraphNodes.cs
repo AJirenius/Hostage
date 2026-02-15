@@ -98,6 +98,7 @@ namespace Hostage.Graphs
         SpecifiedPerson,
         Player,
         ContextPerson,
+        Narrator
     }
     
     public enum IndexSourceType
@@ -184,6 +185,9 @@ namespace Hostage.Graphs
                    break;
                 case PersonTargetType.SpecifiedPerson:
                     name = speaker.Name;
+                   break;
+               case PersonTargetType.Narrator:
+                   name = "Narrator";
                    break;
                default:
                    throw new ArgumentOutOfRangeException();

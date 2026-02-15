@@ -17,7 +17,7 @@ namespace Hostage.Core
         public static int ToOutputIndex(this CommandType at) => (int)at - 1;
     }
 
-    public class TimedCommand
+    public class PersonCommand
     {
         public Verb verb;
         public Person Person;
@@ -27,7 +27,7 @@ namespace Hostage.Core
         public List<TimedEvent> timedEvents;
         public int timedEventIndex;
 
-        public TimedCommand(Person person)
+        public PersonCommand(Person person)
         {
             this.Person = person;
         }

@@ -33,7 +33,7 @@ namespace Hostage.Core
             }
         }
         
-        public TimedCommand Command { get; private set; }
+        public PersonCommand Command { get; private set; }
 
         public List<SOIntel> Intels { get; } = new List<SOIntel>();
         private readonly HashSet<(SOIntel, CommandType)> _completedCommands = new();
@@ -79,12 +79,12 @@ namespace Hostage.Core
         public bool RemoveIntel(SOIntel soIntel) => Intels.Remove(soIntel);
         public bool HasIntel(SOIntel soIntel) => Intels.Contains(soIntel);
 
-        public TimedCommand TryCreateCommand()
+        public PersonCommand TryCreateCommand()
         {
             if (IsOccupied() || IsUnknown() || !IsAvailable())
                 return null;
 
-            Command = new TimedCommand(this);
+            Command = new PersonCommand(this);
             return Command;
         }
 
