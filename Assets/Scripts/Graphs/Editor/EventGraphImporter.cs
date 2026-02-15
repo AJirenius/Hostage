@@ -186,11 +186,8 @@ namespace Hostage.Graphs.Editor {
                     break;
                 case SetFlag setFlagNode:
                     var setFlagValue2 = GetInputPortValue<Hostage.Core.Flag>(setFlagNode.GetInputPortByName("Flag"));
-                    returnedNodes.Add(new RTSetFlagNode { flag = setFlagValue2 });
-                    break;
-                case ClearFlag clearFlagNode:
-                    var clearFlagValue2 = GetInputPortValue<Hostage.Core.Flag>(clearFlagNode.GetInputPortByName("Flag"));
-                    returnedNodes.Add(new RTClearFlagNode { flag = clearFlagValue2 });
+                    var setFlagBool = setFlagNode.GetNodeOptionByName("Value").TryGetValue<bool>(out var flagVal) ? flagVal : true;
+                    returnedNodes.Add(new RTSetFlagNode { flag = setFlagValue2, value = setFlagBool });
                     break;
                 case BranchByPerson branchByPersonNode:
                     var nrPersons = branchByPersonNode.GetNodeOptionByName("NrPersons").TryGetValue<int>(out var personCount) ? personCount : 3;
@@ -205,10 +202,12 @@ namespace Hostage.Graphs.Editor {
                 case BranchByIndex branchByIndexNode:
                     var branchSourceType = branchByIndexNode.GetNodeOptionByName("SourceType").TryGetValue<IndexSourceType>(out var srcType) ? srcType : IndexSourceType.Context;
                     var rtBranch = new RTBranchByIndexNode { sourceType = branchSourceType };
-                    // DataPorts are baked here; value node refs are wired in WireFlowNodeDataPorts
                     switch (branchSourceType)
                     {
                         case IndexSourceType.Context:
+                            rtBranch.contextKeyEnum = GetInputPortValue<ContextKey>(branchByIndexNode.GetInputPortByName("ContextKey"));
+                            break;
+                        case IndexSourceType.CustomContext:
                             rtBranch.contextKey = new DataPort { valueNodeIndex = -1, stringValue = GetInputPortValue<string>(branchByIndexNode.GetInputPortByName("ContextKey")) };
                             break;
                         case IndexSourceType.GraphValue:
@@ -286,8 +285,8 @@ namespace Hostage.Graphs.Editor {
                         randNode.min = BuildDataPort(editorNode.GetInputPortByName("Min"), valueNodeMap);
                         randNode.max = BuildDataPort(editorNode.GetInputPortByName("Max"), valueNodeMap);
                         break;
-                    case RTCheckFlagNode checkFlagNode:
-                        checkFlagNode.flag = GetInputPortValue<Hostage.Core.Flag>(editorNode.GetInputPortByName("Flag"));
+                    case RTGetFlagNode getFlagNode:
+                        getFlagNode.flag = GetInputPortValue<Hostage.Core.Flag>(editorNode.GetInputPortByName("Flag"));
                         break;
                 }
             }
@@ -305,6 +304,9 @@ namespace Hostage.Graphs.Editor {
                     case RTBranchByIndexNode branchNode:
                         switch (branchNode.sourceType) {
                             case IndexSourceType.Context:
+                                // Enum-based: no DataPort wiring needed, value is baked as ContextKey enum
+                                break;
+                            case IndexSourceType.CustomContext:
                                 branchNode.contextKey = BuildDataPort(editorNode.GetInputPortByName("ContextKey"), valueNodeMap);
                                 break;
                             case IndexSourceType.GraphValue:
@@ -324,8 +326,8 @@ namespace Hostage.Graphs.Editor {
                     return new RTContextIntNode();
                 case RandomIntNode:
                     return new RTRandomIntNode();
-                case CheckFlag:
-                    return new RTCheckFlagNode();
+                case GetFlag:
+                    return new RTGetFlagNode();
                 default:
                     return null;
             }

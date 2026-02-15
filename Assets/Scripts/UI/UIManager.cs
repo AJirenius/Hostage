@@ -253,7 +253,7 @@ namespace Hostage.UI
         public void SubmitCommand(Person person)
         {
             if (person.Command == null) return;
-            _commandManager.AddTimedCommand(person.Command);
+            _commandManager.AddPersonCommand(person.Command);
             DismissCommandCard();
         }
 

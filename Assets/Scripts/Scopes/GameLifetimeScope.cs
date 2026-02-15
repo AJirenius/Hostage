@@ -13,7 +13,7 @@ namespace Hostage.Scopes
         [Header("Databases")]
         public SOPersonList personList;
         public IntelList allIntelList;
-        public EventGraph firstGraph;
+        public SOTimedEvents initTimedEvents;
         [Header("UI")]
         public UIManager uiManager;
         
@@ -27,7 +27,7 @@ namespace Hostage.Scopes
             builder.Register<EventGraphRunner>(Lifetime.Singleton);
             builder.RegisterInstance(personList);
             builder.RegisterInstance(allIntelList);
-            builder.RegisterInstance(firstGraph);
+            builder.RegisterInstance(initTimedEvents);
             builder.Register<PersonManager>(Lifetime.Singleton);
             builder.Register<IntelProvider>(Lifetime.Singleton);
             builder.Register<FlagManager>(Lifetime.Singleton);

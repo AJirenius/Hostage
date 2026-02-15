@@ -12,21 +12,21 @@ namespace Hostage
         readonly CommandManager _commandManager;
         readonly PlayerInventory _playerInventory;
         readonly IntelProvider _intelProvider;
-        readonly EventGraph _eventGraph;
+        readonly SOTimedEvents _soTimedEvents;
         readonly EventGraphRunner _eventGraphRunner;
         readonly SOPersonList _personList;
         readonly UIManager _uiManager;
         readonly SignalBus _signalBus;
         readonly GameClock _gameClock;
 
-        public GameInitializer(CommandManager commandManager, PlayerInventory playerInventory, IntelProvider intelProvider, EventGraph eventGraph, EventGraphRunner eventGraphRunner,
+        public GameInitializer(CommandManager commandManager, PlayerInventory playerInventory, IntelProvider intelProvider, SOTimedEvents timedEvents, EventGraphRunner eventGraphRunner,
             SOPersonList personList, UIManager uiManager, SignalBus signalBus, GameClock gameClock)
         {
             Debug.Log("Initializing player inventory");
             _commandManager = commandManager;
             _playerInventory = playerInventory;
             _intelProvider = intelProvider;
-            _eventGraph = eventGraph;
+            _soTimedEvents = timedEvents;
             _eventGraphRunner = eventGraphRunner;
             _personList = personList;
             _uiManager = uiManager;
@@ -38,7 +38,7 @@ namespace Hostage
         {
             _playerInventory.AddIntel(_intelProvider.GetWithId("IntelAlanBarker 3"));
             _uiManager.Initialize(_playerInventory, _commandManager, _eventGraphRunner.PersonManager, _signalBus);
-            _eventGraphRunner.RunGraph(_eventGraph);
+            _commandManager.AddTimedEvents(_soTimedEvents);
         }
 
         public void Tick()

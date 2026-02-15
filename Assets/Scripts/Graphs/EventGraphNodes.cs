@@ -81,7 +81,7 @@ namespace Hostage.Graphs
     }
 
     [Serializable]
-    public class RTCheckFlagNode : RuntimeValueNode
+    public class RTGetFlagNode : RuntimeValueNode
     {
         public Flag flag;
 
@@ -104,7 +104,8 @@ namespace Hostage.Graphs
     public enum IndexSourceType
     {
         Context,
-        GraphValue
+        GraphValue,
+        CustomContext
     }
     
     [Serializable]
@@ -350,22 +351,14 @@ namespace Hostage.Graphs
     public class RTSetFlagNode : RuntimeNode
     {
         public Flag flag;
+        public bool value;
 
         public override void Execute(EventGraphRunner runner, Action<int> onComplete)
         {
-            runner.FlagManager.SetFlag(flag);
-            onComplete?.Invoke(0);
-        }
-    }
-
-    [Serializable]
-    public class RTClearFlagNode : RuntimeNode
-    {
-        public Flag flag;
-
-        public override void Execute(EventGraphRunner runner, Action<int> onComplete)
-        {
-            runner.FlagManager.ClearFlag(flag);
+            if (value)
+                runner.FlagManager.SetFlag(flag);
+            else
+                runner.FlagManager.ClearFlag(flag);
             onComplete?.Invoke(0);
         }
     }
@@ -392,9 +385,22 @@ namespace Hostage.Graphs
     }
 
     [Serializable]
+    public class RTAddTimedEventsNode : RuntimeNode
+    {
+        public SOTimedEvents soTimedEvents;
+
+        public override void Execute(EventGraphRunner runner, Action<int> onComplete)
+        {
+            runner.CommandManager.AddTimedEvents(soTimedEvents);
+            onComplete?.Invoke(0);
+        }
+    }
+
+    [Serializable]
     public class RTBranchByIndexNode : RuntimeNode
     {
         public IndexSourceType sourceType;
+        public ContextKey contextKeyEnum;
         public DataPort contextKey;
         public DataPort index;
 
@@ -404,6 +410,18 @@ namespace Hostage.Graphs
             switch (sourceType)
             {
                 case IndexSourceType.Context:
+                    var enumKey = contextKeyEnum.ToKeyString();
+                    if (runner.Context.IntVariables.TryGetValue(enumKey, out var enumValue))
+                    {
+                        branchIndex = enumValue;
+                    }
+                    else
+                    {
+                        Debug.LogWarning("RTBranchByIndexNode: context key '" + enumKey + "' not found, defaulting to 0");
+                        branchIndex = 0;
+                    }
+                    break;
+                case IndexSourceType.CustomContext:
                     var key = runner.ResolveDataPort<string>(contextKey);
                     if (runner.Context.IntVariables.TryGetValue(key, out var ctxValue))
                     {

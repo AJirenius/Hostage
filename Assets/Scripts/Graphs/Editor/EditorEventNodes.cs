@@ -200,17 +200,14 @@ namespace Hostage.Graphs.Editor
     [Serializable]
     public class SetFlag : Node
     {
-        protected override void OnDefinePorts(IPortDefinitionContext context)
+        const string VALUE = "Value";
+        protected override void OnDefineOptions(IOptionDefinitionContext context)
         {
-            context.AddInputPort("in").Build();
-            context.AddOutputPort("out").Build();
-            context.AddInputPort<Flag>("Flag").Build();
+            context.AddOption<bool>(VALUE)
+                .WithDisplayName("Value")
+                .WithDefaultValue(true)
+                .Delayed();
         }
-    }
-
-    [Serializable]
-    public class ClearFlag : Node
-    {
         protected override void OnDefinePorts(IPortDefinitionContext context)
         {
             context.AddInputPort("in").Build();
@@ -268,7 +265,7 @@ namespace Hostage.Graphs.Editor
     }
 
     [Serializable]
-    public class CheckFlag : Node, IEditorValueNode
+    public class GetFlag : Node, IEditorValueNode
     {
         protected override void OnDefinePorts(IPortDefinitionContext context)
         {
@@ -306,12 +303,15 @@ namespace Hostage.Graphs.Editor
             switch (sourceType)
             {
                 case IndexSourceType.Context:
-                    context.AddInputPort<string>("ContextKey").Build(); 
+                    context.AddInputPort<ContextKey>("ContextKey").Build();
+                    break;
+                case IndexSourceType.CustomContext:
+                    context.AddInputPort<string>("ContextKey").Build();
                     break;
                 case IndexSourceType.GraphValue:
-                    context.AddInputPort<int>("Index").Build(); 
+                    context.AddInputPort<int>("Index").Build();
                     break;
-                default: 
+                default:
                     throw new ArgumentOutOfRangeException();
             }
 

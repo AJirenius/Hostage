@@ -13,7 +13,7 @@ namespace Hostage.Core
         public GameClock()
         {
             _currentTimeInSeconds = 0f;
-            _timeMultiplier = 3f;
+            _timeMultiplier = 1f;
         }
 
         public bool Paused { get; set; }

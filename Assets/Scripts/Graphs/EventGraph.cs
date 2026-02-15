@@ -5,6 +5,24 @@ using Hostage.SO;
 
 namespace Hostage.Graphs
 {
+    
+    
+    public enum ContextKey
+    {
+        TimedEventIndex,
+        ActionOutput
+    }
+
+    public static class ContextKeyExtensions
+    {
+        public static string ToKeyString(this ContextKey key) => key switch
+        {
+            ContextKey.TimedEventIndex => GraphContext.TimedEventIndexKey,
+            ContextKey.ActionOutput => GraphContext.ActionOutputKey,
+            _ => throw new System.ArgumentOutOfRangeException(nameof(key), key, null)
+        };
+    }
+
     public class GraphContext
     {
         public const string TimedEventIndexKey = "timed_event_index";

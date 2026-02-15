@@ -14,6 +14,7 @@ namespace Hostage.Core
         public event Action<EventGraph, GraphContext, Action<GraphResult>> OnGraphRequested;
 
         private List<PersonCommand> _commands = new List<PersonCommand>();
+        private List<TimedEvents> _timedEvents = new List<TimedEvents>();
 
         public CommandManager(SignalBus signalBus, GameClock gameClock)
         {
@@ -37,6 +38,17 @@ namespace Hostage.Core
                 if (personCommand.timeLeft <= 0)
                 {
                     ExecuteTimedCommand(personCommand);
+                    if (_gameClock.Paused) return;
+                }
+            }
+
+            for (int i = _timedEvents.Count - 1; i >= 0; i--)
+            {
+                TimedEvents timedEvents = _timedEvents[i];
+                timedEvents.timeLeft -= gameTime;
+                if (timedEvents.timeLeft <= 0)
+                {
+                    ExecuteTimedEvents(timedEvents);
                     if (_gameClock.Paused) return;
                 }
             }
@@ -102,7 +114,51 @@ namespace Hostage.Core
             _signalBus.Publish(new TimedCommandCompletedSignal { PersonCommand = personCommand });
         }
 
-        public void AddTimedCommand(PersonCommand personCommand)
+        private void ExecuteTimedEvents(TimedEvents timedEvents)
+        {
+            _gameClock.Paused = true;
+
+            var context = new GraphContext();
+            context.IntVariables[GraphContext.TimedEventIndexKey] = timedEvents.timedEventIndex;
+
+            EventGraph graph = timedEvents.SOTimedEvents.eventGraph;
+
+            if (graph != null && OnGraphRequested != null)
+            {
+                OnGraphRequested.Invoke(graph, context, result => OnTimedEventsGraphCompleted(timedEvents, result));
+            }
+            else
+            {
+                OnTimedEventsGraphCompleted(timedEvents, new GraphResult());
+            }
+        }
+
+        private void OnTimedEventsGraphCompleted(TimedEvents timedEvents, GraphResult result)
+        {
+            _gameClock.Paused = false;
+
+            timedEvents.timedEventIndex++;
+            if (timedEvents.timedEvents != null && timedEvents.timedEventIndex < timedEvents.timedEvents.Count)
+            {
+                timedEvents.timeLeft = timedEvents.timedEvents[timedEvents.timedEventIndex].time;
+                timedEvents.currentFullTime = timedEvents.timeLeft;
+                return;
+            }
+
+            _timedEvents.Remove(timedEvents);
+        }
+
+        public void AddTimedEvents(SOTimedEvents soTimedEvents)
+        {
+            var timedEvents = new TimedEvents(soTimedEvents);
+            timedEvents.timedEvents = soTimedEvents.timedEvents;
+            timedEvents.timeLeft = soTimedEvents.timedEvents[0].time;
+            timedEvents.currentFullTime = timedEvents.timeLeft;
+            timedEvents.timedEventIndex = 0;
+            _timedEvents.Add(timedEvents);
+        }
+
+        public void AddPersonCommand(PersonCommand personCommand)
         {
             if (personCommand.verb != null)
             {
