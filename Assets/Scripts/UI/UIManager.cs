@@ -155,23 +155,31 @@ namespace Hostage.UI
 
         private void OnTimedCommandStarted(TimedCommandStartedSignal signal)
         {
-            var soIntel = signal.PersonCommand.SoIntel;
-            if (soIntel != null && _createdIntelCards.TryGetValue(soIntel, out var cardGo))
+            var verb = signal.PersonCommand.verb;
+            if (verb != null && verb.occupyingIntel)
             {
-                var intelCard = cardGo.GetComponent<IntelCardUI>();
-                if (intelCard != null)
-                    intelCard.SetLocked(true);
+                var soIntel = signal.PersonCommand.SoIntel;
+                if (soIntel != null && _createdIntelCards.TryGetValue(soIntel, out var cardGo))
+                {
+                    var intelCard = cardGo.GetComponent<IntelCardUI>();
+                    if (intelCard != null)
+                        intelCard.SetLocked(true);
+                }
             }
         }
 
         private void OnTimedCommandCompleted(TimedCommandCompletedSignal signal)
         {
-            var soIntel = signal.PersonCommand.SoIntel;
-            if (soIntel != null && _createdIntelCards.TryGetValue(soIntel, out var cardGo))
+            var verb = signal.PersonCommand.verb;
+            if (verb != null && verb.occupyingIntel)
             {
-                var intelCard = cardGo.GetComponent<IntelCardUI>();
-                if (intelCard != null)
-                    intelCard.SetLocked(false);
+                var soIntel = signal.PersonCommand.SoIntel;
+                if (soIntel != null && _createdIntelCards.TryGetValue(soIntel, out var cardGo))
+                {
+                    var intelCard = cardGo.GetComponent<IntelCardUI>();
+                    if (intelCard != null)
+                        intelCard.SetLocked(false);
+                }
             }
         }
 

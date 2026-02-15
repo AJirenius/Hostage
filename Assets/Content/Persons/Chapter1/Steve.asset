@@ -17,5 +17,7 @@ MonoBehaviour:
   UnknownName: Jumper
   Description: Jumper
   Portrait: {fileID: 0}
-  defaultFlag: 1
-  skillTags: 
+  defaultFlag: 9
+  skillTags: 00000000
+  personMasterGraph: {fileID: 0}
+  defaultIntelMessages: {fileID: 0}

@@ -6,6 +6,7 @@ namespace Hostage.Core
     public class PersonManager
     {
         private readonly Dictionary<SOPerson, Person> _personMap = new();
+        private readonly HashSet<(SOIntel, CommandType)> _globalCompletedCommands = new();
         private readonly SignalBus _signalBus;
 
         public PersonManager(SOPersonList personList, SignalBus signalBus)
@@ -20,7 +21,7 @@ namespace Hostage.Core
             foreach (var soPerson in personList.GetPersons())
             {
                 if (soPerson != null && !_personMap.ContainsKey(soPerson))
-                    _personMap[soPerson] = new Person(soPerson, _signalBus);
+                    _personMap[soPerson] = new Person(soPerson, _signalBus, this);
             }
         }
 
@@ -36,5 +37,11 @@ namespace Hostage.Core
             _personMap.TryGetValue(soPerson, out var person);
             return person;
         }
+
+        public bool HasCompletedCommand(SOIntel intel, CommandType commandType)
+            => _globalCompletedCommands.Contains((intel, commandType));
+
+        public void RecordCompletedCommand(SOIntel intel, CommandType commandType)
+            => _globalCompletedCommands.Add((intel, commandType));
     }
 }

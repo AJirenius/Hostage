@@ -18,6 +18,7 @@ namespace Hostage.Core
     public class Person
     {
         private readonly SignalBus _signalBus;
+        private readonly PersonManager _personManager;
         private PersonFlag _flag;
 
         public SOPerson SOReference { get; }
@@ -32,21 +33,21 @@ namespace Hostage.Core
                 _signalBus.Publish(new PersonFlagsChangedSignal { Person = this });
             }
         }
-        
+
         public PersonCommand Command { get; private set; }
 
         public List<SOIntel> Intels { get; } = new List<SOIntel>();
-        private readonly HashSet<(SOIntel, CommandType)> _completedCommands = new();
 
         public bool HasCompletedCommand(SOIntel intel, CommandType commandType)
-            => _completedCommands.Contains((intel, commandType));
+            => _personManager.HasCompletedCommand(intel, commandType);
 
         public void RecordCompletedCommand(SOIntel intel, CommandType commandType)
-            => _completedCommands.Add((intel, commandType));
+            => _personManager.RecordCompletedCommand(intel, commandType);
 
-        public Person(SOPerson soReference, SignalBus signalBus)
+        public Person(SOPerson soReference, SignalBus signalBus, PersonManager personManager)
         {
             _signalBus = signalBus;
+            _personManager = personManager;
             SOReference = soReference;
             _flag = soReference.defaultFlag;
         }

@@ -29,7 +29,7 @@ namespace Hostage.Graphs.Editor
     }
     
     [Serializable]
-    public class PersonStartNode:Node
+    public class NpcPersonStartNode:Node
     {
         const string NR_INTEL = "NrIntel";
         protected override void OnDefineOptions(IOptionDefinitionContext context)

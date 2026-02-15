@@ -206,9 +206,17 @@ namespace Hostage.Graphs
         public SOPerson soPerson;
         public override void Execute(EventGraphRunner runner, Action<int> onComplete)
         {
-            // take intel from inventory and give to person
-
             Debug.Log("Taking " + soIntel.intelName + " from player and giving to " + soPerson.Name);
+
+            var person = runner.PersonManager.GetPerson(soPerson);
+            if (person != null)
+            {
+                if (runner.PlayerInventory.RemoveIntel(soIntel))
+                {
+                    person.AddIntel(soIntel);
+                }
+            }
+
             onComplete?.Invoke(0);
         }
     }

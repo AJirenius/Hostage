@@ -10,16 +10,18 @@ namespace Hostage.Core
     {
         private readonly SignalBus _signalBus;
         private readonly GameClock _gameClock;
+        private readonly PlayerInventory _playerInventory;
 
         public event Action<EventGraph, GraphContext, Action<GraphResult>> OnGraphRequested;
 
         private List<PersonCommand> _commands = new List<PersonCommand>();
         private List<TimedEvents> _timedEvents = new List<TimedEvents>();
 
-        public CommandManager(SignalBus signalBus, GameClock gameClock)
+        public CommandManager(SignalBus signalBus, GameClock gameClock, PlayerInventory playerInventory)
         {
             _signalBus = signalBus;
             _gameClock = gameClock;
+            _playerInventory = playerInventory;
         }
 
         public void HandleTime(float gameTime)
@@ -65,7 +67,7 @@ namespace Hostage.Core
 
             if (personCommand.verb != null)
             {
-                Debug.Log("ExecuteCommmand: " + personCommand.verb.CommandType + " index: " + personCommand.timedEventIndex);
+                Debug.Log("Execute Assistant commmand: " + personCommand.Person.SOReference.Name + " Verb:" + personCommand.verb.CommandType + " index: " + personCommand.timedEventIndex);
                 if (personCommand.SoIntel?.graph != null)
                 {
                     context.IntVariables[GraphContext.ActionOutputKey] = personCommand.verb.CommandType.ToOutputIndex();
@@ -74,7 +76,7 @@ namespace Hostage.Core
             }
             else
             {
-                Debug.Log("ExecutePersonAction: " + personCommand.Person.SOReference.Name + " index: " + personCommand.timedEventIndex);
+                Debug.Log("Execute NPC Command: " + personCommand.Person.SOReference.Name + " index: " + personCommand.timedEventIndex);
                 context.Intel = personCommand.SoIntel;
                 graph = personCommand.Person.SOReference.personMasterGraph;
             }
@@ -106,6 +108,18 @@ namespace Hostage.Core
             {
                 var commandType = personCommand.verb?.CommandType ?? CommandType.None;
                 personCommand.Person.RecordCompletedCommand(personCommand.SoIntel, commandType);
+            }
+
+            // Return intel to player inventory if applicable
+            if (personCommand.verb != null &&
+                personCommand.verb.occupyingIntel &&
+                personCommand.SoIntel != null &&
+                result.ReturnIntel)
+            {
+                if (personCommand.Person.RemoveIntel(personCommand.SoIntel))
+                {
+                    _playerInventory.AddIntel(personCommand.SoIntel);
+                }
             }
 
             personCommand.Person.ClearOccupied();
@@ -171,6 +185,15 @@ namespace Hostage.Core
                     Analyze a => a.timedEvents,
                     _ => null
                 };
+
+                // Transfer intel to person if occupyingIntel is true
+                if (personCommand.verb.occupyingIntel && personCommand.SoIntel != null)
+                {
+                    if (_playerInventory.RemoveIntel(personCommand.SoIntel))
+                    {
+                        personCommand.Person.AddIntel(personCommand.SoIntel);
+                    }
+                }
             }
             else
             {

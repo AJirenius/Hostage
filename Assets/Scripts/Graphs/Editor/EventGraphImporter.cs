@@ -17,7 +17,7 @@ namespace Hostage.Graphs.Editor {
             }
 
             var startNodeModel = (INode)graph.GetNodes().OfType<Graphs.Editor.AssistantStartNode>().FirstOrDefault()
-                              ?? (INode)graph.GetNodes().OfType<Graphs.Editor.PersonStartNode>().FirstOrDefault()
+                              ?? (INode)graph.GetNodes().OfType<Graphs.Editor.NpcPersonStartNode>().FirstOrDefault()
                               ?? graph.GetNodes().OfType<Graphs.Editor.StartNode>().FirstOrDefault();
 
             if (startNodeModel == null) {
@@ -113,7 +113,7 @@ namespace Hostage.Graphs.Editor {
                 case StartNode:
                     returnedNodes.Add(new RTStartNode());
                     break;
-                case PersonStartNode personStartNode:
+                case NpcPersonStartNode personStartNode:
                     var nrIntel = personStartNode.GetNodeOptionByName("NrIntel").TryGetValue<int>(out var intelCount) ? intelCount : 3;
                     var rtPersonStart = new RTPersonStartNode();
                     for (int i = 0; i < nrIntel; i++)

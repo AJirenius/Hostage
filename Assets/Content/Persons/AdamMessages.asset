@@ -15,7 +15,7 @@ MonoBehaviour:
   categoryMessages:
     unknown:
       investigate: Let me take a look at that
-      interview: '??? '
+      interview: 
       surveillance: Happy to see whats going on
       analyze: Lets take it to the lab
     phoneNumber:
@@ -32,9 +32,9 @@ MonoBehaviour:
       investigate: I'll look around and get a better view of the situation
       interview: I'll go there and talk to whoever I can find
       surveillance: Let me go there and sit tight
-      analyze: ???
+      analyze: 
     document:
       investigate: I'll try to find out more
-      interview: ???
-      surveillance: ???
+      interview: 
+      surveillance: 
       analyze: I'll try to see if it has something that we are missing
