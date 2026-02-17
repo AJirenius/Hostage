@@ -98,11 +98,11 @@ namespace Hostage.UI
         {
             if (soIntel.category == IntelCategory.Person && soIntel.person != null)
             {
-                bool isUnknown = person != null
-                    ? person.IsUnknown()
-                    : (soIntel.person.defaultFlag & PersonFlag.Unknown) != 0;
+                bool isIdentified = person != null
+                    ? person.IsIdentified()
+                    : (soIntel.person.defaultFlag & PersonFlag.Identified) != 0;
 
-                if (isUnknown)
+                if (!isIdentified)
                     return soIntel.person.UnknownName;
             }
             return soIntel.intelName;

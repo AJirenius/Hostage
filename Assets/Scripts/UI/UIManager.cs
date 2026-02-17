@@ -217,7 +217,10 @@ namespace Hostage.UI
             }
 
             if (_activeCommandCard != null && !_activeCommandCard.IsLocked && !_activeCommandCard.HasAttachedIntel)
-                _activeCommandCard.PopulateSlots(soIntel);
+            {
+                if (_activeCommandCard.Person.CanInteractWithIntel(soIntel))
+                    _activeCommandCard.PopulateSlots(soIntel);
+            }
         }
 
         public void OnIntelDragEnded()

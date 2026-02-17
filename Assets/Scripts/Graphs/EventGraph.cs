@@ -10,7 +10,7 @@ namespace Hostage.Graphs
     public enum ContextKey
     {
         TimedEventIndex,
-        ActionOutput
+        VerbTypeIndex
     }
 
     public static class ContextKeyExtensions
@@ -18,7 +18,7 @@ namespace Hostage.Graphs
         public static string ToKeyString(this ContextKey key) => key switch
         {
             ContextKey.TimedEventIndex => GraphContext.TimedEventIndexKey,
-            ContextKey.ActionOutput => GraphContext.ActionOutputKey,
+            ContextKey.VerbTypeIndex => GraphContext.VerbTypeIndexKey,
             _ => throw new System.ArgumentOutOfRangeException(nameof(key), key, null)
         };
     }
@@ -26,7 +26,7 @@ namespace Hostage.Graphs
     public class GraphContext
     {
         public const string TimedEventIndexKey = "timed_event_index";
-        public const string ActionOutputKey = "action_output";
+        public const string VerbTypeIndexKey = "verb_type_index";
 
         public Person Person { get; }
         public SOIntel Intel { get; set; }
@@ -54,5 +54,14 @@ namespace Hostage.Graphs
         public List<int> ConnectedOutputs = new();
 
         public bool IsOutputConnected(int outputIndex) => ConnectedOutputs.Contains(outputIndex);
+
+        public bool HasIntelInStartNode(SOIntel soIntel)
+        {
+            if (Nodes == null || Nodes.Count == 0)
+                return false;
+            if (Nodes[0] is RTPersonStartNode startNode)
+                return startNode.intelList.Contains(soIntel);
+            return false;
+        }
     }
 }

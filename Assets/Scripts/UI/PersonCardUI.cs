@@ -44,7 +44,7 @@ namespace Hostage.UI
             if (panel != null)
                 panel.color = _person.IsOccupied() ? OccupiedColor : NormalColor;
 
-            personNameText.text = _person.IsUnknown() ? (string.IsNullOrEmpty(_person.SOReference.UnknownName)?"Unknown":_person.SOReference.UnknownName) : _person.SOReference.Name;
+            personNameText.text = _person.IsIdentified() ? _person.SOReference.Name : (string.IsNullOrEmpty(_person.SOReference.UnknownName)?"Unknown":_person.SOReference.UnknownName);
         }
 
         public void OnPointerClick(PointerEventData eventData)

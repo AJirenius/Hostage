@@ -16,6 +16,7 @@ namespace Hostage.SO
         public Sprite Portrait;
         [FormerlySerializedAs("defaultStatus")] public PersonFlag defaultFlag;
         public List<SkillTag> skillTags;
+        public SOIntel personIntel;
         public EventGraph personMasterGraph;
         public SOPersonDefaultMessages defaultIntelMessages;
     }

@@ -6,7 +6,7 @@ using UnityEditor.AssetImporters;
 using UnityEngine;
 
 namespace Hostage.Graphs.Editor {
-    [ScriptedImporter(2, EditorEventGraph.AssetExtension)]
+    [ScriptedImporter(4, EditorEventGraph.AssetExtension)]
     internal class EventGraphImporter : ScriptedImporter {
         public override void OnImportAsset(AssetImportContext ctx) {
             var graph = GraphDatabase.LoadGraphForImporter<EditorEventGraph>(ctx.assetPath);
@@ -168,14 +168,9 @@ namespace Hostage.Graphs.Editor {
                 case SetPersonFlag setFlagNode:
                     var setFlagTarget = setFlagNode.GetNodeOptionByName("Target").TryGetValue<PersonTargetType>(out var setTarget) ? setTarget : PersonTargetType.SpecifiedPerson;
                     var setFlagValue = GetInputPortValue<Hostage.Core.PersonFlag>(setFlagNode.GetInputPortByName("Flag"));
+                    var setFlagBoolValue = GetInputPortValue<bool>(setFlagNode.GetInputPortByName("Value"));
                     var setFlagPerson = setFlagTarget == PersonTargetType.SpecifiedPerson ? GetInputPortValue<Hostage.SO.SOPerson>(setFlagNode.GetInputPortByName("Person")) : null;
-                    returnedNodes.Add(new RTSetPersonFlagNode { flag = setFlagValue, personTargetType = setFlagTarget, soPerson = setFlagPerson });
-                    break;
-                case ClearPersonFlag clearFlagNode:
-                    var clearFlagTarget = clearFlagNode.GetNodeOptionByName("Target").TryGetValue<PersonTargetType>(out var clearTarget) ? clearTarget : PersonTargetType.SpecifiedPerson;
-                    var clearFlagValue = GetInputPortValue<Hostage.Core.PersonFlag>(clearFlagNode.GetInputPortByName("Flag"));
-                    var clearFlagPerson = clearFlagTarget == PersonTargetType.SpecifiedPerson ? GetInputPortValue<Hostage.SO.SOPerson>(clearFlagNode.GetInputPortByName("Person")) : null;
-                    returnedNodes.Add(new RTClearPersonFlagNode { flag = clearFlagValue, personTargetType = clearFlagTarget, soPerson = clearFlagPerson });
+                    returnedNodes.Add(new RTSetPersonFlagNode { flag = setFlagValue, value = setFlagBoolValue, personTargetType = setFlagTarget, soPerson = setFlagPerson });
                     break;
                 case ClearScopeNode clearScopeNode:
                     var clearScopeValue = GetInputPortValue<Hostage.Core.FlagScope>(clearScopeNode.GetInputPortByName("Scope"));
@@ -198,6 +193,9 @@ namespace Hostage.Graphs.Editor {
                         rtBranchByPerson.personList.Add(soPerson);
                     }
                     returnedNodes.Add(rtBranchByPerson);
+                    break;
+                case GraphResultNode:
+                    returnedNodes.Add(new RTGraphResultNode());
                     break;
                 case BranchByIndex branchByIndexNode:
                     var branchSourceType = branchByIndexNode.GetNodeOptionByName("SourceType").TryGetValue<IndexSourceType>(out var srcType) ? srcType : IndexSourceType.Context;
@@ -288,6 +286,17 @@ namespace Hostage.Graphs.Editor {
                     case RTGetFlagNode getFlagNode:
                         getFlagNode.flag = GetInputPortValue<Hostage.Core.Flag>(editorNode.GetInputPortByName("Flag"));
                         break;
+                    case RTGetPersonFlagNode getPersonFlagNode:
+                        switch (getPersonFlagNode.sourceType)
+                        {
+                            case PersonSourceType.GraphValue:
+                                getPersonFlagNode.person = BuildDataPort(editorNode.GetInputPortByName("Person"), valueNodeMap);
+                                break;
+                            case PersonSourceType.CustomContext:
+                                getPersonFlagNode.personKey = BuildDataPort(editorNode.GetInputPortByName("PersonKey"), valueNodeMap);
+                                break;
+                        }
+                        break;
                 }
             }
         }
@@ -300,6 +309,12 @@ namespace Hostage.Graphs.Editor {
                 switch (runtimeNode) {
                     case RTIfNode ifNode:
                         ifNode.condition = BuildDataPort(editorNode.GetInputPortByName("Condition"), valueNodeMap);
+                        break;
+                    case RTGraphResultNode graphResultNode:
+                        graphResultNode.allowRepeat = BuildDataPort(editorNode.GetInputPortByName("AllowRepeat"), valueNodeMap);
+                        graphResultNode.returnIntel = BuildDataPort(editorNode.GetInputPortByName("ReturnIntel"), valueNodeMap);
+                        graphResultNode.scheduleNextIteration = BuildDataPort(editorNode.GetInputPortByName("ScheduleNextIteration"), valueNodeMap);
+                        graphResultNode.nextIterationTime = BuildDataPort(editorNode.GetInputPortByName("NextIterationTime"), valueNodeMap);
                         break;
                     case RTBranchByIndexNode branchNode:
                         switch (branchNode.sourceType) {
@@ -328,6 +343,13 @@ namespace Hostage.Graphs.Editor {
                     return new RTRandomIntNode();
                 case GetFlag:
                     return new RTGetFlagNode();
+                case GetPersonFlag getPersonFlagNode:
+                    var personSourceType = getPersonFlagNode.GetNodeOptionByName("SourceType").TryGetValue<PersonSourceType>(out var pSrcType) ? pSrcType : PersonSourceType.ContextPerson;
+                    return new RTGetPersonFlagNode
+                    {
+                        sourceType = personSourceType,
+                        flag = GetInputPortValue<Hostage.Core.PersonFlag>(getPersonFlagNode.GetInputPortByName("Flag"))
+                    };
                 default:
                     return null;
             }

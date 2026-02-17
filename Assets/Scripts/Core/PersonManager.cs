@@ -8,10 +8,12 @@ namespace Hostage.Core
         private readonly Dictionary<SOPerson, Person> _personMap = new();
         private readonly HashSet<(SOIntel, CommandType)> _globalCompletedCommands = new();
         private readonly SignalBus _signalBus;
+        private readonly PlayerInventory _playerInventory;
 
-        public PersonManager(SOPersonList personList, SignalBus signalBus)
+        public PersonManager(SOPersonList personList, SignalBus signalBus, PlayerInventory playerInventory)
         {
             _signalBus = signalBus;
+            _playerInventory = playerInventory;
             LoadPersons(personList);
         }
 
@@ -21,7 +23,7 @@ namespace Hostage.Core
             foreach (var soPerson in personList.GetPersons())
             {
                 if (soPerson != null && !_personMap.ContainsKey(soPerson))
-                    _personMap[soPerson] = new Person(soPerson, _signalBus, this);
+                    _personMap[soPerson] = new Person(soPerson, _signalBus, this, _playerInventory);
             }
         }
 

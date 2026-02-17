@@ -17,7 +17,7 @@ MonoBehaviour:
   UnknownName: 
   Description: Techie
   Portrait: {fileID: 0}
-  defaultFlag: 3
+  defaultFlag: 11
   skillTags: 01000000
   personMasterGraph: {fileID: 0}
   defaultIntelMessages: {fileID: 11400000, guid: 7934403497789405caa83ed782426b2f, type: 2}

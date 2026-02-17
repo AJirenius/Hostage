@@ -153,35 +153,12 @@ namespace Hostage.Graphs.Editor
         {
             var option = GetNodeOptionByName(k_TargetName);
             option.TryGetValue<PersonTargetType>(out var target);
-            
+
             context.AddInputPort("in").Build();
             context.AddOutputPort("out").Build();
-            
+
             context.AddInputPort<PersonFlag>("Flag").Build();
-            if (target == PersonTargetType.SpecifiedPerson) context.AddInputPort<SOPerson>("Person").Build();
-        }
-    }
-    
-    [Serializable]
-    public class ClearPersonFlag:Node
-    {
-        const string k_TargetName = "Target";
-        protected override void OnDefineOptions(IOptionDefinitionContext context)
-        {
-            context.AddOption<PersonTargetType>(k_TargetName)
-                .WithDisplayName("Target")
-                .WithDefaultValue(PersonTargetType.SpecifiedPerson)
-                .Delayed();
-        }
-        protected override void OnDefinePorts(IPortDefinitionContext context)
-        {
-            var option = GetNodeOptionByName(k_TargetName);
-            option.TryGetValue<PersonTargetType>(out var target);
-            
-            context.AddInputPort("in").Build();
-            context.AddOutputPort("out").Build();
-            
-            context.AddInputPort<PersonFlag>("Flag").Build();
+            context.AddInputPort<bool>("Value").Build();
             if (target == PersonTargetType.SpecifiedPerson) context.AddInputPort<SOPerson>("Person").Build();
         }
     }
@@ -274,6 +251,36 @@ namespace Hostage.Graphs.Editor
         }
     }
 
+    [Serializable]
+    public class GetPersonFlag : Node, IEditorValueNode
+    {
+        const string SOURCE_TYPE = "SourceType";
+        protected override void OnDefineOptions(IOptionDefinitionContext context)
+        {
+            context.AddOption<PersonSourceType>(SOURCE_TYPE)
+                .WithDisplayName("Source Type")
+                .WithDefaultValue(PersonSourceType.ContextPerson)
+                .Delayed();
+        }
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            var option = GetNodeOptionByName(SOURCE_TYPE);
+            option.TryGetValue<PersonSourceType>(out var sourceType);
+
+            context.AddInputPort<PersonFlag>("Flag").Build();
+            switch (sourceType)
+            {
+                case PersonSourceType.GraphValue:
+                    context.AddInputPort<SOPerson>("Person").Build();
+                    break;
+                case PersonSourceType.CustomContext:
+                    context.AddInputPort<string>("PersonKey").Build();
+                    break;
+            }
+            context.AddOutputPort<bool>("Result").Build();
+        }
+    }
+
     // ── Flow Nodes ──────────────────────────────────────────────────────
 
     [Serializable]
@@ -322,6 +329,20 @@ namespace Hostage.Graphs.Editor
         }
     }
     
+    [Serializable]
+    public class GraphResultNode : Node
+    {
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            context.AddInputPort("in").Build();
+            context.AddOutputPort("out").Build();
+            context.AddInputPort<bool>("AllowRepeat").Build();
+            context.AddInputPort<bool>("ReturnIntel").Build();
+            context.AddInputPort<bool>("ScheduleNextIteration").Build();
+            context.AddInputPort<float>("NextIterationTime").Build();
+        }
+    }
+
     [Serializable]
     public class BranchByPerson:Node
     {

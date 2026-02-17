@@ -28,6 +28,12 @@ namespace Hostage.SO.Editor
                 EditorGUILayout.PropertyField(graphProp, true);
             }
 
+            var intelProp = serializedObject.FindProperty("personIntel");
+            if (intelProp.objectReferenceValue == null)
+            {
+                EditorGUILayout.HelpBox("Person Intel is required for this person to work.", MessageType.Warning);
+            }
+
             serializedObject.ApplyModifiedProperties();
         }
     }

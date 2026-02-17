@@ -17,5 +17,5 @@ MonoBehaviour:
   UnknownName: Witness 1
   Description: asd
   Portrait: {fileID: 0}
-  defaultFlag: 8
+  defaultFlag: 0
   skillTags: 

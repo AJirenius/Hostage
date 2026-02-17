@@ -61,16 +61,12 @@ namespace Hostage.SO
         public override CommandType CommandType => CommandType.Surveillance;
 
         public List<SOIntel> linkedIntels; // intel that can be run instead of this
-        public List<TimedEvent> timedEvents;
-        
     }
-    
+
     [Serializable]
     public class Analyze: Verb
     {
         public override CommandType CommandType => CommandType.Analyze;
-
-        public List<TimedEvent> timedEvents;
     }
     
     [Serializable]
@@ -85,11 +81,5 @@ namespace Hostage.SO
     {
         public SkillTag skillTag;
         public float value;
-    }
-    
-    [Serializable]
-    public class TimedEvent
-    {
-        public int time;
     }
 }

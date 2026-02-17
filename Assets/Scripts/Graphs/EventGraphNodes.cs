@@ -91,6 +91,53 @@ namespace Hostage.Graphs
         }
     }
 
+    [Serializable]
+    public class RTGetPersonFlagNode : RuntimeValueNode
+    {
+        public PersonSourceType sourceType;
+        public PersonFlag flag;
+        public DataPort person;
+        public DataPort personKey;
+
+        public override object Evaluate(EventGraphRunner runner, int outputIndex = 0)
+        {
+            Person resolved = null;
+            switch (sourceType)
+            {
+                case PersonSourceType.ContextPerson:
+                    resolved = runner.Context.Person;
+                    break;
+                case PersonSourceType.GraphValue:
+                    var soPerson = runner.ResolveDataPort<SOPerson>(person);
+                    if (soPerson != null)
+                        resolved = runner.PersonManager.GetPerson(soPerson);
+                    break;
+                case PersonSourceType.CustomContext:
+                    var key = runner.ResolveDataPort<string>(personKey);
+                    if (runner.Context.StringVariables.TryGetValue(key, out var personName))
+                    {
+                        foreach (var p in runner.PersonManager.GetAllPersons())
+                        {
+                            if (p.SOReference.Name == personName)
+                            {
+                                resolved = p;
+                                break;
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            if (resolved == null)
+            {
+                Debug.LogWarning("RTGetPersonFlagNode: could not resolve person");
+                return false;
+            }
+
+            return (resolved.Flag & flag) != 0;
+        }
+    }
+
     // ── Flow Nodes ─────────────────────────────────────────────────────
 
     public enum PersonTargetType
@@ -101,6 +148,13 @@ namespace Hostage.Graphs
         Narrator
     }
     
+    public enum PersonSourceType
+    {
+        ContextPerson,
+        GraphValue,
+        CustomContext
+    }
+
     public enum IndexSourceType
     {
         Context,
@@ -150,7 +204,7 @@ namespace Hostage.Graphs
         public override void Execute(EventGraphRunner runner, Action<int> onComplete)
         {
             int output = 0;
-            if (runner.Context.IntVariables.TryGetValue(GraphContext.ActionOutputKey, out var value))
+            if (runner.Context.IntVariables.TryGetValue(GraphContext.VerbTypeIndexKey, out var value))
                 output = value;
             onComplete?.Invoke(output);
         }
@@ -269,6 +323,7 @@ namespace Hostage.Graphs
     public class RTSetPersonFlagNode : RuntimeNode
     {
         public PersonFlag flag;
+        public bool value;
         public PersonTargetType personTargetType;
         public SOPerson soPerson;
 
@@ -277,8 +332,11 @@ namespace Hostage.Graphs
             var person = ResolvePerson(runner);
             if (person != null)
             {
-                person.Flag |= flag;
-                Debug.Log("Set flag " + flag + " on " + person.SOReference.Name);
+                if (value)
+                    person.Flag |= flag;
+                else
+                    person.Flag &= ~flag;
+                Debug.Log((value ? "Set" : "Cleared") + " flag " + flag + " on " + person.SOReference.Name);
             }
             onComplete?.Invoke(0);
         }
@@ -293,39 +351,6 @@ namespace Hostage.Graphs
                     return runner.PersonManager.GetPerson(soPerson);
                 default:
                     Debug.LogWarning("RTSetPersonFlagNode: unsupported target " + personTargetType);
-                    return null;
-            }
-        }
-    }
-
-    [Serializable]
-    public class RTClearPersonFlagNode : RuntimeNode
-    {
-        public PersonFlag flag;
-        [FormerlySerializedAs("targetPerson")] public PersonTargetType personTargetType;
-        public SOPerson soPerson;
-
-        public override void Execute(EventGraphRunner runner, Action<int> onComplete)
-        {
-            var person = ResolvePerson(runner);
-            if (person != null)
-            {
-                person.Flag &= ~flag;
-                Debug.Log("Cleared flag " + flag + " on " + person.SOReference.Name);
-            }
-            onComplete?.Invoke(0);
-        }
-
-        Person ResolvePerson(EventGraphRunner runner)
-        {
-            switch (personTargetType)
-            {
-                case PersonTargetType.ContextPerson:
-                    return runner.Context.Person;
-                case PersonTargetType.SpecifiedPerson:
-                    return runner.PersonManager.GetPerson(soPerson);
-                default:
-                    Debug.LogWarning("RTClearPersonFlagNode: unsupported target " + personTargetType);
                     return null;
             }
         }
@@ -449,6 +474,25 @@ namespace Hostage.Graphs
             }
 
             onComplete?.Invoke(branchIndex);
+        }
+    }
+
+    [Serializable]
+    public class RTGraphResultNode : RuntimeNode
+    {
+        public DataPort allowRepeat;
+        public DataPort returnIntel;
+        public DataPort scheduleNextIteration;
+        public DataPort nextIterationTime;
+
+        public override void Execute(EventGraphRunner runner, Action<int> onComplete)
+        {
+            var result = runner.Context.Result;
+            result.AllowRepeat = runner.ResolveDataPort<bool>(allowRepeat);
+            result.ReturnIntel = runner.ResolveDataPort<bool>(returnIntel);
+            result.ScheduleNextIteration = runner.ResolveDataPort<bool>(scheduleNextIteration);
+            result.NextIterationTime = runner.ResolveDataPort<float>(nextIterationTime);
+            onComplete?.Invoke(0);
         }
     }
 }

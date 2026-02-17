@@ -10,36 +10,32 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 99eb3a8859a54922bebb772659b728e8, type: 3}
-  m_Name: IntelHotelOwner
+  m_Name: IntelCreditCard
   m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.Intel
-  intelName: Alfred O'Real
-  description: The hotel owner
-  category: 2
-  graph: {fileID: -5475051401550479605, guid: 86558572d15ef464d85c9a04e695e857, type: 3}
+  intelName: Steve's Credit Card
+  description: Its American Express
+  category: 4
+  graph: {fileID: 0}
   investigate:
-    isAvailable: 1
-    baseTime: 5
+    isAvailable: 0
+    baseTime: 40
     modifiers:
     - skillTag: 1
       value: 0.8
     - skillTag: 2
       value: 1.2
-    requiredTags: 01000000
+    requiredTags: 
     occupyingIntel: 0
     personStartMessages: []
   interview:
-    isAvailable: 1
-    baseTime: 5
+    isAvailable: 0
+    baseTime: 30
     modifiers:
     - skillTag: 0
       value: 0.8
     requiredTags: 
     occupyingIntel: 0
-    personStartMessages:
-    - person: {fileID: 11400000, guid: 0453885974c484dfe9ac823fd876ae81, type: 2}
-      message: I can go talk to the boss, give me a minute
-    - person: {fileID: 11400000, guid: 9452d1211419346d18b24052522f9a39, type: 2}
-      message: 'Do I have to? yeee... '
+    personStartMessages: []
     linkedIntels: []
   surveillance:
     isAvailable: 0
@@ -57,4 +53,4 @@ MonoBehaviour:
     requiredTags: 
     occupyingIntel: 0
     personStartMessages: []
-  person: {fileID: 11400000, guid: 1763c46e50728490891823b94a2f5697, type: 2}
+  person: {fileID: 0}

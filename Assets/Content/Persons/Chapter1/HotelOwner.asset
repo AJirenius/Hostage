@@ -17,6 +17,8 @@ MonoBehaviour:
   UnknownName: Hotel Owner
   Description: asdd
   Portrait: {fileID: 0}
-  defaultFlag: 8
+  defaultFlag: 0
   skillTags: 
+  personIntel: {fileID: 11400000, guid: d01601833b75b4fa29081d1cc4ea5ad6, type: 2}
   personMasterGraph: {fileID: -5475051401550479605, guid: cd1c08454cde147c28ea1626cc338826, type: 3}
+  defaultIntelMessages: {fileID: 0}

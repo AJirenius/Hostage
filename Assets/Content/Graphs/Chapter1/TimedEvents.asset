@@ -12,7 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2659d2cafd1e40a6b98eba259161e173, type: 3}
   m_Name: TimedEvents
   m_EditorClassIdentifier: Assembly-CSharp::Hostage.SO.SOTimedEvents
-  eventGraph: {fileID: -5475051401550479605, guid: e3b452f77876348978dea7c6c8c155d5, type: 3}
-  timedEvents:
-  - time: 1
-  - time: 5
+  eventGraph: {fileID: -5475051401550479605, guid: fc1854184c9294d5f890d612a6e00d7e, type: 3}
+  initialTime: 4

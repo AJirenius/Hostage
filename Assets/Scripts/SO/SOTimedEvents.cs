@@ -1,8 +1,5 @@
-using System.Collections.Generic;
-using Hostage.Core;
 using Hostage.Graphs;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Hostage.SO
 {
@@ -10,6 +7,6 @@ namespace Hostage.SO
     public class SOTimedEvents : ScriptableObject
     {
         public EventGraph eventGraph;
-        public List<TimedEvent> timedEvents;
+        public float initialTime;
     }
 }

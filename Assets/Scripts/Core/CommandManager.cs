@@ -8,6 +8,8 @@ namespace Hostage.Core
 {
     public class CommandManager
     {
+        private const int MAX_ITERATIONS = 100; // Safety limit to prevent infinite loops
+
         private readonly SignalBus _signalBus;
         private readonly GameClock _gameClock;
         private readonly PlayerInventory _playerInventory;
@@ -70,7 +72,7 @@ namespace Hostage.Core
                 Debug.Log("Execute Assistant commmand: " + personCommand.Person.SOReference.Name + " Verb:" + personCommand.verb.CommandType + " index: " + personCommand.timedEventIndex);
                 if (personCommand.SoIntel?.graph != null)
                 {
-                    context.IntVariables[GraphContext.ActionOutputKey] = personCommand.verb.CommandType.ToOutputIndex();
+                    context.IntVariables[GraphContext.VerbTypeIndexKey] = personCommand.verb.CommandType.ToOutputIndex();
                     graph = personCommand.SoIntel.graph;
                 }
             }
@@ -95,9 +97,10 @@ namespace Hostage.Core
         {
             _gameClock.Paused = false;
 
-            if (personCommand.timedEvents != null && personCommand.timedEventIndex < personCommand.timedEvents.Count)
+            // Check if graph wants to schedule another iteration
+            if (result.ScheduleNextIteration && personCommand.timedEventIndex < MAX_ITERATIONS)
             {
-                personCommand.timeLeft = personCommand.timedEvents[personCommand.timedEventIndex].time;
+                personCommand.timeLeft = result.NextIterationTime;
                 personCommand.modifiedTime = personCommand.timeLeft;
                 personCommand.timedEventIndex++;
                 return;
@@ -152,9 +155,11 @@ namespace Hostage.Core
             _gameClock.Paused = false;
 
             timedEvents.timedEventIndex++;
-            if (timedEvents.timedEvents != null && timedEvents.timedEventIndex < timedEvents.timedEvents.Count)
+
+            // Check if graph wants to schedule another iteration
+            if (result.ScheduleNextIteration && timedEvents.timedEventIndex < MAX_ITERATIONS)
             {
-                timedEvents.timeLeft = timedEvents.timedEvents[timedEvents.timedEventIndex].time;
+                timedEvents.timeLeft = result.NextIterationTime;
                 timedEvents.currentFullTime = timedEvents.timeLeft;
                 return;
             }
@@ -165,8 +170,7 @@ namespace Hostage.Core
         public void AddTimedEvents(SOTimedEvents soTimedEvents)
         {
             var timedEvents = new TimedEvents(soTimedEvents);
-            timedEvents.timedEvents = soTimedEvents.timedEvents;
-            timedEvents.timeLeft = soTimedEvents.timedEvents[0].time;
+            timedEvents.timeLeft = soTimedEvents.initialTime;
             timedEvents.currentFullTime = timedEvents.timeLeft;
             timedEvents.timedEventIndex = 0;
             _timedEvents.Add(timedEvents);
@@ -179,12 +183,6 @@ namespace Hostage.Core
                 personCommand.Person.SetOccupied();
                 personCommand.modifiedTime = personCommand.verb.GetModifiedTime(personCommand.Person.SOReference);
                 personCommand.timeLeft = personCommand.modifiedTime;
-                personCommand.timedEvents = personCommand.verb switch
-                {
-                    Surveillance s => s.timedEvents,
-                    Analyze a => a.timedEvents,
-                    _ => null
-                };
 
                 // Transfer intel to person if occupyingIntel is true
                 if (personCommand.verb.occupyingIntel && personCommand.SoIntel != null)
