@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Hostage.Core;
 using Hostage.SO;
+using Random = UnityEngine.Random;
 
 namespace Hostage.UI
 {
@@ -11,9 +13,11 @@ namespace Hostage.UI
         [Header("Prefabs")] public GameObject intelCardPrefab;
         public GameObject personCardPrefab;
         public GameObject commandCardPrefab;
+        public GameObject dialogueBoxPrefab;
         [Header("Parents")] public Transform intelParent;
         public Transform personParent;
         public Transform commandCardParent;
+        public Transform dialogueBoxParent;
 
         private PlayerInventory _playerInventory;
         private CommandManager _commandManager;
@@ -33,9 +37,8 @@ namespace Hostage.UI
             _signalBus.Subscribe<IntelAddedSignal>(OnIntelAdded);
             _signalBus.Subscribe<IntelRemovedSignal>(OnIntelRemoved);
             _signalBus.Subscribe<PersonFlagsChangedSignal>(OnPersonFlagsChanged);
-            _signalBus.Subscribe<TimedCommandProgressSignal>(OnTimedCommandProgress);
-            _signalBus.Subscribe<TimedCommandStartedSignal>(OnTimedCommandStarted);
-            _signalBus.Subscribe<TimedCommandCompletedSignal>(OnTimedCommandCompleted);
+            _signalBus.Subscribe<PersonCommandUpdatedSignal>(OnPersonCommandUpdated);
+            _signalBus.Subscribe<DialogueRequestedSignal>(OnDialogueRequested);
 
             RefreshIntelCards();
             RefreshPersonCards();
@@ -47,9 +50,8 @@ namespace Hostage.UI
             _signalBus.Unsubscribe<IntelAddedSignal>(OnIntelAdded);
             _signalBus.Unsubscribe<IntelRemovedSignal>(OnIntelRemoved);
             _signalBus.Unsubscribe<PersonFlagsChangedSignal>(OnPersonFlagsChanged);
-            _signalBus.Unsubscribe<TimedCommandProgressSignal>(OnTimedCommandProgress);
-            _signalBus.Unsubscribe<TimedCommandStartedSignal>(OnTimedCommandStarted);
-            _signalBus.Unsubscribe<TimedCommandCompletedSignal>(OnTimedCommandCompleted);
+            _signalBus.Unsubscribe<PersonCommandUpdatedSignal>(OnPersonCommandUpdated);
+            _signalBus.Unsubscribe<DialogueRequestedSignal>(OnDialogueRequested);
         }
 
         private void OnIntelAdded(IntelAddedSignal signal)
@@ -134,52 +136,83 @@ namespace Hostage.UI
                 _createdPersonCards[person] = card;
             }
 
-            // Reposition all cards
-            float x = -500;
-            foreach (var kvp in _createdPersonCards)
-            {
-                kvp.Value.transform.localPosition = new Vector3(x, -200, 0);
-                x += 250;
-            }
         }
 
-        private void OnTimedCommandProgress(TimedCommandProgressSignal signal)
+        private void OnPersonCommandUpdated(PersonCommandUpdatedSignal signal)
         {
-            if (_createdPersonCards.TryGetValue(signal.Person, out var cardGo))
-            {
-                var personCard = cardGo.GetComponent<PersonCardUI>();
-                if (personCard != null)
-                    personCard.UpdateProgress(signal.PercentageLeft);
-            }
-        }
+            var personCommand = signal.PersonCommand;
 
-        private void OnTimedCommandStarted(TimedCommandStartedSignal signal)
-        {
-            var verb = signal.PersonCommand.verb;
-            if (verb != null && verb.occupyingIntel)
+            switch (signal.Status)
             {
-                var soIntel = signal.PersonCommand.SoIntel;
-                if (soIntel != null && _createdIntelCards.TryGetValue(soIntel, out var cardGo))
-                {
-                    var intelCard = cardGo.GetComponent<IntelCardUI>();
-                    if (intelCard != null)
-                        intelCard.SetLocked(true);
-                }
-            }
-        }
+                case PersonCommandStatus.Progress:
+                    if (!personCommand.hideTime &&
+                        _createdPersonCards.TryGetValue(personCommand.Person, out var progressCard))
+                    {
+                        var personCard = progressCard.GetComponent<PersonCardUI>();
+                        if (personCard != null)
+                            personCard.UpdateProgress(personCommand.GetPercentageLeft());
+                    }
+                    break;
 
-        private void OnTimedCommandCompleted(TimedCommandCompletedSignal signal)
-        {
-            var verb = signal.PersonCommand.verb;
-            if (verb != null && verb.occupyingIntel)
-            {
-                var soIntel = signal.PersonCommand.SoIntel;
-                if (soIntel != null && _createdIntelCards.TryGetValue(soIntel, out var cardGo))
-                {
-                    var intelCard = cardGo.GetComponent<IntelCardUI>();
-                    if (intelCard != null)
-                        intelCard.SetLocked(false);
-                }
+                case PersonCommandStatus.Started:
+                    if (personCommand.verb != null && personCommand.verb.occupyingIntel)
+                    {
+                        var soIntel = personCommand.SoIntel;
+                        if (soIntel != null && _createdIntelCards.TryGetValue(soIntel, out var intelCardGo))
+                        {
+                            var intelCard = intelCardGo.GetComponent<IntelCardUI>();
+                            if (intelCard != null)
+                                intelCard.SetLocked(true);
+                        }
+                    }
+                    if (personCommand.hideTime &&
+                        _createdPersonCards.TryGetValue(personCommand.Person, out var startedCard))
+                    {
+                        var personCard = startedCard.GetComponent<PersonCardUI>();
+                        if (personCard != null)
+                            personCard.SetQuestionIcon(true);
+                    }
+                    break;
+
+                case PersonCommandStatus.Ready:
+                    if (_createdPersonCards.TryGetValue(personCommand.Person, out var readyCard))
+                    {
+                        var personCard = readyCard.GetComponent<PersonCardUI>();
+                        if (personCard != null)
+                        {
+                            personCard.SetExclamationIcon(true);
+                            personCard.UpdateProgress(0f);
+                            personCard.SetQuestionIcon(false);
+                        }
+                    }
+                    break;
+
+                case PersonCommandStatus.Completed:
+                case PersonCommandStatus.Cancelled:
+                    if (personCommand.verb != null )
+                    {
+                        if (personCommand.verb.occupyingIntel)
+                        {
+                            var soIntel = personCommand.SoIntel;
+                            if (soIntel != null && _createdIntelCards.TryGetValue(soIntel, out var intelCardGo))
+                            {
+                                var intelCard = intelCardGo.GetComponent<IntelCardUI>();
+                                if (intelCard != null)
+                                    intelCard.SetLocked(false);
+                            }
+                        }
+
+                        if (_createdPersonCards.TryGetValue(personCommand.Person, out var cancelCard))
+                        {
+                            var personCard = cancelCard.GetComponent<PersonCardUI>();
+                            if (personCard != null)
+                            {
+                                personCard.UpdateProgress(0f);
+                                personCard.SetQuestionIcon(false);
+                            }
+                        }
+                    }
+                    break;
             }
         }
 
@@ -203,6 +236,13 @@ namespace Hostage.UI
             }
 
             RefreshPersonCards();
+        }
+
+        private void OnDialogueRequested(DialogueRequestedSignal signal)
+        {
+            var go = Instantiate(dialogueBoxPrefab, dialogueBoxParent);
+            var dialogueBox = go.GetComponent<DialogueBoxUI>();
+            dialogueBox.Show(signal.SpeakerName, signal.Message, signal.OnDismissed);
         }
 
         public void OnIntelDragStarted(SOIntel soIntel)
@@ -266,6 +306,23 @@ namespace Hostage.UI
             if (person.Command == null) return;
             _commandManager.AddPersonCommand(person.Command);
             DismissCommandCard();
+        }
+
+        public void CancelCommand(Person person)
+        {
+            _commandManager.CancelCommand(person);
+            DismissCommandCard();
+        }
+
+        public void ExecuteReadyCommand(Person person)
+        {
+            if (_createdPersonCards.TryGetValue(person, out var cardGo))
+            {
+                var personCard = cardGo.GetComponent<PersonCardUI>();
+                if (personCard != null)
+                    personCard.SetExclamationIcon(false);
+            }
+            _commandManager.ExecuteReadyCommand(person);
         }
 
         public void DismissCommandCard()

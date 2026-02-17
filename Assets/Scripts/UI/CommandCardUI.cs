@@ -70,8 +70,10 @@ namespace Hostage.UI
                 _spawnedSlots.Add(slotGo);
             }
 
-            string intelLabel = command.SoIntel != null ? command.SoIntel.intelName : "";
-            SetActionButton($"In Progress - {intelLabel}", false);
+            if (command.readyToExecute)
+                SetActionButton("Get Result", true);
+            else
+                SetActionButton("Cancel", true);
         }
 
         public void OnDrop(PointerEventData eventData)
@@ -151,6 +153,19 @@ namespace Hostage.UI
 
         private void OnActionButtonClicked()
         {
+            if (_person.HasReadyCommand())
+            {
+                _uiManager.DismissCommandCard();
+                _uiManager.ExecuteReadyCommand(_person);
+                return;
+            }
+
+            if (_isLocked)
+            {
+                _uiManager.CancelCommand(_person);
+                return;
+            }
+
             _uiManager.SubmitCommand(_person);
         }
 

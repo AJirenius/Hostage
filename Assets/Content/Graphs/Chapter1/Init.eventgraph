@@ -342,11 +342,13 @@ MonoBehaviour:
           - ReturnIntel
           - ScheduleNextIteration
           - NextIterationTime
+          - HideTime
           m_ValueList:
           - rid: 4760845060676518187
           - rid: 4760845060676518188
           - rid: 4760845060676518189
           - rid: 4760845060676518190
+          - rid: 4760845064312193276
         m_InputPortInfos:
           expandedPortsById:
             m_KeyList: []
@@ -645,3 +647,7 @@ MonoBehaviour:
     - rid: 4760845063244218432
       type: {class: StartNode, ns: Hostage.Graphs.Editor, asm: Assembly-CSharp-Editor}
       data: 
+    - rid: 4760845064312193276
+      type: {class: 'Constant`1[[System.Boolean, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
+      data:
+        m_Value: 0

@@ -248,8 +248,12 @@ namespace Hostage.Graphs
                    throw new ArgumentOutOfRangeException();
            }
 
-           Debug.Log(name + ": " + dialogueText);
-           onComplete?.Invoke(0); // Replace with UI callback in real use
+           runner.SignalBus.Publish(new Core.DialogueRequestedSignal
+           {
+               SpeakerName = name,
+               Message = dialogueText,
+               OnDismissed = () => onComplete?.Invoke(0)
+           });
        }
     }
 
@@ -484,6 +488,7 @@ namespace Hostage.Graphs
         public DataPort returnIntel;
         public DataPort scheduleNextIteration;
         public DataPort nextIterationTime;
+        public DataPort hideTime;
 
         public override void Execute(EventGraphRunner runner, Action<int> onComplete)
         {
@@ -492,6 +497,7 @@ namespace Hostage.Graphs
             result.ReturnIntel = runner.ResolveDataPort<bool>(returnIntel);
             result.ScheduleNextIteration = runner.ResolveDataPort<bool>(scheduleNextIteration);
             result.NextIterationTime = runner.ResolveDataPort<float>(nextIterationTime);
+            result.HideTime = runner.ResolveDataPort<bool>(hideTime);
             onComplete?.Invoke(0);
         }
     }

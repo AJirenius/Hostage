@@ -6,5 +6,6 @@ namespace Hostage.Core
         public bool ReturnIntel = true;
         public bool ScheduleNextIteration = false;
         public float NextIterationTime;
+        public bool HideTime;
     }
 }

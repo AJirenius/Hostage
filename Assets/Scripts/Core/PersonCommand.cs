@@ -24,6 +24,8 @@ namespace Hostage.Core
         public float timeLeft;
         public float modifiedTime;
         public int timedEventIndex;
+        public bool readyToExecute;
+        public bool hideTime;
 
         public PersonCommand(Person person)
         {

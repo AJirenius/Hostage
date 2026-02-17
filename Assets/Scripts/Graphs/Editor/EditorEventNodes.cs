@@ -340,6 +340,7 @@ namespace Hostage.Graphs.Editor
             context.AddInputPort<bool>("ReturnIntel").Build();
             context.AddInputPort<bool>("ScheduleNextIteration").Build();
             context.AddInputPort<float>("NextIterationTime").Build();
+            context.AddInputPort<bool>("HideTime").Build();
         }
     }
 

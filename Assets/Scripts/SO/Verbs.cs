@@ -16,6 +16,7 @@ namespace Hostage.SO
         public List<TimeModifier> modifiers;
         public List<SkillTag> requiredTags;
         public bool occupyingIntel; // the intel will be unavailable during action
+        public bool hideTime; // hide progress bar, show question icon instead
         public List<PersonStartMessage> personStartMessages;
 
         public float GetModifier(SOPerson soPerson)

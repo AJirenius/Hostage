@@ -12,7 +12,11 @@ namespace Hostage.UI
         public Image panel;
         public RectTransform highlight;
         public RectTransform progress;
+        public GameObject exclamationIcon;
+        public GameObject questionIcon;
+
         private Person _person;
+
         private UIManager _uiManager;
 
         private static readonly Color NormalColor = Color.gray;
@@ -26,6 +30,8 @@ namespace Hostage.UI
             _uiManager = uiManager;
             personNameText.text = person.SOReference.Name;
             progress.gameObject.SetActive(false);
+            exclamationIcon.SetActive(false);
+            questionIcon.SetActive(false);
             UpdatePersonFlag();
             SetHighlight(false);
         }
@@ -47,9 +53,24 @@ namespace Hostage.UI
             personNameText.text = _person.IsIdentified() ? _person.SOReference.Name : (string.IsNullOrEmpty(_person.SOReference.UnknownName)?"Unknown":_person.SOReference.UnknownName);
         }
 
+        public void SetExclamationIcon(bool visible)
+        {
+            exclamationIcon.SetActive(visible);
+        }
+
+        public void SetQuestionIcon(bool visible)
+        {
+            questionIcon.SetActive(visible);
+        }
+
         public void OnPointerClick(PointerEventData eventData)
         {
             if (eventData.dragging) return;
+            if (_person.HasReadyCommand())
+            {
+                _uiManager.ExecuteReadyCommand(_person);
+                return;
+            }
             _uiManager.ShowCommandCard(_person);
         }
 

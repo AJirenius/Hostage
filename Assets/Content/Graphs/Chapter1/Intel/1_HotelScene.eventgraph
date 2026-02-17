@@ -749,7 +749,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: a656fe03de6d1ac1a5703a9515e0897e
         m_Version: 2
-        m_Position: {x: 452.4292, y: 724.0995}
+        m_Position: {x: 442.4292, y: 727.0995}
         m_Title: BranchByIndex
         m_Tooltip: 
         m_NodePreviewModel:
@@ -1945,11 +1945,13 @@ MonoBehaviour:
           - ReturnIntel
           - ScheduleNextIteration
           - NextIterationTime
+          - HideTime
           m_ValueList:
           - rid: 4760845060676517995
           - rid: 4760845060676517996
           - rid: 4760845060676517997
           - rid: 4760845060676517998
+          - rid: 4760845064312193273
         m_InputPortInfos:
           expandedPortsById:
             m_KeyList: []
@@ -2176,3 +2178,7 @@ MonoBehaviour:
           m_PortDirection: 1
           m_PortOrientation: 0
           m_Title: in
+    - rid: 4760845064312193273
+      type: {class: 'Constant`1[[System.Boolean, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
+      data:
+        m_Value: 1

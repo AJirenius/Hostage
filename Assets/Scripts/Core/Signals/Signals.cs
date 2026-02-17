@@ -1,3 +1,4 @@
+using System;
 using Hostage.SO;
 
 namespace Hostage.Core
@@ -12,20 +13,19 @@ namespace Hostage.Core
         public SOIntel SoIntel;
     }
 
-    public struct TimedCommandStartedSignal
+    public enum PersonCommandStatus
     {
-        public PersonCommand PersonCommand;
+        Started,
+        Progress,
+        Ready,
+        Completed,
+        Cancelled
     }
 
-    public struct TimedCommandCompletedSignal
+    public struct PersonCommandUpdatedSignal
     {
         public PersonCommand PersonCommand;
-    }
-
-    public struct TimedCommandProgressSignal
-    {
-        public Person Person;
-        public float PercentageLeft;
+        public PersonCommandStatus Status;
     }
 
     public struct PersonFlagsChangedSignal
@@ -39,5 +39,12 @@ namespace Hostage.Core
     {
         public Flag Flag;
         public bool IsSet;
+    }
+
+    public struct DialogueRequestedSignal
+    {
+        public string SpeakerName;
+        public string Message;
+        public Action OnDismissed;
     }
 }

@@ -33,16 +33,22 @@ namespace Hostage.Core
             for (int i = _commands.Count - 1; i >= 0; i--)
             {
                 PersonCommand personCommand = _commands[i];
+                if (personCommand.readyToExecute) continue;
+
                 personCommand.timeLeft -= gameTime;
-                _signalBus.Publish(new TimedCommandProgressSignal
+                _signalBus.Publish(new PersonCommandUpdatedSignal
                 {
-                    Person = personCommand.Person,
-                    PercentageLeft = personCommand.GetPercentageLeft()
+                    PersonCommand = personCommand,
+                    Status = PersonCommandStatus.Progress
                 });
                 if (personCommand.timeLeft <= 0)
                 {
-                    ExecuteTimedCommand(personCommand);
-                    if (_gameClock.Paused) return;
+                    personCommand.readyToExecute = true;
+                    _signalBus.Publish(new PersonCommandUpdatedSignal
+                    {
+                        PersonCommand = personCommand,
+                        Status = PersonCommandStatus.Ready
+                    });
                 }
             }
 
@@ -100,9 +106,16 @@ namespace Hostage.Core
             // Check if graph wants to schedule another iteration
             if (result.ScheduleNextIteration && personCommand.timedEventIndex < MAX_ITERATIONS)
             {
+                personCommand.readyToExecute = false;
                 personCommand.timeLeft = result.NextIterationTime;
                 personCommand.modifiedTime = personCommand.timeLeft;
+                personCommand.hideTime = result.HideTime;
                 personCommand.timedEventIndex++;
+                _signalBus.Publish(new PersonCommandUpdatedSignal
+                {
+                    PersonCommand = personCommand,
+                    Status = PersonCommandStatus.Started
+                });
                 return;
             }
 
@@ -128,7 +141,11 @@ namespace Hostage.Core
             personCommand.Person.ClearOccupied();
             personCommand.Person.ClearCommand();
             _commands.Remove(personCommand);
-            _signalBus.Publish(new TimedCommandCompletedSignal { PersonCommand = personCommand });
+            _signalBus.Publish(new PersonCommandUpdatedSignal
+            {
+                PersonCommand = personCommand,
+                Status = PersonCommandStatus.Completed
+            });
         }
 
         private void ExecuteTimedEvents(TimedEvents timedEvents)
@@ -176,6 +193,44 @@ namespace Hostage.Core
             _timedEvents.Add(timedEvents);
         }
 
+        public void ExecuteReadyCommand(Person person)
+        {
+            for (int i = _commands.Count - 1; i >= 0; i--)
+            {
+                if (_commands[i].Person == person && _commands[i].readyToExecute)
+                {
+                    ExecuteTimedCommand(_commands[i]);
+                    return;
+                }
+            }
+        }
+
+        public void CancelCommand(Person person)
+        {
+            for (int i = _commands.Count - 1; i >= 0; i--)
+            {
+                var cmd = _commands[i];
+                if (cmd.Person != person || cmd.readyToExecute) continue;
+
+                // Return intel to player inventory if applicable
+                if (cmd.verb != null && cmd.verb.occupyingIntel && cmd.SoIntel != null)
+                {
+                    if (person.RemoveIntel(cmd.SoIntel))
+                        _playerInventory.AddIntel(cmd.SoIntel);
+                }
+
+                person.ClearOccupied();
+                person.ClearCommand();
+                _commands.RemoveAt(i);
+                _signalBus.Publish(new PersonCommandUpdatedSignal
+                {
+                    PersonCommand = cmd,
+                    Status = PersonCommandStatus.Cancelled
+                });
+                return;
+            }
+        }
+
         public void AddPersonCommand(PersonCommand personCommand)
         {
             if (personCommand.verb != null)
@@ -183,6 +238,7 @@ namespace Hostage.Core
                 personCommand.Person.SetOccupied();
                 personCommand.modifiedTime = personCommand.verb.GetModifiedTime(personCommand.Person.SOReference);
                 personCommand.timeLeft = personCommand.modifiedTime;
+                personCommand.hideTime = personCommand.verb.hideTime;
 
                 // Transfer intel to person if occupyingIntel is true
                 if (personCommand.verb.occupyingIntel && personCommand.SoIntel != null)
@@ -201,7 +257,11 @@ namespace Hostage.Core
             }
 
             _commands.Add(personCommand);
-            _signalBus.Publish(new TimedCommandStartedSignal { PersonCommand = personCommand });
+            _signalBus.Publish(new PersonCommandUpdatedSignal
+            {
+                PersonCommand = personCommand,
+                Status = PersonCommandStatus.Started
+            });
         }
 
     }

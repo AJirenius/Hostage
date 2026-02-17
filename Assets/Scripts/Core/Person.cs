@@ -102,6 +102,8 @@ namespace Hostage.Core
             Command = null;
         }
 
+        public bool HasReadyCommand() => Command != null && Command.readyToExecute;
+
         public bool CanInteractWithIntel(SOIntel soIntel)
         {
             if (IsAssistant())

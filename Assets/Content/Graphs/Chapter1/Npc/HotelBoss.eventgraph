@@ -1263,11 +1263,13 @@ MonoBehaviour:
           - ReturnIntel
           - ScheduleNextIteration
           - NextIterationTime
+          - HideTime
           m_ValueList:
           - rid: 4760845060676517961
           - rid: 4760845060676517962
           - rid: 4760845060676517963
           - rid: 4760845060676517964
+          - rid: 4760845064312193274
         m_InputPortInfos:
           expandedPortsById:
             m_KeyList: []
@@ -1356,11 +1358,13 @@ MonoBehaviour:
           - ReturnIntel
           - ScheduleNextIteration
           - NextIterationTime
+          - HideTime
           m_ValueList:
           - rid: 4760845060676517968
           - rid: 4760845060676517969
           - rid: 4760845060676517970
           - rid: 4760845060676517971
+          - rid: 4760845064312193275
         m_InputPortInfos:
           expandedPortsById:
             m_KeyList: []
@@ -1491,3 +1495,11 @@ MonoBehaviour:
           m_PortDirection: 1
           m_PortOrientation: 0
           m_Title: in
+    - rid: 4760845064312193274
+      type: {class: 'Constant`1[[System.Boolean, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
+      data:
+        m_Value: 0
+    - rid: 4760845064312193275
+      type: {class: 'Constant`1[[System.Boolean, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
+      data:
+        m_Value: 0

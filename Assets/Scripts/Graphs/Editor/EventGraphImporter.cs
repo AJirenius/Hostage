@@ -315,6 +315,7 @@ namespace Hostage.Graphs.Editor {
                         graphResultNode.returnIntel = BuildDataPort(editorNode.GetInputPortByName("ReturnIntel"), valueNodeMap);
                         graphResultNode.scheduleNextIteration = BuildDataPort(editorNode.GetInputPortByName("ScheduleNextIteration"), valueNodeMap);
                         graphResultNode.nextIterationTime = BuildDataPort(editorNode.GetInputPortByName("NextIterationTime"), valueNodeMap);
+                        graphResultNode.hideTime = BuildDataPort(editorNode.GetInputPortByName("HideTime"), valueNodeMap);
                         break;
                     case RTBranchByIndexNode branchNode:
                         switch (branchNode.sourceType) {
