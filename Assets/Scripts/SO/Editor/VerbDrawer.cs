@@ -64,6 +64,13 @@ public class VerbDrawer : PropertyDrawer
                     continue;
                 if (iterator.depth != property.depth + 1)
                     break;
+                // Hide preparation when preparationRequired is false
+                if (iterator.propertyPath == property.propertyPath + ".preparation")
+                {
+                    var prepRequiredProp = property.FindPropertyRelative("preparationRequired");
+                    if (prepRequiredProp != null && !prepRequiredProp.boolValue)
+                        continue;
+                }
                 Rect fieldRect = new Rect(position.x, y, position.width, EditorGUI.GetPropertyHeight(iterator, true));
                 EditorGUI.PropertyField(fieldRect, iterator, true);
                 y += EditorGUI.GetPropertyHeight(iterator, true) + spacing;
@@ -89,6 +96,13 @@ public class VerbDrawer : PropertyDrawer
                     continue;
                 if (iterator.depth != property.depth + 1)
                     break;
+                // Hide preparation when preparationRequired is false
+                if (iterator.propertyPath == property.propertyPath + ".preparation")
+                {
+                    var prepRequiredProp = property.FindPropertyRelative("preparationRequired");
+                    if (prepRequiredProp != null && !prepRequiredProp.boolValue)
+                        continue;
+                }
                 height += EditorGUI.GetPropertyHeight(iterator, true) + EditorGUIUtility.standardVerticalSpacing;
             }
         }

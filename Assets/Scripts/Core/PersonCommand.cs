@@ -11,6 +11,13 @@ namespace Hostage.Core
         Analyze,
     }
 
+    public enum CommandPhase
+    {
+        StartPreparation,
+        Active,
+        EndPreparation
+    }
+
     public static class ActionTypeExtensions
     {
         public static int ToOutputIndex(this CommandType at) => (int)at - 1;
@@ -26,6 +33,7 @@ namespace Hostage.Core
         public int timedEventIndex;
         public bool readyToExecute;
         public bool hideTime;
+        public CommandPhase phase;
 
         public PersonCommand(Person person)
         {

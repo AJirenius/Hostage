@@ -16,6 +16,8 @@ namespace Hostage.SO
         public List<TimeModifier> modifiers;
         public List<SkillTag> requiredTags;
         public bool occupyingIntel; // the intel will be unavailable during action
+        public bool preparationRequired; // if true, the action will take 2 turns, one for preparation and one for execution
+        public Preparation preparation;
         public bool hideTime; // hide progress bar, show question icon instead
         public List<PersonStartMessage> personStartMessages;
 
@@ -38,7 +40,17 @@ namespace Hostage.SO
             return baseTime * GetModifier(soPerson);
         }
     }
-    
+
+    [Serializable]
+    public class Preparation
+    {
+        public float time = 10;
+        public string startMessage = "On my way to do this.";
+        public string endMessage = "Coming back from doing this.";
+        public bool flagAway = true;
+        public bool hideTime = false;
+    }
+
     // make a scriptable object that is a list of intel
     
 

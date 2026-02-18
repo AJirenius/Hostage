@@ -165,12 +165,11 @@ namespace Hostage.UI
                                 intelCard.SetLocked(true);
                         }
                     }
-                    if (personCommand.hideTime &&
-                        _createdPersonCards.TryGetValue(personCommand.Person, out var startedCard))
+                    if (_createdPersonCards.TryGetValue(personCommand.Person, out var startedCard))
                     {
                         var personCard = startedCard.GetComponent<PersonCardUI>();
                         if (personCard != null)
-                            personCard.SetQuestionIcon(true);
+                            personCard.SetQuestionIcon(personCommand.hideTime);
                     }
                     break;
 
@@ -310,7 +309,7 @@ namespace Hostage.UI
 
         public void CancelCommand(Person person)
         {
-            _commandManager.CancelCommand(person);
+            _commandManager.CancelPersonCommand(person);
             DismissCommandCard();
         }
 

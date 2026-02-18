@@ -24,6 +24,12 @@ MonoBehaviour:
       value: -0.5
     requiredTags: 
     occupyingIntel: 0
+    preparationRequired: 0
+    preparation:
+      time: 10
+      startMessage: On my way to do this.
+      endMessage: Coming back from doing this.
+      flagAway: 1
     hideTime: 1
     personStartMessages: []
   interview:
@@ -34,6 +40,12 @@ MonoBehaviour:
       value: 0.8
     requiredTags: 
     occupyingIntel: 0
+    preparationRequired: 0
+    preparation:
+      time: 10
+      startMessage: On my way to do this.
+      endMessage: Coming back from doing this.
+      flagAway: 1
     hideTime: 0
     personStartMessages: []
     linkedIntels: []
@@ -43,6 +55,12 @@ MonoBehaviour:
     modifiers: []
     requiredTags: 
     occupyingIntel: 0
+    preparationRequired: 1
+    preparation:
+      time: 10
+      startMessage: On my way to do this.
+      endMessage: Coming back from doing this.
+      flagAway: 1
     hideTime: 0
     personStartMessages: []
     linkedIntels:
@@ -53,6 +71,12 @@ MonoBehaviour:
     modifiers: []
     requiredTags: 
     occupyingIntel: 0
+    preparationRequired: 0
+    preparation:
+      time: 10
+      startMessage: On my way to do this.
+      endMessage: Coming back from doing this.
+      flagAway: 1
     hideTime: 0
     personStartMessages: []
   person: {fileID: 0}

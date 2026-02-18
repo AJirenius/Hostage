@@ -43,12 +43,33 @@ namespace Hostage.Core
                 });
                 if (personCommand.timeLeft <= 0)
                 {
-                    personCommand.readyToExecute = true;
-                    _signalBus.Publish(new PersonCommandUpdatedSignal
+                    switch (personCommand.phase)
                     {
-                        PersonCommand = personCommand,
-                        Status = PersonCommandStatus.Ready
-                    });
+                        case CommandPhase.StartPreparation:
+                            personCommand.phase = CommandPhase.Active;
+                            personCommand.modifiedTime = personCommand.verb.GetModifiedTime(personCommand.Person.SOReference);
+                            personCommand.timeLeft = personCommand.modifiedTime;
+                            personCommand.hideTime = personCommand.verb.hideTime;
+                            _signalBus.Publish(new PersonCommandUpdatedSignal
+                            {
+                                PersonCommand = personCommand,
+                                Status = PersonCommandStatus.Started
+                            });
+                            break;
+
+                        case CommandPhase.Active:
+                            personCommand.readyToExecute = true;
+                            _signalBus.Publish(new PersonCommandUpdatedSignal
+                            {
+                                PersonCommand = personCommand,
+                                Status = PersonCommandStatus.Ready
+                            });
+                            break;
+
+                        case CommandPhase.EndPreparation:
+                            FinalizePersonCommand(personCommand);
+                            break;
+                    }
                 }
             }
 
@@ -64,7 +85,125 @@ namespace Hostage.Core
             }
         }
 
-        private void ExecuteTimedCommand(PersonCommand personCommand)
+        // ─────────────────────────────────────────────
+        // PersonCommand
+        // ─────────────────────────────────────────────
+
+        public void AddPersonCommand(PersonCommand personCommand)
+        {
+            if (personCommand.verb != null)
+            {
+                personCommand.Person.SetOccupied();
+                personCommand.hideTime = personCommand.verb.hideTime;
+
+                // Transfer intel to person if occupyingIntel is true
+                if (personCommand.verb.occupyingIntel && personCommand.SoIntel != null)
+                {
+                    if (_playerInventory.RemoveIntel(personCommand.SoIntel))
+                    {
+                        personCommand.Person.AddIntel(personCommand.SoIntel);
+                    }
+                }
+
+                if (personCommand.verb.preparationRequired && personCommand.verb.preparation != null)
+                {
+                    personCommand.phase = CommandPhase.StartPreparation;
+                    personCommand.modifiedTime = personCommand.verb.preparation.time;
+                    personCommand.timeLeft = personCommand.modifiedTime;
+                    personCommand.hideTime = personCommand.verb.preparation.hideTime;
+                    if (personCommand.verb.preparation.flagAway)
+                        personCommand.Person.SetAway();
+                }
+                else
+                {
+                    personCommand.phase = CommandPhase.Active;
+                    personCommand.modifiedTime = personCommand.verb.GetModifiedTime(personCommand.Person.SOReference);
+                    personCommand.timeLeft = personCommand.modifiedTime;
+                }
+            }
+            else
+            {
+                personCommand.Person.SetOccupied();
+                personCommand.phase = CommandPhase.Active;
+                personCommand.modifiedTime = 0f;
+                personCommand.timeLeft = 0f;
+            }
+
+            _commands.Add(personCommand);
+            _signalBus.Publish(new PersonCommandUpdatedSignal
+            {
+                PersonCommand = personCommand,
+                Status = PersonCommandStatus.Started
+            });
+        }
+
+        public void ExecuteReadyCommand(Person person)
+        {
+            for (int i = _commands.Count - 1; i >= 0; i--)
+            {
+                if (_commands[i].Person == person && _commands[i].readyToExecute)
+                {
+                    ExecutePersonCommand(_commands[i]);
+                    return;
+                }
+            }
+        }
+
+        public void CancelPersonCommand(Person person)
+        {
+            for (int i = _commands.Count - 1; i >= 0; i--)
+            {
+                var cmd = _commands[i];
+                if (cmd.Person != person || cmd.readyToExecute) continue;
+
+                // Return intel to player inventory if applicable
+                if (cmd.verb != null && cmd.verb.occupyingIntel && cmd.SoIntel != null)
+                {
+                    if (person.RemoveIntel(cmd.SoIntel))
+                        _playerInventory.AddIntel(cmd.SoIntel);
+                }
+
+                // If preparation is required, enter end preparation phase instead of immediate removal
+                if (cmd.verb != null && cmd.verb.preparationRequired && cmd.verb.preparation != null
+                    && cmd.phase != CommandPhase.EndPreparation)
+                {
+                    float endPrepTime;
+                    if (cmd.phase == CommandPhase.StartPreparation)
+                    {
+                        // Return trip matches how far they got
+                        endPrepTime = cmd.verb.preparation.time - cmd.timeLeft;
+                    }
+                    else
+                    {
+                        endPrepTime = cmd.verb.preparation.time;
+                    }
+
+                    cmd.phase = CommandPhase.EndPreparation;
+                    cmd.readyToExecute = false;
+                    cmd.modifiedTime = endPrepTime;
+                    cmd.timeLeft = endPrepTime;
+                    cmd.hideTime = cmd.verb.preparation.hideTime;
+                    _signalBus.Publish(new PersonCommandUpdatedSignal
+                    {
+                        PersonCommand = cmd,
+                        Status = PersonCommandStatus.Started
+                    });
+                    return;
+                }
+
+                person.ClearOccupied();
+                person.ClearCommand();
+                _commands.RemoveAt(i);
+                _signalBus.Publish(new PersonCommandUpdatedSignal
+                {
+                    PersonCommand = cmd,
+                    Status = PersonCommandStatus.Cancelled
+                });
+                return;
+            }
+        }
+
+        private void ExecutePersonCommand(PersonCommand personCommand)
         {
             _gameClock.Paused = true;
 
@@ -91,15 +230,15 @@ namespace Hostage.Core
 
             if (graph != null && OnGraphRequested != null)
             {
-                OnGraphRequested.Invoke(graph, context, result => OnGraphCompleted(personCommand, result));
+                OnGraphRequested.Invoke(graph, context, result => OnPersonCommandGraphCompleted(personCommand, result));
             }
             else
             {
-                OnGraphCompleted(personCommand, new GraphResult());
+                OnPersonCommandGraphCompleted(personCommand, new GraphResult());
             }
         }
 
-        private void OnGraphCompleted(PersonCommand personCommand, GraphResult result)
+        private void OnPersonCommandGraphCompleted(PersonCommand personCommand, GraphResult result)
         {
             _gameClock.Paused = false;
 
@@ -138,6 +277,24 @@ namespace Hostage.Core
                 }
             }
 
+            // Enter end preparation if needed
+            if (personCommand.verb != null &&
+                personCommand.verb.preparationRequired &&
+                personCommand.verb.preparation != null)
+            {
+                personCommand.phase = CommandPhase.EndPreparation;
+                personCommand.readyToExecute = false;
+                personCommand.modifiedTime = personCommand.verb.preparation.time;
+                personCommand.timeLeft = personCommand.modifiedTime;
+                personCommand.hideTime = personCommand.verb.preparation.hideTime;
+                _signalBus.Publish(new PersonCommandUpdatedSignal
+                {
+                    PersonCommand = personCommand,
+                    Status = PersonCommandStatus.Started
+                });
+                return;
+            }
+
             personCommand.Person.ClearOccupied();
             personCommand.Person.ClearCommand();
             _commands.Remove(personCommand);
@@ -146,6 +303,34 @@ namespace Hostage.Core
                 PersonCommand = personCommand,
                 Status = PersonCommandStatus.Completed
             });
+        }
+
+        private void FinalizePersonCommand(PersonCommand personCommand)
+        {
+            if (personCommand.verb?.preparation != null && personCommand.verb.preparation.flagAway)
+                personCommand.Person.ClearAway();
+
+            personCommand.Person.ClearOccupied();
+            personCommand.Person.ClearCommand();
+            _commands.Remove(personCommand);
+            _signalBus.Publish(new PersonCommandUpdatedSignal
+            {
+                PersonCommand = personCommand,
+                Status = PersonCommandStatus.Completed
+            });
+        }
+
+        // ─────────────────────────────────────────────
+        // TimedEvents
+        // ─────────────────────────────────────────────
+
+        public void AddTimedEvents(SOTimedEvents soTimedEvents)
+        {
+            var timedEvents = new TimedEvents(soTimedEvents);
+            timedEvents.timeLeft = soTimedEvents.initialTime;
+            timedEvents.currentFullTime = timedEvents.timeLeft;
+            timedEvents.timedEventIndex = 0;
+            _timedEvents.Add(timedEvents);
         }
 
         private void ExecuteTimedEvents(TimedEvents timedEvents)
@@ -182,86 +367,6 @@ namespace Hostage.Core
             }
 
             _timedEvents.Remove(timedEvents);
-        }
-
-        public void AddTimedEvents(SOTimedEvents soTimedEvents)
-        {
-            var timedEvents = new TimedEvents(soTimedEvents);
-            timedEvents.timeLeft = soTimedEvents.initialTime;
-            timedEvents.currentFullTime = timedEvents.timeLeft;
-            timedEvents.timedEventIndex = 0;
-            _timedEvents.Add(timedEvents);
-        }
-
-        public void ExecuteReadyCommand(Person person)
-        {
-            for (int i = _commands.Count - 1; i >= 0; i--)
-            {
-                if (_commands[i].Person == person && _commands[i].readyToExecute)
-                {
-                    ExecuteTimedCommand(_commands[i]);
-                    return;
-                }
-            }
-        }
-
-        public void CancelCommand(Person person)
-        {
-            for (int i = _commands.Count - 1; i >= 0; i--)
-            {
-                var cmd = _commands[i];
-                if (cmd.Person != person || cmd.readyToExecute) continue;
-
-                // Return intel to player inventory if applicable
-                if (cmd.verb != null && cmd.verb.occupyingIntel && cmd.SoIntel != null)
-                {
-                    if (person.RemoveIntel(cmd.SoIntel))
-                        _playerInventory.AddIntel(cmd.SoIntel);
-                }
-
-                person.ClearOccupied();
-                person.ClearCommand();
-                _commands.RemoveAt(i);
-                _signalBus.Publish(new PersonCommandUpdatedSignal
-                {
-                    PersonCommand = cmd,
-                    Status = PersonCommandStatus.Cancelled
-                });
-                return;
-            }
-        }
-
-        public void AddPersonCommand(PersonCommand personCommand)
-        {
-            if (personCommand.verb != null)
-            {
-                personCommand.Person.SetOccupied();
-                personCommand.modifiedTime = personCommand.verb.GetModifiedTime(personCommand.Person.SOReference);
-                personCommand.timeLeft = personCommand.modifiedTime;
-                personCommand.hideTime = personCommand.verb.hideTime;
-
-                // Transfer intel to person if occupyingIntel is true
-                if (personCommand.verb.occupyingIntel && personCommand.SoIntel != null)
-                {
-                    if (_playerInventory.RemoveIntel(personCommand.SoIntel))
-                    {
-                        personCommand.Person.AddIntel(personCommand.SoIntel);
-                    }
-                }
-            }
-            else
-            {
-                personCommand.Person.SetOccupied();
-                personCommand.modifiedTime = 0f;
-                personCommand.timeLeft = 0f;
-            }
-
-            _commands.Add(personCommand);
-            _signalBus.Publish(new PersonCommandUpdatedSignal
-            {
-                PersonCommand = personCommand,
-                Status = PersonCommandStatus.Started
-            });
         }
 
     }
