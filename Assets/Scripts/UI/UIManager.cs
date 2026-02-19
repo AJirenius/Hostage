@@ -184,6 +184,8 @@ namespace Hostage.UI
                             personCard.SetQuestionIcon(false);
                         }
                     }
+                    if (_activeCommandCard != null && _activeCommandCard.Person == personCommand.Person)
+                        _activeCommandCard.OnCommandReady();
                     break;
 
                 case PersonCommandStatus.Completed:

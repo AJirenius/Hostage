@@ -15,7 +15,7 @@ MonoBehaviour:
   Name: Alfred
   FullName: Alfred O'real
   UnknownName: Hotel Owner
-  Description: asdd
+  Description: "Big man in his late 50's. Wear an obvious tup\xE9"
   Portrait: {fileID: 0}
   defaultFlag: 0
   skillTags: 

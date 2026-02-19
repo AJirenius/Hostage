@@ -53,7 +53,7 @@ MonoBehaviour:
           serializedVersion: 2
           x: -19
           y: 272
-          width: 1296
+          width: 1298
           height: 418
         m_GraphElementMetaData:
         - m_Guid:
@@ -330,7 +330,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: 419493fff7588811785452abf648093d
         m_Version: 2
-        m_Position: {x: 967.5917, y: 272.01654}
+        m_Position: {x: 970.3203, y: 272.01654}
         m_Title: 
         m_Tooltip: 
         m_NodePreviewModel:
@@ -411,7 +411,7 @@ MonoBehaviour:
     - rid: 4760845060676518190
       type: {class: 'Constant`1[[System.Single, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
       data:
-        m_Value: 3
+        m_Value: 1
     - rid: 4760845060676518191
       type: {class: GraphResultNode, ns: Hostage.Graphs.Editor, asm: Assembly-CSharp-Editor}
       data: 
@@ -542,7 +542,8 @@ MonoBehaviour:
     - rid: 4760845060676518205
       type: {class: 'Constant`1[[System.String, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
       data:
-        m_Value: Wow, just wow!
+        m_Value: As you can see, theres a man on the 4th floor of that hotel threatening
+          to jump
     - rid: 4760845060676518206
       type: {class: DialogueNode, ns: Hostage.Graphs.Editor, asm: Assembly-CSharp-Editor}
       data: 

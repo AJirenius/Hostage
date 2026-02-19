@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: TimedEvents
   m_EditorClassIdentifier: Assembly-CSharp::Hostage.SO.SOTimedEvents
   eventGraph: {fileID: -5475051401550479605, guid: fc1854184c9294d5f890d612a6e00d7e, type: 3}
-  initialTime: 4
+  initialTime: 1

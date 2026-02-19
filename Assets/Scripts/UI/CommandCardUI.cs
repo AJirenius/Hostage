@@ -71,7 +71,7 @@ namespace Hostage.UI
             }
 
             if (command.readyToExecute)
-                SetActionButton("Get Result", true);
+                SetActionButton("Let's hear", true);
             else
                 SetActionButton("Cancel", true);
         }
@@ -213,6 +213,11 @@ namespace Hostage.UI
                 actionButtonText.text = text;
             if (actionButton != null)
                 actionButton.interactable = interactable;
+        }
+
+        public void OnCommandReady()
+        {
+            SetActionButton("Let's hear", true);
         }
 
         public void ClearPendingCommand()

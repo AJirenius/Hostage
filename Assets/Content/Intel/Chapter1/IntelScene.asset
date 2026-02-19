@@ -30,6 +30,7 @@ MonoBehaviour:
       startMessage: On my way to do this.
       endMessage: Coming back from doing this.
       flagAway: 1
+      hideTime: 0
     hideTime: 1
     personStartMessages: []
   interview:
@@ -46,12 +47,13 @@ MonoBehaviour:
       startMessage: On my way to do this.
       endMessage: Coming back from doing this.
       flagAway: 1
+      hideTime: 0
     hideTime: 0
     personStartMessages: []
     linkedIntels: []
   surveillance:
     isAvailable: 1
-    baseTime: 2
+    baseTime: 1
     modifiers: []
     requiredTags: 
     occupyingIntel: 0
@@ -61,6 +63,7 @@ MonoBehaviour:
       startMessage: On my way to do this.
       endMessage: Coming back from doing this.
       flagAway: 1
+      hideTime: 0
     hideTime: 0
     personStartMessages: []
     linkedIntels:
@@ -77,6 +80,7 @@ MonoBehaviour:
       startMessage: On my way to do this.
       endMessage: Coming back from doing this.
       flagAway: 1
+      hideTime: 0
     hideTime: 0
     personStartMessages: []
   person: {fileID: 0}
