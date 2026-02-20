@@ -27,6 +27,7 @@ namespace Hostage.UI
         private Dictionary<Person, GameObject > _createdPersonCards = new Dictionary<Person, GameObject>();
         private CommandCardUI _activeCommandCard;
         private float _spawnX = -200;
+        private bool _graphRunning;
         public void Initialize(PlayerInventory inventory, CommandManager commandManager, PersonManager personManager, SignalBus signalBus)
         {
             _playerInventory = inventory;
@@ -39,6 +40,9 @@ namespace Hostage.UI
             _signalBus.Subscribe<PersonFlagsChangedSignal>(OnPersonFlagsChanged);
             _signalBus.Subscribe<PersonCommandUpdatedSignal>(OnPersonCommandUpdated);
             _signalBus.Subscribe<DialogueRequestedSignal>(OnDialogueRequested);
+            _signalBus.Subscribe<DialogueChoiceRequestedSignal>(OnDialogueChoiceRequested);
+            _signalBus.Subscribe<GraphStartedSignal>(OnGraphStarted);
+            _signalBus.Subscribe<GraphCompletedSignal>(OnGraphCompleted);
 
             RefreshIntelCards();
             RefreshPersonCards();
@@ -52,6 +56,9 @@ namespace Hostage.UI
             _signalBus.Unsubscribe<PersonFlagsChangedSignal>(OnPersonFlagsChanged);
             _signalBus.Unsubscribe<PersonCommandUpdatedSignal>(OnPersonCommandUpdated);
             _signalBus.Unsubscribe<DialogueRequestedSignal>(OnDialogueRequested);
+            _signalBus.Unsubscribe<DialogueChoiceRequestedSignal>(OnDialogueChoiceRequested);
+            _signalBus.Unsubscribe<GraphStartedSignal>(OnGraphStarted);
+            _signalBus.Unsubscribe<GraphCompletedSignal>(OnGraphCompleted);
         }
 
         private void OnIntelAdded(IntelAddedSignal signal)
@@ -60,6 +67,7 @@ namespace Hostage.UI
             var card = Instantiate(intelCardPrefab, intelParent);
             var intelCard = card.GetComponent<IntelCardUI>();
             intelCard.Setup(signal.SoIntel, this);
+            if (_graphRunning) intelCard.SetLocked(true);
             card.transform.localPosition += new Vector3(_spawnX, Random.Range(-50, 50), 0);
             _createdIntelCards[signal.SoIntel] = card;
             _spawnX += 200;
@@ -246,6 +254,28 @@ namespace Hostage.UI
             dialogueBox.Show(signal.SpeakerName, signal.Message, signal.OnDismissed);
         }
 
+        private void OnDialogueChoiceRequested(DialogueChoiceRequestedSignal signal)
+        {
+            var go = Instantiate(dialogueBoxPrefab, dialogueBoxParent);
+            var dialogueBox = go.GetComponent<DialogueBoxUI>();
+            dialogueBox.ShowChoice(signal.SpeakerName, signal.Message, signal.Options, signal.OnOptionSelected);
+        }
+
+        private void OnGraphStarted(GraphStartedSignal signal)
+        {
+            _graphRunning = true;
+            DismissCommandCard();
+            foreach (var kvp in _createdIntelCards)
+                kvp.Value.GetComponent<IntelCardUI>()?.SetLocked(true);
+        }
+
+        private void OnGraphCompleted(GraphCompletedSignal signal)
+        {
+            _graphRunning = false;
+            foreach (var kvp in _createdIntelCards)
+                kvp.Value.GetComponent<IntelCardUI>()?.SetLocked(false);
+        }
+
         public void OnIntelDragStarted(SOIntel soIntel)
         {
             foreach (var kvp in _createdPersonCards)
@@ -279,6 +309,8 @@ namespace Hostage.UI
 
         public void ShowCommandCard(Person person)
         {
+            if (_graphRunning) return;
+
             if (_activeCommandCard != null && _activeCommandCard.Person == person)
             {
                 DismissCommandCard();

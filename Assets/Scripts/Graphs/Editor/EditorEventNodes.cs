@@ -345,6 +345,44 @@ namespace Hostage.Graphs.Editor
     }
 
     [Serializable]
+    public class DialogueChoiceNode : Node
+    {
+        private const string TARGETNAME = "Target";
+        private const string NR_OPTIONS = "NrOptions";
+
+        protected override void OnDefineOptions(IOptionDefinitionContext context)
+        {
+            context.AddOption<PersonTargetType>(TARGETNAME)
+                .WithDisplayName("Target")
+                .WithDefaultValue(PersonTargetType.SpecifiedPerson)
+                .Delayed();
+            context.AddOption<int>(NR_OPTIONS)
+                .WithDisplayName("Nr Options")
+                .WithDefaultValue(2)
+                .Delayed();
+        }
+
+        protected override void OnDefinePorts(IPortDefinitionContext context)
+        {
+            var targetOption = GetNodeOptionByName(TARGETNAME);
+            targetOption.TryGetValue<PersonTargetType>(out var target);
+            var nrOption = GetNodeOptionByName(NR_OPTIONS);
+            nrOption.TryGetValue<int>(out var nrOptions);
+
+            context.AddInputPort("in").Build();
+            if (target == PersonTargetType.SpecifiedPerson)
+                context.AddInputPort<SOPerson>("Person").Build();
+            context.AddInputPort<string>("Dialogue").Build();
+
+            for (int i = 0; i < nrOptions; i++)
+            {
+                context.AddInputPort<string>($"option{i}").Build();
+                context.AddOutputPort($"out{i}").Build();
+            }
+        }
+    }
+
+    [Serializable]
     public class BranchByPerson:Node
     {
         const string NR_PERSONS = "NrPersons";

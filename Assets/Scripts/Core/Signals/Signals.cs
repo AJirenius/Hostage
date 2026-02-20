@@ -47,4 +47,15 @@ namespace Hostage.Core
         public string Message;
         public Action OnDismissed;
     }
+
+    public struct GraphStartedSignal { }
+    public struct GraphCompletedSignal { }
+
+    public struct DialogueChoiceRequestedSignal
+    {
+        public string SpeakerName;
+        public string Message;
+        public System.Collections.Generic.List<string> Options;
+        public Action<int> OnOptionSelected;
+    }
 }

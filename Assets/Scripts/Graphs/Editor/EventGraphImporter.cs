@@ -214,6 +214,26 @@ namespace Hostage.Graphs.Editor {
                     }
                     returnedNodes.Add(rtBranch);
                     break;
+                case DialogueChoiceNode dialogueChoiceNode:
+                    var choiceDialogueText = GetInputPortValue<string>(dialogueChoiceNode.GetInputPortByName("Dialogue"));
+                    var choiceTarget = dialogueChoiceNode.GetNodeOptionByName("Target").TryGetValue<PersonTargetType>(out var ct) ? ct : PersonTargetType.SpecifiedPerson;
+                    var choiceSpeaker = choiceTarget == PersonTargetType.SpecifiedPerson
+                        ? GetInputPortValue<Hostage.SO.SOPerson>(dialogueChoiceNode.GetInputPortByName("Person"))
+                        : null;
+                    var choiceNrOptions = dialogueChoiceNode.GetNodeOptionByName("NrOptions").TryGetValue<int>(out var nrOpts) ? nrOpts : 2;
+                    var rtChoiceNode = new RTDialogueChoiceNode
+                    {
+                        dialogueText = choiceDialogueText,
+                        personTargetType = choiceTarget,
+                        speaker = choiceSpeaker
+                    };
+                    for (int i = 0; i < choiceNrOptions; i++)
+                    {
+                        var optText = GetInputPortValue<string>(dialogueChoiceNode.GetInputPortByName($"option{i}"));
+                        rtChoiceNode.options.Add(optText);
+                    }
+                    returnedNodes.Add(rtChoiceNode);
+                    break;
                 default:
                     throw new ArgumentException($"Unsupported node type: {nodeModel.GetType()}");
             }

@@ -258,6 +258,35 @@ namespace Hostage.Graphs
     }
 
     [Serializable]
+    public class RTDialogueChoiceNode : RuntimeNode
+    {
+        public string dialogueText;
+        public PersonTargetType personTargetType;
+        public SOPerson speaker;
+        public List<string> options = new();
+
+        public override void Execute(EventGraphRunner runner, Action<int> onComplete)
+        {
+            string name = personTargetType switch
+            {
+                PersonTargetType.ContextPerson => runner.Context.Person != null ? runner.Context.Person.SOReference.Name : "Someone",
+                PersonTargetType.Player => "You",
+                PersonTargetType.SpecifiedPerson => speaker.Name,
+                PersonTargetType.Narrator => "Narrator",
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            runner.SignalBus.Publish(new Core.DialogueChoiceRequestedSignal
+            {
+                SpeakerName = name,
+                Message = dialogueText,
+                Options = options,
+                OnOptionSelected = index => onComplete?.Invoke(index)
+            });
+        }
+    }
+
+    [Serializable]
     public class RTGiveIntelToPersonNode : RuntimeNode
     {
         [FormerlySerializedAs("intel")] public SOIntel soIntel;

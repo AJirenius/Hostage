@@ -39,6 +39,7 @@ namespace Hostage.Graphs
             eventGraph = graph;
             Context = context ?? new GraphContext();
             _onGraphCompleted = onCompleted ?? (result => { });
+            SignalBus.Publish(new Core.GraphStartedSignal());
             RunNode(0);
         }
 
@@ -50,6 +51,7 @@ namespace Hostage.Graphs
                 var completed = _onGraphCompleted;
                 _onGraphCompleted = null;
                 eventGraph = null;
+                SignalBus.Publish(new Core.GraphCompletedSignal());
                 completed?.Invoke(Context.Result);
                 return;
             };
