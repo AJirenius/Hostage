@@ -81,7 +81,8 @@ MonoBehaviour:
         - rid: 4760845125588090985
         - rid: 4760845125588090986
         m_GraphStickyNoteModels: []
-        m_GraphPlacematModels: []
+        m_GraphPlacematModels:
+        - rid: 4760845133402079311
         m_GraphVariableModels: []
         m_GraphPortalModels: []
         m_SectionModels:
@@ -89,10 +90,10 @@ MonoBehaviour:
         m_LocalSubgraphs: []
         m_LastKnownBounds:
           serializedVersion: 2
-          x: 30
-          y: 42
-          width: 2488
-          height: 1614
+          x: 12
+          y: -446
+          width: 2535
+          height: 1931
         m_GraphElementMetaData:
         - m_Guid:
             m_Value0: 997739628160476498
@@ -515,7 +516,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: 52e5d5d2e7aed80daa2518134bf68f15
         m_Version: 2
-        m_Position: {x: 867.5, y: 42}
+        m_Position: {x: 1033.5109, y: -446.4976}
         m_Title: SetPersonFlag
         m_Tooltip: 
         m_NodePreviewModel:
@@ -557,7 +558,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: 2402b31bfa53e004e2a8678442d21fc8
         m_Version: 2
-        m_Position: {x: 452, y: 299.98694}
+        m_Position: {x: 599.77625, y: -202.18661}
         m_Title: DialogueNode
         m_Tooltip: 
         m_NodePreviewModel:
@@ -595,7 +596,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: af286c7eefc5ac00789762a977cc40a6
         m_Version: 2
-        m_Position: {x: 1241.5, y: 42.16632}
+        m_Position: {x: 1407.5109, y: -446.33127}
         m_Title: SetPersonFlag
         m_Tooltip: 
         m_NodePreviewModel:
@@ -745,7 +746,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: c78554241cd5ee4c260f3bec8937b8da
         m_Version: 2
-        m_Position: {x: 777.0097, y: 573.1396}
+        m_Position: {x: 1027.9595, y: 365.6646}
         m_Title: DialogueNode
         m_Tooltip: 
         m_NodePreviewModel:
@@ -783,7 +784,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: d59aa429a1adefbcb61bde9570d2e6ff
         m_Version: 2
-        m_Position: {x: 869.6054, y: 749.40564}
+        m_Position: {x: 1120.5552, y: 541.93066}
         m_Title: DialogueNode
         m_Tooltip: 
         m_NodePreviewModel:
@@ -821,7 +822,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: a656fe03de6d1ac1a5703a9515e0897e
         m_Version: 2
-        m_Position: {x: 442.4292, y: 727.0995}
+        m_Position: {x: 693.3789, y: 519.6245}
         m_Title: BranchByIndex
         m_Tooltip: 
         m_NodePreviewModel:
@@ -861,7 +862,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: ed3d1d965072ed1453491e2243142e37
         m_Version: 2
-        m_Position: {x: 869.56445, y: 931.54474}
+        m_Position: {x: 1120.5142, y: 724.06976}
         m_Title: DialogueNode
         m_Tooltip: 
         m_NodePreviewModel:
@@ -899,7 +900,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: 05948aa675e94f369858fe323683cf94
         m_Version: 2
-        m_Position: {x: 1209.1047, y: 959.81903}
+        m_Position: {x: 1460.0544, y: 752.34406}
         m_Title: GiveIntelToPlayer
         m_Tooltip: 
         m_NodePreviewModel:
@@ -1140,7 +1141,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: 963a9d4be30ce0833e9b25fd372a3b09
         m_Version: 2
-        m_Position: {x: 860.5733, y: 1178.5692}
+        m_Position: {x: 1111.523, y: 971.09424}
         m_Title: 
         m_Tooltip: 
         m_NodePreviewModel:
@@ -1230,7 +1231,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: 70b87681b8ac7229159ff13614f89ee0
         m_Version: 2
-        m_Position: {x: 1266.8967, y: 1098.1558}
+        m_Position: {x: 1517.8464, y: 890.6808}
         m_Title: 
         m_Tooltip: 
         m_NodePreviewModel:
@@ -1318,7 +1319,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: ed078d6fc73eecaf1df5374810e4f765
         m_Version: 2
-        m_Position: {x: 1321.366, y: 1311.3121}
+        m_Position: {x: 1572.3157, y: 1103.8372}
         m_Title: DialogueNode
         m_Tooltip: 
         m_NodePreviewModel:
@@ -1374,7 +1375,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: 729192cec4b2565dd53db7ac672bcadc
         m_Version: 2
-        m_Position: {x: 1351.5276, y: 1510.9532}
+        m_Position: {x: 1602.4773, y: 1303.4783}
         m_Title: DialogueNode
         m_Tooltip: 
         m_NodePreviewModel:
@@ -1558,7 +1559,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: 042da9698a52024e8aae4b8a0f08c941
         m_Version: 2
-        m_Position: {x: 518.6518, y: 1241.3123}
+        m_Position: {x: 769.6015, y: 1033.8373}
         m_Title: 
         m_Tooltip: 
         m_NodePreviewModel:
@@ -1611,7 +1612,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: 1a07c99a39393aaf5696975a685bfdff
         m_Version: 2
-        m_Position: {x: 791.34985, y: 327.5294}
+        m_Position: {x: 957.3607, y: -160.9682}
         m_Title: 
         m_Tooltip: 
         m_NodePreviewModel:
@@ -1654,7 +1655,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: a5eb7b942cfa1aa666377a2868ddb096
         m_Version: 2
-        m_Position: {x: 1122.2994, y: 326.97418}
+        m_Position: {x: 1288.3103, y: -161.5234}
         m_Title: GiveIntelToPlayer
         m_Tooltip: 
         m_NodePreviewModel:
@@ -1761,7 +1762,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: 4b4bfb079eef01d9640db366a33f751c
         m_Version: 2
-        m_Position: {x: 29.530943, y: 503.46677}
+        m_Position: {x: 12, y: 489}
         m_Title: 
         m_Tooltip: 
         m_NodePreviewModel:
@@ -1909,7 +1910,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: 86d8f30d05721a9a5cfc48108ea23e68
         m_Version: 2
-        m_Position: {x: 1486.112, y: 329.7581}
+        m_Position: {x: 1652.1229, y: -158.7395}
         m_Title: 
         m_Tooltip: 
         m_NodePreviewModel:
@@ -2005,7 +2006,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: 394b26e4248c1a8833113dfa7dda7081
         m_Version: 2
-        m_Position: {x: 1679.5912, y: 805.53143}
+        m_Position: {x: 1930.5408, y: 598.05646}
         m_Title: 
         m_Tooltip: 
         m_NodePreviewModel:
@@ -2264,7 +2265,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: e1c69e02315b6aacde0c03d3e9ca2c9f
         m_Version: 2
-        m_Position: {x: 1835.7557, y: 274.88882}
+        m_Position: {x: 1951.4222, y: -339.4694}
         m_Title: 
         m_Tooltip: 
         m_NodePreviewModel:
@@ -2376,7 +2377,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: 99e06b933a188d45ca5d1d2651361ffa
         m_Version: 2
-        m_Position: {x: 2163.035, y: 181.06915}
+        m_Position: {x: 2314.6614, y: -422.501}
         m_Title: 
         m_Tooltip: 
         m_NodePreviewModel:
@@ -2464,7 +2465,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: e7c9da94f424b5c19db662242cf06d05
         m_Version: 2
-        m_Position: {x: 2263.3962, y: 380.09222}
+        m_Position: {x: 2314.3342, y: -227.07394}
         m_Title: DialogueNode
         m_Tooltip: 
         m_NodePreviewModel:
@@ -2520,7 +2521,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: 34a976b6d148d69bd303a9196bc58faf
         m_Version: 2
-        m_Position: {x: 2285.8323, y: 567.4988}
+        m_Position: {x: 2308.002, y: -36.07138}
         m_Title: DialogueNode
         m_Tooltip: 
         m_NodePreviewModel:
@@ -2630,3 +2631,26 @@ MonoBehaviour:
           m_PortDirection: 1
           m_PortOrientation: 0
           m_Title: in
+    - rid: 4760845133402079311
+      type: {class: PlacematModel, ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
+      data:
+        m_Guid:
+          m_Value0: 1337023562289213185
+          m_Value1: 6211126888350928983
+        m_HashGuid:
+          serializedVersion: 2
+          Hash: 016f9396d80f8e1257d0083bff5a3256
+        m_Version: 2
+        m_Title: Surveillance
+        m_TitleFontSize: 18
+        m_TitleAlignment: 0
+        m_Position:
+          serializedVersion: 2
+          x: 656.40265
+          y: 328.2644
+          width: 1620
+          height: 1156.9999
+        m_Comment: 
+        m_ElementColor:
+          m_Color: {r: 0.20784314, g: 0.22745098, b: 0.2784314, a: 1}
+          m_HasUserColor: 0

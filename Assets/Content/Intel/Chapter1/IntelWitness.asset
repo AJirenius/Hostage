@@ -15,7 +15,7 @@ MonoBehaviour:
   intelName: Laura Mitchel
   description: Just a passer by
   category: 2
-  masterGraph: {fileID: 0}
+  graph: {fileID: -5475051401550479605, guid: 8f6ce4309d1c34a6f926da64f311388f, type: 3}
   investigate:
     isAvailable: 0
     baseTime: 40
@@ -26,16 +26,32 @@ MonoBehaviour:
       value: 1.2
     requiredTags: 
     occupyingIntel: 0
-    result: {fileID: 2841676755933307327, guid: f0cd4b3baa61a473abe663c3d4fdedc7, type: 3}
+    preparationRequired: 0
+    preparation:
+      time: 10
+      startMessage: On my way to do this.
+      endMessage: Coming back from doing this.
+      flagAway: 1
+      hideTime: 0
+    hideTime: 0
+    personStartMessages: []
   interview:
-    isAvailable: 0
-    baseTime: 30
+    isAvailable: 1
+    baseTime: 5
     modifiers:
     - skillTag: 0
       value: 0.8
     requiredTags: 
     occupyingIntel: 0
-    result: {fileID: 0}
+    preparationRequired: 0
+    preparation:
+      time: 10
+      startMessage: On my way to do this.
+      endMessage: Coming back from doing this.
+      flagAway: 1
+      hideTime: 0
+    hideTime: 0
+    personStartMessages: []
     linkedIntels: []
   surveillance:
     isAvailable: 0
@@ -43,18 +59,30 @@ MonoBehaviour:
     modifiers: []
     requiredTags: 01000000
     occupyingIntel: 0
-    result: {fileID: 0}
+    preparationRequired: 0
+    preparation:
+      time: 10
+      startMessage: On my way to do this.
+      endMessage: Coming back from doing this.
+      flagAway: 1
+      hideTime: 0
+    hideTime: 0
+    personStartMessages: []
     linkedIntels:
     - {fileID: 0}
-    timedEvents:
-    - time: 8
-    - time: 0
   analyze:
     isAvailable: 0
     baseTime: 0
     modifiers: []
     requiredTags: 
     occupyingIntel: 0
-    result: {fileID: 0}
-    timedEvents: []
+    preparationRequired: 0
+    preparation:
+      time: 10
+      startMessage: On my way to do this.
+      endMessage: Coming back from doing this.
+      flagAway: 1
+      hideTime: 0
+    hideTime: 0
+    personStartMessages: []
   person: {fileID: 11400000, guid: 31c0238e5a938464f96ca20e9f988ad9, type: 2}

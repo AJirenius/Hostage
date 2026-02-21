@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 99eb3a8859a54922bebb772659b728e8, type: 3}
-  m_Name: IntelSteve
+  m_Name: IntelWife
   m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.Intel
-  intelName: Steve SOme
-  description: Our Jumper
+  intelName: Laura Mitchel
+  description: Just a passer by
   category: 2
-  graph: {fileID: -5475051401550479605, guid: 594f72d5d5c4e4d3485193dafd3f0791, type: 3}
+  graph: {fileID: -5475051401550479605, guid: 8f6ce4309d1c34a6f926da64f311388f, type: 3}
   investigate:
-    isAvailable: 1
-    baseTime: 3
+    isAvailable: 0
+    baseTime: 40
     modifiers:
     - skillTag: 1
       value: 0.8
     - skillTag: 2
       value: 1.2
-    requiredTags: 01000000
+    requiredTags: 
     occupyingIntel: 0
     preparationRequired: 0
     preparation:
@@ -36,7 +36,7 @@ MonoBehaviour:
     hideTime: 0
     personStartMessages: []
   interview:
-    isAvailable: 0
+    isAvailable: 1
     baseTime: 5
     modifiers:
     - skillTag: 0
@@ -51,11 +51,7 @@ MonoBehaviour:
       flagAway: 1
       hideTime: 0
     hideTime: 0
-    personStartMessages:
-    - person: {fileID: 11400000, guid: 0453885974c484dfe9ac823fd876ae81, type: 2}
-      message: I can go talk to the boss, give me a minute
-    - person: {fileID: 11400000, guid: 9452d1211419346d18b24052522f9a39, type: 2}
-      message: 'Do I have to? yeee... '
+    personStartMessages: []
     linkedIntels: []
   surveillance:
     isAvailable: 0
@@ -89,4 +85,4 @@ MonoBehaviour:
       hideTime: 0
     hideTime: 0
     personStartMessages: []
-  person: {fileID: 11400000, guid: 2fa9f312d52304cd3af9e3f9f474018f, type: 2}
+  person: {fileID: 11400000, guid: 31c0238e5a938464f96ca20e9f988ad9, type: 2}
