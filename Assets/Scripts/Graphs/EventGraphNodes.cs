@@ -180,7 +180,7 @@ namespace Hostage.Graphs
     }
 
     [Serializable]
-    public class RTPersonStartNode : RuntimeNode
+    public class RTNpcStartNode : RuntimeNode
     {
         public List<SOIntel> intelList = new();
 
@@ -248,10 +248,18 @@ namespace Hostage.Graphs
                    throw new ArgumentOutOfRangeException();
            }
 
+           Sprite portrait = personTargetType switch
+           {
+               PersonTargetType.ContextPerson => runner.Context.Person?.SOReference.Portrait,
+               PersonTargetType.SpecifiedPerson => speaker?.Portrait,
+               _ => null
+           };
+
            runner.SignalBus.Publish(new Core.DialogueRequestedSignal
            {
                SpeakerName = name,
                Message = dialogueText,
+               Portrait = portrait,
                OnDismissed = () => onComplete?.Invoke(0)
            });
        }
@@ -276,10 +284,18 @@ namespace Hostage.Graphs
                 _ => throw new ArgumentOutOfRangeException()
             };
 
+            Sprite portrait = personTargetType switch
+            {
+                PersonTargetType.ContextPerson => runner.Context.Person?.SOReference.Portrait,
+                PersonTargetType.SpecifiedPerson => speaker?.Portrait,
+                _ => null
+            };
+
             runner.SignalBus.Publish(new Core.DialogueChoiceRequestedSignal
             {
                 SpeakerName = name,
                 Message = dialogueText,
+                Portrait = portrait,
                 Options = options,
                 OnOptionSelected = index => onComplete?.Invoke(index)
             });

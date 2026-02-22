@@ -15,18 +15,20 @@ namespace Hostage.UI
         private Action _onDismissed;
         private bool _isChoiceMode;
 
-        public void Show(string speakerName, string message, Action onDismissed)
+        public void Show(string speakerName, string message, Sprite portrait, Action onDismissed)
         {
             personNameText.text = speakerName;
             textArea.text = message;
+            if (profileIcon != null) profileIcon.sprite = portrait;
             _onDismissed = onDismissed;
             _isChoiceMode = false;
         }
 
-        public void ShowChoice(string speakerName, string message, List<string> options, Action<int> onOptionSelected)
+        public void ShowChoice(string speakerName, string message, Sprite portrait, List<string> options, Action<int> onOptionSelected)
         {
             personNameText.text = speakerName;
             textArea.text = message;
+            if (profileIcon != null) profileIcon.sprite = portrait;
             _isChoiceMode = true;
 
             for (int i = 0; i < options.Count; i++)

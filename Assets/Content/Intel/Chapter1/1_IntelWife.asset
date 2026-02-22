@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 99eb3a8859a54922bebb772659b728e8, type: 3}
-  m_Name: IntelWife
+  m_Name: 1_IntelWife
   m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.Intel
   intelName: Laura Mitchel
   description: Just a passer by
   category: 2
-  graph: {fileID: -5475051401550479605, guid: 8f6ce4309d1c34a6f926da64f311388f, type: 3}
+  graph: {fileID: -5475051401550479605, guid: d91b2fde0759b4b03a2895048d55dab3, type: 3}
   investigate:
     isAvailable: 0
     baseTime: 40
@@ -85,4 +85,4 @@ MonoBehaviour:
       hideTime: 0
     hideTime: 0
     personStartMessages: []
-  person: {fileID: 11400000, guid: 31c0238e5a938464f96ca20e9f988ad9, type: 2}
+  person: {fileID: 11400000, guid: f28f64052d16c47ce88117643e4486d5, type: 2}

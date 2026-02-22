@@ -225,7 +225,7 @@ namespace Hostage.Core
             {
                 Debug.Log("Execute NPC Command: " + personCommand.Person.SOReference.Name + " index: " + personCommand.timedEventIndex);
                 context.Intel = personCommand.SoIntel;
-                graph = personCommand.Person.SOReference.personMasterGraph;
+                graph = personCommand.Person.SOReference.npcGraph;
             }
 
             if (graph != null && OnGraphRequested != null)

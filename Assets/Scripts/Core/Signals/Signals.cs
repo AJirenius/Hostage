@@ -45,6 +45,7 @@ namespace Hostage.Core
     {
         public string SpeakerName;
         public string Message;
+        public UnityEngine.Sprite Portrait;
         public Action OnDismissed;
     }
 
@@ -55,6 +56,7 @@ namespace Hostage.Core
     {
         public string SpeakerName;
         public string Message;
+        public UnityEngine.Sprite Portrait;
         public System.Collections.Generic.List<string> Options;
         public Action<int> OnOptionSelected;
     }

@@ -16,9 +16,9 @@ MonoBehaviour:
   FullName: Alfred O'real
   UnknownName: Hotel Owner
   Description: "Big man in his late 50's. Wear an obvious tup\xE9"
-  Portrait: {fileID: 0}
+  Portrait: {fileID: 21300000, guid: bdf9e92bf86a6424fb087d1d0817dba0, type: 3}
   defaultFlag: 0
   skillTags: 
   personIntel: {fileID: 11400000, guid: d01601833b75b4fa29081d1cc4ea5ad6, type: 2}
-  personMasterGraph: {fileID: -5475051401550479605, guid: cd1c08454cde147c28ea1626cc338826, type: 3}
+  npcGraph: {fileID: -5475051401550479605, guid: cd1c08454cde147c28ea1626cc338826, type: 3}
   defaultIntelMessages: {fileID: 0}

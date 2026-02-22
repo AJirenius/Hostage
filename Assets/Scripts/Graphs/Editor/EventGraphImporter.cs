@@ -17,10 +17,14 @@ namespace Hostage.Graphs.Editor {
             }
 
             var startNodeModel = (INode)graph.GetNodes().OfType<Graphs.Editor.AssistantStartNode>().FirstOrDefault()
-                              ?? (INode)graph.GetNodes().OfType<Graphs.Editor.NpcPersonStartNode>().FirstOrDefault()
+                              ?? (INode)graph.GetNodes().OfType<Graphs.Editor.NpcStartNode>().FirstOrDefault()
                               ?? graph.GetNodes().OfType<Graphs.Editor.StartNode>().FirstOrDefault();
 
             if (startNodeModel == null) {
+                var emptyRuntimeAsset = ScriptableObject.CreateInstance<Graphs.EventGraph>();
+                emptyRuntimeAsset.name = System.IO.Path.GetFileNameWithoutExtension(ctx.assetPath);
+                ctx.AddObjectToAsset("MainAsset", emptyRuntimeAsset);
+                ctx.SetMainObject(emptyRuntimeAsset);
                 return;
             }
 
@@ -113,9 +117,9 @@ namespace Hostage.Graphs.Editor {
                 case StartNode:
                     returnedNodes.Add(new RTStartNode());
                     break;
-                case NpcPersonStartNode personStartNode:
+                case NpcStartNode personStartNode:
                     var nrIntel = personStartNode.GetNodeOptionByName("NrIntel").TryGetValue<int>(out var intelCount) ? intelCount : 3;
-                    var rtPersonStart = new RTPersonStartNode();
+                    var rtPersonStart = new RTNpcStartNode();
                     for (int i = 0; i < nrIntel; i++)
                     {
                         intelPort = personStartNode.GetInputPortByName($"intel{i}");

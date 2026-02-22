@@ -251,14 +251,14 @@ namespace Hostage.UI
         {
             var go = Instantiate(dialogueBoxPrefab, dialogueBoxParent);
             var dialogueBox = go.GetComponent<DialogueBoxUI>();
-            dialogueBox.Show(signal.SpeakerName, signal.Message, signal.OnDismissed);
+            dialogueBox.Show(signal.SpeakerName, signal.Message, signal.Portrait, signal.OnDismissed);
         }
 
         private void OnDialogueChoiceRequested(DialogueChoiceRequestedSignal signal)
         {
             var go = Instantiate(dialogueBoxPrefab, dialogueBoxParent);
             var dialogueBox = go.GetComponent<DialogueBoxUI>();
-            dialogueBox.ShowChoice(signal.SpeakerName, signal.Message, signal.Options, signal.OnOptionSelected);
+            dialogueBox.ShowChoice(signal.SpeakerName, signal.Message, signal.Portrait, signal.Options, signal.OnOptionSelected);
         }
 
         private void OnGraphStarted(GraphStartedSignal signal)

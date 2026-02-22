@@ -10,12 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aed93ebcd1654c9da0e65a32e3ae35b6, type: 3}
-  m_Name: Witness1
+  m_Name: 1_PersonWitness
   m_EditorClassIdentifier: Assembly-CSharp::Hostage.SO.SOPerson
   Name: Laura
   FullName: Laura Mitchel
   UnknownName: Witness 1
   Description: asd
-  Portrait: {fileID: 0}
+  Portrait: {fileID: 21300000, guid: 21ec2b8e245d34263b6d2ccb1baac843, type: 3}
   defaultFlag: 0
   skillTags: 
+  personIntel: {fileID: 11400000, guid: e4368504e0e714d9aad540d311fe10db, type: 2}
+  npcGraph: {fileID: -5475051401550479605, guid: 8370ae28c973040ac8b9388e042426df, type: 3}
+  defaultIntelMessages: {fileID: 0}

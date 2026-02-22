@@ -10,6 +10,8 @@ namespace Hostage.UI
     {
         public TMPro.TMP_Text personNameText;
         public Image panel;
+        public Image portraitImage;
+        public Sprite unknownProfile;
         public RectTransform highlight;
         public RectTransform progress;
         public GameObject exclamationIcon;
@@ -34,6 +36,7 @@ namespace Hostage.UI
             questionIcon.SetActive(false);
             UpdatePersonFlag();
             SetHighlight(false);
+            UpdatePortrait();
         }
 
         public void UpdateProgress(float percentageLeft)
@@ -51,6 +54,13 @@ namespace Hostage.UI
                 panel.color = _person.IsOccupied() ? OccupiedColor : NormalColor;
 
             personNameText.text = _person.IsIdentified() ? _person.SOReference.Name : (string.IsNullOrEmpty(_person.SOReference.UnknownName)?"Unknown":_person.SOReference.UnknownName);
+            UpdatePortrait();
+        }
+
+        private void UpdatePortrait()
+        {
+            if (portraitImage == null) return;
+            portraitImage.sprite = _person.IsIdentified() ? _person.SOReference.Portrait : unknownProfile;
         }
 
         public void SetExclamationIcon(bool visible)

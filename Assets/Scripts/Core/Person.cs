@@ -116,7 +116,7 @@ namespace Hostage.Core
             }
             else
             {
-                var graph = SOReference.personMasterGraph;
+                var graph = SOReference.npcGraph;
                 if (graph == null || !graph.HasIntelInStartNode(soIntel))
                     return false;
 

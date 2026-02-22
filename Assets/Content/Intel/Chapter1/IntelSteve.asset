@@ -15,9 +15,9 @@ MonoBehaviour:
   intelName: Steve SOme
   description: Our Jumper
   category: 2
-  graph: {fileID: -5475051401550479605, guid: 594f72d5d5c4e4d3485193dafd3f0791, type: 3}
+  graph: {fileID: -5475051401550479605, guid: f2cb2869a1b0045eb874c3a7fef32387, type: 3}
   investigate:
-    isAvailable: 1
+    isAvailable: 0
     baseTime: 3
     modifiers:
     - skillTag: 1
@@ -36,7 +36,7 @@ MonoBehaviour:
     hideTime: 0
     personStartMessages: []
   interview:
-    isAvailable: 0
+    isAvailable: 1
     baseTime: 5
     modifiers:
     - skillTag: 0

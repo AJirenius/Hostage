@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aed93ebcd1654c9da0e65a32e3ae35b6, type: 3}
-  m_Name: Wife
+  m_Name: 1_PersonWife
   m_EditorClassIdentifier: Assembly-CSharp::Hostage.SO.SOPerson
-  Name: Anya
-  FullName: ' Anya Bremson'
-  UnknownName: Steve's wife
-  Description: Dark haired
-  Portrait: {fileID: 0}
+  Name: 
+  FullName: 
+  UnknownName: 
+  Description: 
+  Portrait: {fileID: 21300000, guid: 94f968679ceec4af8945103db0f0f43e, type: 3}
   defaultFlag: 0
   skillTags: 
-  personIntel: {fileID: 11400000, guid: 1f68a60062fbb44e796afb6f8b180b92, type: 2}
-  personMasterGraph: {fileID: 0}
+  personIntel: {fileID: 0}
+  npcGraph: {fileID: -5475051401550479605, guid: 6d6c26d9acc96424f9b4dbafc43d7876, type: 3}
   defaultIntelMessages: {fileID: 0}

@@ -61,9 +61,9 @@ MonoBehaviour:
         m_LocalSubgraphs: []
         m_LastKnownBounds:
           serializedVersion: 2
-          x: -19
+          x: -102
           y: 272
-          width: 2815
+          width: 2898
           height: 446
         m_GraphElementMetaData:
         - m_Guid:
@@ -682,7 +682,7 @@ MonoBehaviour:
           serializedVersion: 2
           Hash: 5a7624913f04c09bca8d99a95006a490
         m_Version: 2
-        m_Position: {x: -18.587385, y: 377.6066}
+        m_Position: {x: -102.27393, y: 382.52933}
         m_Title: 
         m_Tooltip: 
         m_NodePreviewModel:

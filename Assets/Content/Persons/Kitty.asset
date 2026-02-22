@@ -16,8 +16,9 @@ MonoBehaviour:
   FullName: 'Kitty '
   UnknownName: 
   Description: Techie
-  Portrait: {fileID: 0}
+  Portrait: {fileID: 21300000, guid: a82fd193812f24402bb02e7af93c20c5, type: 3}
   defaultFlag: 11
   skillTags: 01000000
-  personMasterGraph: {fileID: 0}
+  personIntel: {fileID: 0}
+  npcGraph: {fileID: 0}
   defaultIntelMessages: {fileID: 11400000, guid: 7934403497789405caa83ed782426b2f, type: 2}

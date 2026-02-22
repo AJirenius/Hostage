@@ -59,7 +59,7 @@ namespace Hostage.Graphs
         {
             if (Nodes == null || Nodes.Count == 0)
                 return false;
-            if (Nodes[0] is RTPersonStartNode startNode)
+            if (Nodes[0] is RTNpcStartNode startNode)
                 return startNode.intelList.Contains(soIntel);
             return false;
         }
